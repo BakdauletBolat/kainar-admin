@@ -1,0 +1,15 @@
+.table {
+    @apply bg-white text-sm;
+}
+
+.table th {
+   @apply py-6 px-5 text-left border-b bg-slate-50; 
+}
+
+.table td {
+    @apply px-5 py-2 border-b;
+}
+
+.table tr {
+    @apply hover:bg-slate-50 cursor-pointer;
+}
