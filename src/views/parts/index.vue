@@ -9,7 +9,7 @@
         </TopHeader>
 
        <div class="w-full rounded-sm shadow-sm relative overflow-scroll border">
-        <table class="table ">
+        <table class="table w-full">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -22,8 +22,17 @@
                 </tr>
             </thead>
             <tbody>
+                <tr v-for="_ in 20" v-if="isLoading">
+                    <td><SkeletonLoader class="w-15 bg-slate-50 h-5" ></SkeletonLoader></td>
+                    <td><SkeletonLoader class="w-15 bg-slate-50 h-10" ></SkeletonLoader></td>
+                    <td><SkeletonLoader class="w-15 bg-slate-50 h-5" ></SkeletonLoader></td>
+                    <td><SkeletonLoader class="w-15 bg-slate-50 h-5" ></SkeletonLoader></td>
+                    <td><SkeletonLoader class="w-15 bg-slate-50 h-5" ></SkeletonLoader></td>
+                    <td><SkeletonLoader class="w-15 bg-slate-50 h-5" ></SkeletonLoader></td>
+                    <td><SkeletonLoader class="w-15 bg-slate-50 h-5" ></SkeletonLoader></td>
+                </tr>
                 <tr v-for="item in items">
-                    <td class="font-bold">{{ item.id }}</td>
+                    <td class="text-blue-400 underline underline-offset-1">{{ item.id }}</td>
                     <td>
                         <div class="gap-3 grid lg:grid-cols-[100px_1fr]">
                             <Avatar class="h-[100px] w-[100px] border rounded-sm" :url="item.pictures.length > 0
@@ -31,8 +40,9 @@
                                     : 'https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ='
                                 " />
                             <div>
-                                <div class="text-orange-500 text-lg">
+                                <div class="text-blue-400 text-sm">
                                     {{ item.name }}
+                                    
                                 </div>
                                 <div class="text-gray-500  font-light">
                                     <div>
@@ -77,13 +87,13 @@ import { onMounted, ref } from 'vue';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import axios from '@/apis/index.ts';
 import Avatar from '@/components/Avatar.vue';
-
+import SkeletonLoader from '@/components/SkeletonLoader.vue';
 const items = ref<any[]>([]);
 const isLoading = ref(false);
 
 const getProducts = () => {
     isLoading.value = true;
-    axios.get("/api/product/").then((response) => {
+    axios.get("/api/product/?page_size=20").then((response) => {
         items.value = response.data.results;
     }).finally(() => {
         isLoading.value = false;

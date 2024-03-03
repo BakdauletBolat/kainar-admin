@@ -1,5 +1,5 @@
 .table {
-    @apply bg-white text-sm;
+    @apply bg-white text-sm font-light;
 }
 
 .table th {

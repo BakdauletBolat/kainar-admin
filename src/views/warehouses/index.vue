@@ -13,6 +13,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Название</th>
+                    <th>Категория деталей</th>
                     <th>Действие</th>
                 </tr>
             </thead>
@@ -20,6 +21,11 @@
                 <tr v-for="item in items">
                     <td>{{ item.id }}</td>
                     <td>{{ item.name }}</td>
+                    <td>
+                        <div class="flex flex-col">
+                            <div v-for="category in item.categories">{{ category.name }}</div>
+                        </div>
+                    </td>
                     <td class="flex">
                         <RouterLink :to="{
                             name: 'warehouses-edit',
