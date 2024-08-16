@@ -1,8 +1,9 @@
 import axios from 'axios';
 
 const axiosIns = axios.create({
-baseURL: 'http://94.198.219.2:8000',
+baseURL: 'https://back-kaynar.kz',
 timeout: 10000,
 })
 
-export default axiosIns;
+
+	export default axiosIns;

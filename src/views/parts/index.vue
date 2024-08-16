@@ -1,107 +1,272 @@
 <template>
-    <main class="grid">
-        <TopHeader title="Запчасти">
-            <template #actions>
-                <RouterLink :to="{
-                    name: 'parts-create'
-                }" class="bg-orange-400 block text-center px-3 py-1.5 rounded-sm text-white">Создать</RouterLink>
-            </template>
-        </TopHeader>
-
-       <div class="w-full rounded-sm shadow-sm relative overflow-scroll border">
-        <table class="table w-full">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Название</th>
-                    <th>Склад</th>
-                    <th>Цена</th>
-                    <th>Комментарий</th>
-                    <th>Статус</th>
-                    <th>Действие</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="_ in 20" v-if="isLoading">
-                    <td><SkeletonLoader class="w-15 bg-slate-50 h-5" ></SkeletonLoader></td>
-                    <td><SkeletonLoader class="w-15 bg-slate-50 h-10" ></SkeletonLoader></td>
-                    <td><SkeletonLoader class="w-15 bg-slate-50 h-5" ></SkeletonLoader></td>
-                    <td><SkeletonLoader class="w-15 bg-slate-50 h-5" ></SkeletonLoader></td>
-                    <td><SkeletonLoader class="w-15 bg-slate-50 h-5" ></SkeletonLoader></td>
-                    <td><SkeletonLoader class="w-15 bg-slate-50 h-5" ></SkeletonLoader></td>
-                    <td><SkeletonLoader class="w-15 bg-slate-50 h-5" ></SkeletonLoader></td>
-                </tr>
-                <tr v-for="item in items">
-                    <td class="text-blue-400 underline underline-offset-1">{{ item.id }}</td>
-                    <td>
-                        <div class="gap-3 grid lg:grid-cols-[100px_1fr]">
-                            <Avatar class="h-[100px] w-[100px] border rounded-sm" :url="item.pictures.length > 0
-                                    ? item.pictures[0].image
-                                    : 'https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ='
-                                " />
-                            <div>
-                                <div class="text-blue-400 text-sm">
-                                    {{ item.name }}
-                                    
-                                </div>
-                                <div class="text-gray-500  font-light">
-                                    <div>
-                                        {{ item.modification.modelCar?.name }}
-                                        {{ item.modification.modelCar?.startDate }}
-                                    </div>
-                                    <div class="text-xs">
-                                        2001 АКПП LHD
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>{{ item.warehouse ?? '-' }}</td>
-                    <td>{{ item.price }}</td>
-                    <td>{{ item.comment ?? '-' }}</td>
-                    <td>{{ item.status }}</td>
-                    <td>
-                        <div class="flex">
-                            <RouterLink :to="{
-                            name: 'warehouses-edit',
-                            params: {
-                                id: item.id
-                            }
-                        }">
-                            <PencilSquareIcon class="w-7 h-7 text-gray-700"></PencilSquareIcon>
-                        </RouterLink>
-
-                        <TrashIcon class="w-7 h-7 text-gray-700"></TrashIcon>
-                        </div>
-
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-       </div>
-    </main>
+  <n-page-header class="mb-4">
+    <template #title>
+      Запчасти
+    </template>
+    <template #subtitle>
+      {{ paginationReactive.itemCount }}
+    </template>
+    <template #extra>
+      <div>
+        <n-button @click="createNavigate" type="primary" round>Создать</n-button>
+      </div>
+    </template>
+  </n-page-header>
+  <main class="grid">
+    <PartsFilter @update="updateFromFilter"></PartsFilter>
+    <div class="overflow-scroll">
+      <n-data-table
+          remote
+          :loading="isLoading"
+          @update:filters="handleFiltersChange"
+          ref="table" :columns="columns" :data="items" :pagination="paginationReactive"
+          :row-key="rowKey" @update:checked-row-keys="handleCheck"/>
+    </div>
+  </main>
 </template>
 <script setup lang="ts">
-import TopHeader from '@/components/TopHeader.vue';
-import { onMounted, ref } from 'vue';
-import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import {onMounted, ref, h, reactive} from 'vue';
+import {NDataTable, NAvatar, NH6, NTag, NPageHeader, NButton} from 'naive-ui';
+import {getFirstElementArray} from '@/utils/getFirstElementFromArray.ts';
+import {useRoute, RouterLink, useRouter} from 'vue-router';
 import axios from '@/apis/index.ts';
-import Avatar from '@/components/Avatar.vue';
-import SkeletonLoader from '@/components/SkeletonLoader.vue';
+import PartsFilter from '@/components/Parts/PartsFilter.vue';
+import type {DataTableColumns} from 'naive-ui'
+
+interface RowData {
+  id: number
+  name: string,
+  pictures: any[],
+  price: number,
+  status: string,
+  modification: {
+    modelCar: {
+      name: string,
+      startDate: string
+    }
+  }
+}
+
+const router = useRouter();
+
+function createNavigate() {
+  router.push({
+    name: 'parts-create'
+  })
+}
+
+function createColumns(): DataTableColumns<RowData> {
+
+  return [
+    {
+      type: 'selection',
+    },
+    {
+      title: 'Навзание',
+      key: 'name',
+      render(row) {
+        const image = getFirstElementArray(row.pictures);
+        const imageUrl = image ? image.image : undefined
+        return h(
+            RouterLink,
+            {
+              class: "gap-3 grid lg:grid-cols-[100px_1fr]",
+              to: {
+                name: 'parts-detail',
+                params: {
+                  id: row.id
+                }
+              },
+              default: () => row.name
+            },
+            {
+              default: () => [
+                h(
+                    NAvatar,
+                    {
+                      objectFit: 'cover',
+                      src: imageUrl,
+                      size: 100
+                    }
+                ),
+                h('div', {}, [
+                  h(NH6, {}, {
+                    default: () => row.name
+                  }),
+                  h('div', {}, [
+                    h('div', {}, {default: () => `${row.modification.modelCar.name} ${row.modification.modelCar.startDate}`}),
+                    h('div', {}, {default: () => '2001 АКПП LHD '})
+                  ])
+                ])
+              ]
+            }
+        )
+      }
+    },
+    {
+      title: "ID",
+      key: "id"
+    },
+    {
+      title: "Склад",
+      key: "warehouse.name"
+    },
+    {
+      title: "Цена",
+      key: "price",
+      render(row) {
+        return h('div', {}, {default: () => `${row.price}₸`})
+      }
+    },
+    {
+      title: "Комментарий",
+      key: "comment"
+    },
+    {
+      title: "Статус",
+      key: "status",
+      render(row) {
+        let typeLabel: "success" | "error" = 'success'
+        if (row.status == 'Продан') {
+          typeLabel = 'error'
+        }
+        return h(NTag, {type: typeLabel}, {default: () => row.status})
+      }
+    }
+  ]
+}
+
+
+const paginationReactive = reactive({
+  page: 1,
+  pageSize: 10,
+  showSizePicker: true,
+  itemCount: 168,
+  pageSizes: [5, 10, 25, 50, 100],
+  prefix({itemCount}: any) {
+    return `Всего ${itemCount} запчастей`
+  },
+  onChange: (page: number) => {
+    paginationReactive.page = page
+    onChangedPage(page);
+  },
+  onUpdatePageSize: (pageSize: number) => {
+    paginationReactive.pageSize = pageSize
+    paginationReactive.page = 1
+  }
+});
+
+const columns = createColumns();
 const items = ref<any[]>([]);
 const isLoading = ref(false);
+const route = useRoute();
 
-const getProducts = () => {
-    isLoading.value = true;
-    axios.get("/api/product/?page_size=20").then((response) => {
-        items.value = response.data.results;
-    }).finally(() => {
-        isLoading.value = false;
-    });
+
+const handleCheck = () => {
+
+}
+
+const rowKey = (row: RowData) => {
+  return row.id
+}
+
+function handleFiltersChange(filters: any) {
+  getProducts({page: paginationReactive.page, status: filters.status})
+}
+
+
+const getProducts = ({
+                       page, status, capacityFrom, capacityTo,
+                       //@ts-ignore
+                       manufacturer, modelCar, yearEnd, yearStart,
+                       fuelType, driveType, gearType, color, powerFrom,
+                       powerTo, priceEnd, priceStart, bodyType
+                     }: {
+  page: number, status?: number,
+  capacityFrom?: number,
+  capacityTo?: number,
+  manufacturer?: number,
+  modelCar?: number,
+  yearStart?: string,
+  yearEnd?: string,
+  fuelType?: number,
+  driveType?: number,
+  gearType?: number,
+  color?: number,
+  powerFrom?: number,
+  powerTo?: number,
+  priceStart?: number,
+  priceEnd?: number,
+  bodyType?: number
+}) => {
+  isLoading.value = true;
+  let url = `/api/product/?page=${page}&page_size=10`;
+  if (status != undefined) {
+    url += `&status=${status}`
+  }
+  if (capacityFrom != undefined) {
+    url += `&capacity_min=${capacityFrom}`
+  }
+  if (capacityTo != undefined) {
+    url += `&capacity_max=${capacityTo}`
+  }
+  if (priceStart != undefined) {
+    url += `&price_min=${priceStart}`
+  }
+  if (priceEnd != undefined) {
+    url += `&price_max=${priceEnd}`
+  }
+  if (powerFrom != undefined) {
+    url += `&power_from=${powerFrom}`
+  }
+  if (powerTo != undefined) {
+    url += `&power_to=${powerTo}`
+  }
+  if (manufacturer != undefined) {
+    url += `&manufacturer=${manufacturer}`
+  }
+  if (modelCar != undefined) {
+    url += `&model_car=${modelCar}`
+  }
+  if (modelCar != undefined) {
+    url += `&model_car=${modelCar}`
+  }
+  if (fuelType != undefined) {
+    url += `&fuel_type=${fuelType}`
+  }
+  if (driveType != undefined) {
+    url += `&drive_type=${driveType}`
+  }
+  if (gearType != undefined) {
+    url += `&gear_type=${gearType}`
+  }
+  if (color != undefined) {
+    url += `&color=${color}`
+  }
+  if (bodyType != undefined) {
+    url += `&body_type=${bodyType}`
+  }
+
+  axios.get(url).then((response) => {
+    items.value = response.data.results;
+    paginationReactive.itemCount = response.data.count
+  }).finally(() => {
+    isLoading.value = false;
+  });
+}
+
+
+const updateFromFilter = (filterForm: any) => {
+  getProducts({page: 1, ...filterForm})
+}
+
+const onChangedPage = (page: number) => {
+  getProducts({page: page});
 }
 
 onMounted(() => {
-    getProducts();
+  const page = route.query.page != undefined ? parseInt(route.query.page.toString()) : 1
+  getProducts({page: page});
 });
 
 </script>

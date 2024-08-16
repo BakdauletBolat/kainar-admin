@@ -1,46 +1,64 @@
 <template>
     <main>
-        <TopHeader :backRoute="{
-            name: 'warehouses-list'
-        }" title="Создать склад"></TopHeader>
-        <form @submit="onSubmit"  class="mt-3 max-w-2xl  bg-white flex flex-col gap-3 p-5 rounded-sm border">
-            <input :class="{
-            'border-red-500': errors.name
-        }" v-model="name" v-bind="nameAttrs" type="text" />
-            <div class="text-red-600">{{ errors.name }}</div>
-            <button type="submit" class="bg-orange-400 p-3 text-white">Сохранить</button>
-        </form>
+      <n-page-header @back="handleBack" class="mb-4">
+        <template #title>
+          Создание
+        </template>
+      </n-page-header>
+        <n-card>
+          <n-form
+              ref="formRef"
+              :label-width="80"
+              :model="formValue"
+              :rules="rules"
+              :size="'medium'"
+          >
+            <n-form-item label="Название" path="name">
+              <n-input v-model:value="formValue.name" placeholder="Навазния" />
+            </n-form-item>
+            <n-form-item label="Город" path="city">
+              <n-select
+                  v-model:value="formValue.city"
+                  placeholder="Выбрать город"
+                  :options="cityOptions"
+              />
+            </n-form-item>
+            <n-form-item>
+              <n-button type="primary" round @click="handleValidateClick">
+                Сохранить
+              </n-button>
+            </n-form-item>
+          </n-form>
+        </n-card>
     </main>
 </template>
 <script setup lang="ts">
-import TopHeader from '@/components/TopHeader.vue';
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import axiosIns from '@/apis';
-import { useForm } from 'vee-validate';
-import * as yup from 'yup';
-
-const { errors, handleSubmit, defineField } = useForm({
-  validationSchema: yup.object({
-    name: yup.string().min(6).required(),
-  }),
-});
-
-const onSubmit = handleSubmit(values => {
-  create(values);
-});
+import {type FormInst, NPageHeader, NButton, NCard, NInput, NForm, NFormItem,NSelect, useMessage} from "naive-ui";
 
 
-const [name, nameAttrs] = defineField('name');
-
+const formRef = ref<FormInst | null>(null);
 
 const isLoading = ref(false);
 const router = useRouter();
+const message = useMessage();
+
+const cityOptions = [
+  {
+    label: "Шымкент",
+    value: 1
+  },{
+    label: "Астана",
+    value: 2
+  }
+]
 
 const create = (values:any) => {
     isLoading.value = true;
-    axiosIns.post("/api/stock/warehouses/",values).then((response) => {
-        console.log(response);
+    axiosIns.post("/api/stock/warehouses/",values).then((_: any) => {
+        message.success('Успешно создано')
         router.push({
             name: 'warehouses-list'
         })
@@ -49,7 +67,38 @@ const create = (values:any) => {
     });
 }
 
-const form = reactive({
-    name: ''
+const formValue = reactive({
+    name: '',
+    city: 1
 })
+
+const rules = {
+  name: {
+    required: true,
+    message: 'Названия обязательно',
+    trigger: 'blur'
+  },
+  city: {
+    type: 'number',
+    required: true,
+    message: 'ASDASD',
+    trigger: 'blur'
+  }
+}
+
+function handleValidateClick(e: any) {
+  e.preventDefault();
+  formRef.value?.validate((errors) => {
+    if (!errors) {
+      create(formValue)
+    }
+    else {
+      message.error('Invalid')
+    }
+  })
+}
+
+function handleBack() {
+  router.back();
+}
 </script>

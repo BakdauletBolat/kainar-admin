@@ -1,5 +1,5 @@
 <template>
-<div class="fixed lg:ml-[250px] z-10 lg:w-[calc(100%-250px)] w-full ml-0 p-3 border-b top-0 left-0 bg-white">
+<div class="w-full z-10 p-3 border-b bg-white">
     <div class="flex max-w-5xl mx-auto justify-between">
         <div class="flex items-center gap-3">
         <Bars3Icon @click="appConfig.isOpenMenu = true;" class="w-7 lg:hidden h-7 cursor-pointer"></Bars3Icon>

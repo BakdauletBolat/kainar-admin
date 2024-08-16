@@ -7,7 +7,6 @@
                 }" class="bg-orange-400 block text-center px-3 py-1.5 rounded-sm text-white">Создать</RouterLink>
             </template>
         </TopHeader>
-
        <div class="w-full rounded-sm shadow-sm relative overflow-scroll border">
         <table class="table ">
             <thead>
@@ -67,11 +66,13 @@
 
                         <TrashIcon class="w-7 h-7 text-gray-700"></TrashIcon>
                         </div>
-
                     </td>
                 </tr>
             </tbody>
         </table>
+        <div>
+            <Pagination></Pagination>
+        </div>
        </div>
     </main>
 </template>
@@ -81,6 +82,7 @@ import { onMounted, ref } from 'vue';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import axios from '@/apis/index.ts';
 import Avatar from '@/components/Avatar.vue';
+import Pagination from '@/components/Pagination/pagination.vue';
 
 const items = ref<any[]>([]);
 const isLoading = ref(false);

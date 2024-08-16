@@ -1,7 +1,7 @@
 import {reactive} from 'vue';
 
 const appConfig = reactive({
-    isOpenMenu: false
+isOpenMenu: true
 });
 
 export default appConfig;

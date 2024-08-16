@@ -1,8 +1,10 @@
 <template>
-    <main>
-        <TopHeader title="Создать запчасти"></TopHeader>
-    </main>
+  <n-page-header class="mb-4">
+    <template #title>
+      Создание
+    </template>
+  </n-page-header>
 </template>
 <script setup lang="ts">
-import TopHeader from '@/components/TopHeader.vue';
+import {NPageHeader} from "naive-ui";
 </script>
