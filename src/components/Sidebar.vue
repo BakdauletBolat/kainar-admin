@@ -32,7 +32,7 @@ import Avatar from './Avatar.vue';
 import { useRoute } from 'vue-router';
 import { ref, watch } from 'vue';
 import appConfig from '@/stores/app';
-import Logo from '@/assets/new-logo.png';
+
 
 const route = useRoute();
 

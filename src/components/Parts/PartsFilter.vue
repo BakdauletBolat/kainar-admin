@@ -1,9 +1,9 @@
 <template>
 	<div class="flex gap-2 pt-4">
 		<n-input placeholder="Поиск по названий, категорий">
-			<template #prefix>
-				<n-icon :component="MagnifyingGlassIcon" />
-			</template>
+<!--			<template #prefix>-->
+<!--				<n-icon :component="MagnifyingGlassIcon" />-->
+<!--			</template>-->
 		</n-input>
 		<n-button round type="primary">Поиск</n-button>
 		<n-button @click="show = !show" :type="show ? 'primary' : 'default'" round secondary>Фильтр</n-button>

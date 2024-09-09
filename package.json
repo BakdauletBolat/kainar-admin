@@ -12,6 +12,7 @@
     "@egjs/vue3-flicking": "^4.11.4",
     "@headlessui/vue": "^1.7.19",
     "@heroicons/vue": "^2.1.1",
+    "@vicons/ionicons5": "^0.12.0",
     "axios": "^1.6.7",
     "flowbite-vue": "^0.1.2",
     "pinia": "^2.2.2",
