@@ -1,103 +1,187 @@
 <template>
-    <main class="grid">
-        <TopHeader title="Заказы">
-            <template #actions>
-                <RouterLink :to="{
-                    name: 'parts-create'
-                }" class="bg-orange-400 block text-center px-3 py-1.5 rounded-sm text-white">Создать</RouterLink>
-            </template>
-        </TopHeader>
-       <div class="w-full rounded-sm shadow-sm relative overflow-scroll border">
-        <table class="table ">
-            <thead>
-                <tr>
-                    <th class="text-nowrap">ID</th>
-                    <th class="text-nowrap">Подробности</th>
-                    <th class="text-nowrap">Склад</th>
-                    <th class="text-nowrap">Заказано</th>
-                    <th class="text-nowrap">Заказано в</th>
-                    <th class="text-nowrap">Статус</th>
-                    <th class="text-nowrap">Всего</th>
-                    <th class="text-nowrap">Оплачен?</th>
-                    <th class="text-nowrap">Действие</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="item in items">
-                    <td class="font-bold">{{ item.id }}</td>
-                    <td>
-                        <div class="gap-3 grid lg:grid-cols-[100px_1fr]">
-                            <Avatar class="h-[100px] w-[100px] border rounded-sm" :url="item.goods.length > 0 && item.goods[0].product.pictures.length > 0
-                                    ? item.goods[0].product.pictures[0].image
-                                    : 'https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ='
-                                " />
-                            <div>
-                                <div class="text-orange-500 text-lg">
-                                    Продукт
-                                </div>
-                                <div class="text-gray-500  font-light">
-                                    <div class="text-nowrap">
-                                        Тест
-                                    </div>
-                                    <div class="text-xs">
-                                        2001 АКПП LHD
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>{{ item.warehouse.name ?? '-' }}</td>
-                    <td>asdas</td>
-                    <td>{{ item.created_at }}</td>
-                    <td>{{ item.status }}</td>
-                    <td>{{ item.total }}</td>
-                    <td>-</td>
-                    
-                    <td>
-                        <div class="flex">
-                            <RouterLink :to="{
-                            name: 'warehouses-edit',
-                            params: {
-                                id: item.id
-                            }
-                        }">
-                            <PencilSquareIcon class="w-7 h-7 text-gray-700"></PencilSquareIcon>
-                        </RouterLink>
-
-                        <TrashIcon class="w-7 h-7 text-gray-700"></TrashIcon>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <div>
-            <Pagination></Pagination>
-        </div>
-       </div>
-    </main>
+  <n-page-header class="mb-4">
+    <template #title>
+      Заказы
+    </template>
+    <template #subtitle>
+      {{ paginationReactive.itemCount }}
+    </template>
+    <template #extra>
+      <div>
+        <n-button @click="createNavigate" type="primary" round>Создать</n-button>
+      </div>
+    </template>
+  </n-page-header>
+  <main class="grid">
+<!--    <PartsFilter></PartsFilter>-->
+    <div class="overflow-scroll">
+      <n-data-table
+          remote
+          :loading="orderStore.isLoadingOrders"
+          ref="table"
+          :columns="columns" :data="orderStore.orders"
+          :pagination="paginationReactive"
+          :row-key="rowKey" @update:checked-row-keys="handleCheck"/>
+    </div>
+  </main>
 </template>
 <script setup lang="ts">
-import TopHeader from '@/components/TopHeader.vue';
-import { onMounted, ref } from 'vue';
-import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
-import axios from '@/apis/index.ts';
-import Avatar from '@/components/Avatar.vue';
-import Pagination from '@/components/Pagination/pagination.vue';
+import {onMounted, ref, h, reactive, watch} from 'vue';
+import {NDataTable, NAvatar, NH6, NTag, NPageHeader, NButton} from 'naive-ui';
+import {getFirstElementArray} from '@/utils/getFirstElementFromArray.ts';
+import {useRoute, RouterLink, useRouter} from 'vue-router';
+import type {DataTableColumns} from 'naive-ui'
+import {useFilterStore} from "@/stores/filter-store.ts";
+import {useOrderStore} from "@/stores/order-store.ts";
 
-const items = ref<any[]>([]);
-const isLoading = ref(false);
-
-const getOrders = () => {
-    isLoading.value = true;
-    axios.get("/api/orders/").then((response) => {
-        items.value = response.data.results;
-    }).finally(() => {
-        isLoading.value = false;
-    });
+interface RowData {
+  id: number
+  name: string,
+  pictures: any[],
+  price: number,
+  status: string,
+  created_at: string,
+  category: {
+    id: number,
+  },
+  modelCar: {
+    name: string,
+    startDate: string
+  }
 }
 
+const router = useRouter();
+
+function createNavigate() {
+  router.push({
+    name: 'parts-create'
+  })
+}
+
+function createColumns(): DataTableColumns<RowData> {
+  return [
+    {
+      type: 'selection',
+    },
+    {
+      title: 'Навзание',
+      key: 'name',
+      render(row) {
+        const image = getFirstElementArray(row.pictures);
+        const imageUrl = image ? image.image : undefined
+        return h(
+            RouterLink,
+            {
+              class: "gap-3 grid lg:grid-cols-[100px_1fr]",
+              to: {
+                name: 'parts-detail',
+                params: {
+                  id: row.id
+                }
+              },
+              default: () => row.name
+            },
+            {
+              default: () => [
+                h(
+                    NAvatar,
+                    {
+                      objectFit: 'cover',
+                      src: imageUrl,
+                      size: 100
+                    }
+                ),
+                h('div', {}, [
+                  h(NH6, {}, {
+                    default: () => row.name
+                  }),
+                  h('div', {}, [
+                    h('div', {}, {default: () => `${row.modelCar.name} ${row.modelCar.startDate}`}),
+                    h('div', {}, {default: () => '2001 АКПП LHD '})
+                  ])
+                ])
+              ]
+            }
+        )
+      }
+    },
+    {
+      title: "ID",
+      key: "id"
+    },
+    {
+      title: "Склад",
+      key: "warehouse.name"
+    },
+    {
+      title: "Цена",
+      key: "price",
+      render(row) {
+        return h('div', {}, {default: () => `${row.price}₸`})
+      }
+    },
+    {
+      title: "Комментарий",
+      key: "comment"
+    },
+    {
+      title: "Статус",
+      key: "status",
+      render(row) {
+        let typeLabel: "success" | "error" = 'success'
+        if (row.status == 'Продан') {
+          typeLabel = 'error'
+        }
+        return h(NTag, {type: typeLabel}, {default: () => row.status})
+      }
+    }
+  ]
+}
+
+
+const paginationReactive = reactive({
+  page: 1,
+  pageSize: 10,
+  showSizePicker: true,
+  itemCount: 168,
+  pageSizes: [5, 10, 25, 50, 100],
+  prefix({itemCount}: any) {
+    return `Всего ${itemCount} заказов`
+  },
+  onChange: (page: number) => {
+    paginationReactive.page = page
+    onChangedPage(page);
+  },
+  onUpdatePageSize: (pageSize: number) => {
+    paginationReactive.pageSize = pageSize
+    paginationReactive.page = 1
+  }
+});
+
+const columns = createColumns();
+const route = useRoute();
+const orderStore = useOrderStore();
+const filterStore = useFilterStore();
+
+const handleCheck = () => {
+
+}
+
+const rowKey = (row: RowData) => {
+  return row.id
+}
+
+const onChangedPage = (page: number) => {
+  orderStore.loadOrders({page: page})
+}
+
+watch(filterStore.filterValues, (state) => {
+  orderStore.loadOrders(state);
+});
+
 onMounted(() => {
-    getOrders();
+  const page = route.query.page != undefined ? parseInt(route.query.page.toString()) : 1
+  orderStore.loadOrders({page: page})
 });
 
 </script>
