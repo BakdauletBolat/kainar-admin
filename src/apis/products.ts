@@ -143,9 +143,9 @@ function generateQuery(queries: object) {
 
 export async function getProducts(options: object = {}) {
     const query = generateQuery(options)
-    return await axios<{
+    return await axios.get<<{
         results: ProductList[]
-    }>.get(`/api/v2/product/${query}`)
+    }>(`/api/v2/product/${query}`)
 }
 
 export async function getProduct(id: string) {
