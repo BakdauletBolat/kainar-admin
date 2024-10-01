@@ -141,13 +141,13 @@ function generateQuery(queries: object) {
     return query;
 }
 
-export async function getProducts(options: object = {}) {
+export async function getOrders(options: object = {}) {
     const query = generateQuery(options)
     return await axios<{
         results: ProductList[]
-    }>.get(`/api/v2/product/${query}`)
+    }>.get(`/api/orders/${query}`)
 }
 
-export async function getProduct(id: string) {
-    return await axios.get(`/api/v2/product/${id}`)
+export async function getOrder(id: string) {
+    return await axios.get(`/api/orders/${id}`)
 }
