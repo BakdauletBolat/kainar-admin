@@ -17,7 +17,7 @@
                 <!-- Список товаров в виде карточек -->
                 <div v-if="productStore.products.length > 0"
                     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div v-for="product in productStore.products" :key="product.id" @click="selectProduct(product)"
+                    <div v-for="product in productStore.products" :key="product.id" @click="()=>emit('selected', product)"
                         :class="['p-4 bg-white border-2 border-white rounded-lg cursor-pointer hover:shadow-xl transition-all', { 'border-2 !border-orange-400': isSelected(product) }]">
                         <img :src="product.pictures[0].image" v-if="product.pictures.length > 0" alt="product image"
                             class="w-full h-32 object-cover rounded-md" />
@@ -28,7 +28,7 @@
                     </div>
                 </div>
 
-                <div>
+                <div v-else>
                     Такого товара нету
                 </div>
             </div>
@@ -55,7 +55,8 @@ import { useProductStore } from '@/stores/product-store';
 
 
 const productStore = useProductStore();
-
+const props = defineProps(['selectedProducts']);
+const emit = defineEmits(['selected'])
 
 interface Product {
     id: number
@@ -66,26 +67,16 @@ interface Product {
 
 const showModal = ref(false)
 const searchQuery = ref('')
-const selectedProducts = ref<Product[]>([])
+
 
 
 // Проверка, выбран ли товар
 function isSelected(product: Product): boolean {
-    console.log(selectedProducts.value.some(p => p.id === product.id));
-    return selectedProducts.value.some(p => p.id === product.id)
+    return props.selectedProducts.some(p => p.id === product.id)
 }
 
-// Функция выбора товара
-function selectProduct(product: Product) {
-    const productIndex = selectedProducts.value.findIndex(p => p.id === product.id)
-    if (productIndex !== -1) {
-        // Если товар уже выбран, удаляем его
-        selectedProducts.value.splice(productIndex, 1)
-    } else {
-        // Добавляем товар
-        selectedProducts.value.push(product)
-    }
-}
+
+
 
 function closeModal() {
     showModal.value = false

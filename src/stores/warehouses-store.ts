@@ -19,7 +19,7 @@ export interface WarehouseList {
   };
 }
 
-export const useWarehouseStore = defineStore("order-store", {
+export const useWarehouseStore = defineStore("warehouse-store", {
   state: () => {
     return {
       warehouses: [] as WarehouseList[],

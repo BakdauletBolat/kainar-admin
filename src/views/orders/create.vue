@@ -6,7 +6,7 @@
             </template>
         </n-page-header>
         <n-card>
-            <SelectProduct></SelectProduct>
+            <SelectProduct :selected-products="selectedProducts" @selected="selectProduct"></SelectProduct>
             <div class="mt-8 p-4 rounded-lg">
                 <h2 class="text-2xl font-bold mb-4">Форма заказа</h2>
                 <n-form label-placement="left" label-width="160px">
@@ -73,10 +73,17 @@ import { NPageHeader, NCard, NInput, NForm, NFormItem, NSelect, NInputNumber, NB
 import SelectProduct from './ui/SelectProduct.vue';
 import { onMounted, ref } from 'vue'
 import { useWarehouseStore } from '@/stores/warehouses-store';
+import {useOrderStore} from "@/stores/order-store.ts";
+
+
+
+
+
 
 
 const router = useRouter();
 const warehouseStore = useWarehouseStore();
+const orderStore = useOrderStore();
 
 // Форма и ее данные
 const form = ref({
@@ -92,6 +99,9 @@ const form = ref({
     comment: ''
 })
 
+const selectedProducts = ref<Product[]>([])
+
+
 // Опции для селектов
 const deliveryTypeOptions = ref([
     { label: 'Курьер', value: 1 },
@@ -103,15 +113,6 @@ const paymentTypeOptions = ref([
     { label: 'Карта', value: 2 }
 ])
 
-const warehouseOptions = ref([
-    { label: 'Склад 1', value: 1 },
-    { label: 'Склад 2', value: 2 }
-])
-
-const clientOptions = ref([
-    { label: 'Клиент 1', value: 1 },
-    { label: 'Клиент 2', value: 2 }
-])
 
 const addressOptions = ref([
     { label: 'Адрес 1', value: 1 },
@@ -119,7 +120,24 @@ const addressOptions = ref([
 ])
 
 function submitForm() {
-    console.log('Форма отправлена:', form.value)
+  console.log('Форма отправлена:', form.value)
+  orderStore.createOrder({
+    delivery_type_id: form.value.delivery_type_id,
+    payment_type_id: form.value.payment_type_id,
+    warehouse_id: form.value.warehouse_id,
+    comment: form.value.comment,
+    discount: form.value.discount,
+    first_name: form.value.first_name,
+    phone_number: form.value.phone_number,
+    email: form.value.email,
+    goods: selectedProducts.value.map(product=>{
+      return {
+        product_id: product.id,
+        quantity: 1,
+        quality_id: 1
+      }
+    })
+  })
 }
 
 onMounted(() => {
@@ -134,5 +152,17 @@ function handleSearchWarehouse(value: string) {
     warehouseStore.loadWarehouses({
         search: value
     })
+}
+
+// Функция выбора товара
+function selectProduct(product: Product) {
+  const productIndex = selectedProducts.value.findIndex(p => p.id === product.id)
+  if (productIndex !== -1) {
+    // Если товар уже выбран, удаляем его
+    selectedProducts.value.splice(productIndex, 1)
+  } else {
+    // Добавляем товар
+    selectedProducts.value.push(product)
+  }
 }
 </script>
