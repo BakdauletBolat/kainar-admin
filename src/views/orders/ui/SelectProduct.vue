@@ -52,18 +52,14 @@
 import { onMounted, ref } from 'vue'
 import { NButton, NModal, NInput, NSpin } from 'naive-ui'
 import { useProductStore } from '@/stores/product-store';
+import {ProductList} from "@/apis/orders.ts";
 
 
 const productStore = useProductStore();
 const props = defineProps(['selectedProducts']);
 const emit = defineEmits(['selected'])
 
-interface Product {
-    id: number
-    name: string
-    description: string
-    picture: string
-}
+
 
 const showModal = ref(false)
 const searchQuery = ref('')
@@ -71,8 +67,8 @@ const searchQuery = ref('')
 
 
 // Проверка, выбран ли товар
-function isSelected(product: Product): boolean {
-    return props.selectedProducts.some(p => p.id === product.id)
+function isSelected(product:  ProductList): boolean {
+    return props.selectedProducts.some((p: any) => p.id === product.id)
 }
 
 

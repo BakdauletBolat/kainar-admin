@@ -42,7 +42,7 @@
 
                     <!-- Email -->
                     <n-form-item label="Email">
-                        <n-input v-model:value="form.email" type="email" placeholder="Введите email" />
+                        <n-input v-model:value="form.email" type="text" placeholder="Введите email" />
                     </n-form-item>
 
                     <!-- Address -->
@@ -74,19 +74,14 @@ import SelectProduct from './ui/SelectProduct.vue';
 import { onMounted, ref } from 'vue'
 import { useWarehouseStore } from '@/stores/warehouses-store';
 import {useOrderStore} from "@/stores/order-store.ts";
-
-
-
-
-
-
+import {ProductList} from "@/apis/orders.ts";
 
 const router = useRouter();
 const warehouseStore = useWarehouseStore();
 const orderStore = useOrderStore();
 
 // Форма и ее данные
-const form = ref({
+const form = ref<any>({
     delivery_type_id: null,
     payment_type_id: null,
     warehouse_id: null,
@@ -99,7 +94,7 @@ const form = ref({
     comment: ''
 })
 
-const selectedProducts = ref<Product[]>([])
+const selectedProducts = ref<ProductList[]>([])
 
 
 // Опции для селектов
@@ -155,7 +150,7 @@ function handleSearchWarehouse(value: string) {
 }
 
 // Функция выбора товара
-function selectProduct(product: Product) {
+function selectProduct(product: any) {
   const productIndex = selectedProducts.value.findIndex(p => p.id === product.id)
   if (productIndex !== -1) {
     // Если товар уже выбран, удаляем его

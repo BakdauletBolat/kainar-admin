@@ -38,11 +38,6 @@ interface Color {
   name: string;
 }
 
-interface Power {
-  powers: number[];
-}
-
-
 export interface ICarFiltersData {
   capacities: number[];
   body_types: BodyType[];

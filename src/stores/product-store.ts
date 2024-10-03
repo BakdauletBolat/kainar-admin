@@ -1,13 +1,13 @@
 import { defineStore } from "pinia";
-import { getProducts, type Product } from "@/apis/products";
+import {getProducts, ProductList} from "@/apis/products";
 
 export const useProductStore = defineStore("product-store", {
   state: () => {
     return {
-      products: [] as Product[],
+      products: [] as ProductList[],
       productsCount: 0,
       isLoadingProducts: false,
-      popularProducts: [] as Product[],
+      popularProducts: [] as ProductList[],
     };
   },
   actions: {

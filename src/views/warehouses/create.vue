@@ -62,7 +62,7 @@ const formValue = reactive({
   city_id: 3
 })
 
-const rules = {
+const rules: any = {
   name: {
     required: true,
     message: 'Названия обязательно',

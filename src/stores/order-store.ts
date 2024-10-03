@@ -1,13 +1,11 @@
 import {defineStore} from "pinia";
-import {getOrders, type Product} from "@/apis/orders.ts";
+import {getOrders} from "@/apis/orders.ts";
 import axiosIns from "@/apis";
 
 
 interface Goods {
     product_id: number;
-    product: Product;
     quality_id: number;
-    quality: Quality;
     quantity: number;
 }
 
@@ -62,37 +60,18 @@ interface Detail {
     weight: number;
 }
 
-interface Quality {
-    name: string;
-}
 
-interface Warehouse {
-    name: string;
-    category_ids: number[];
-    city: City;
-    city_id: number;
-}
-
-interface City {
-    name: string;
-    uid: string;
-    country: number;
-}
 
 interface CreateBodyInterface {
     goods: Goods[];
     delivery_type_id: number;
     payment_type_id: number;
     warehouse_id: number;
-    warehouse: Warehouse;
     comment: string;
     discount: number;
-    client?: string;
     first_name: string;
-    last_name: string;
     phone_number: string;
     email: string;
-    address: number;
 }
 
 
@@ -108,6 +87,7 @@ export const useOrderStore = defineStore("order-store", {
         async loadOrders(options: object) {
             this.isLoadingOrders = true;
             getOrders(options).then(res => {
+                //@ts-ignore
                 this.orders = res.data.results;
             }).finally(() => {
                 this.isLoadingOrders = false;

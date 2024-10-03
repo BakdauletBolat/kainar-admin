@@ -22,7 +22,7 @@
   </main>
 </template>
 <script setup lang="ts">
-import { onMounted, ref, h, reactive, watch } from 'vue';
+import { onMounted, h, reactive, watch } from 'vue';
 import { NDataTable, NAvatar, NH6, NTag, NPageHeader, NButton } from 'naive-ui';
 import { getFirstElementArray } from '@/utils/getFirstElementFromArray.ts';
 import { useRoute, RouterLink, useRouter } from 'vue-router';

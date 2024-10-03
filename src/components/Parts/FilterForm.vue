@@ -37,14 +37,14 @@
             v-if="fields.type == 'select'"
             multiple
             placeholder="Выберите один из вариантов"
-            v-model:value="filterStore.filterValues[fields.key]"
+            v-model:value="filterStore.filterValues[fields.key as FilterKeys]"
             :options="fields.options"
         >
         </n-select>
         <n-radio-group
             class="grid grid-cols-2 gap-1"
             v-else-if="fields.type == 'radio'"
-            v-model:value="filterStore.filterValues[fields.key]"
+            v-model:value="filterStore.filterValues[fields.key as FilterKeys]"
             :name="fields.key"
         >
           <n-radio
@@ -79,14 +79,15 @@ const manufacturerStore = useManufacturerStore();
 const productStore = useProductStore();
 const formRef = ref();
 
+type FilterKeys = keyof typeof filterStore.filterValues;
+
 function handleUpdateValue(
-    value: string | number | Array<string | number> | null,
+    value: any,
     _: TreeSelectOption | null | Array<TreeSelectOption | null>,
 ) {
   //@ts-ignore
-  filterStore.filterValues.category = value
-      .filter((item) => !Number.isNaN(item))
-      .join(",");
+  //@ts-nocheck
+  filterStore.filterValues.category = value.filter((item) => !Number.isNaN(item)).join(",");
 }
 
 watch(filterStore.filterValues, (state) => {

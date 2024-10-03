@@ -3,7 +3,7 @@
         <div>
             <div class="flex items-center gap-3 cursor-pointer">
                 <div class="flex gap-3 items-center">
-                    <Avatar class="h-[40px]" :url="Logo"></Avatar>
+                    <Avatar class="h-[40px]" :url="LogoAmazon"></Avatar>
                     <div class="text-2xl">Управление</div>
                 </div>
                 <XMarkIcon @click="appConfig.isOpenMenu = false" class="w-7 lg:hidden h-7 cursor-pointer"></XMarkIcon>
@@ -32,6 +32,7 @@ import Avatar from './Avatar.vue';
 import { useRoute } from 'vue-router';
 import { ref, watch } from 'vue';
 import appConfig from '@/stores/app';
+import {LogoAmazon} from "@vicons/ionicons5";
 
 
 const route = useRoute();
@@ -44,10 +45,8 @@ watch(route, (newRoute) => {
 
 function checkRoute(currentRoute: string) {
     const toCheckRouteNamePart = currentRoute.split('-')[0];
-    if (activeItem.value?.includes(toCheckRouteNamePart)) {
-        return true;
-    }
-    return false;
+    return !!activeItem.value?.includes(toCheckRouteNamePart);
+
 }
 
 const options = [

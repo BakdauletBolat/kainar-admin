@@ -78,7 +78,7 @@
     </main>
 </template>
 <script setup lang="ts">
-import { NH2, NPageHeader, NCard, NDescriptions, NDescriptionsItem, NTag, NSkeleton } from 'naive-ui';
+import { NPageHeader, NCard, NDescriptions, NDescriptionsItem, NTag, NSkeleton } from 'naive-ui';
 import axiosIns from '@/apis';
 import { useRouter, useRoute } from 'vue-router';
 import { IProduct } from '@/stores/models';
