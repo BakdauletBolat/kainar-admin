@@ -13,26 +13,22 @@
     </template>
   </n-page-header>
   <main class="grid">
-<!--    <PartsFilter></PartsFilter>-->
+    <!--    <PartsFilter></PartsFilter>-->
     <div class="overflow-scroll">
-      <n-data-table
-          remote
-          :loading="orderStore.isLoadingOrders"
-          ref="table"
-          :columns="columns" :data="orderStore.orders"
-          :pagination="paginationReactive"
-          :row-key="rowKey" @update:checked-row-keys="handleCheck"/>
+      <n-data-table remote :loading="orderStore.isLoadingOrders" ref="table" :columns="columns"
+        :data="orderStore.orders" :pagination="paginationReactive" :row-key="rowKey"
+        @update:checked-row-keys="handleCheck" />
     </div>
   </main>
 </template>
 <script setup lang="ts">
-import {onMounted, ref, h, reactive, watch} from 'vue';
-import {NDataTable, NAvatar, NH6, NTag, NPageHeader, NButton} from 'naive-ui';
-import {getFirstElementArray} from '@/utils/getFirstElementFromArray.ts';
-import {useRoute, RouterLink, useRouter} from 'vue-router';
-import type {DataTableColumns} from 'naive-ui'
-import {useFilterStore} from "@/stores/filter-store.ts";
-import {useOrderStore} from "@/stores/order-store.ts";
+import { onMounted, ref, h, reactive, watch } from 'vue';
+import { NDataTable, NAvatar, NH6, NTag, NPageHeader, NButton } from 'naive-ui';
+import { getFirstElementArray } from '@/utils/getFirstElementFromArray.ts';
+import { useRoute, RouterLink, useRouter } from 'vue-router';
+import type { DataTableColumns } from 'naive-ui'
+import { useFilterStore } from "@/stores/filter-store.ts";
+import { useOrderStore } from "@/stores/order-store.ts";
 
 interface RowData {
   id: number
@@ -54,7 +50,7 @@ const router = useRouter();
 
 function createNavigate() {
   router.push({
-    name: 'parts-create'
+    name: 'orders-create'
   })
 }
 
@@ -70,38 +66,38 @@ function createColumns(): DataTableColumns<RowData> {
         const image = getFirstElementArray(row.pictures);
         const imageUrl = image ? image.image : undefined
         return h(
-            RouterLink,
-            {
-              class: "gap-3 grid lg:grid-cols-[100px_1fr]",
-              to: {
-                name: 'parts-detail',
-                params: {
-                  id: row.id
-                }
-              },
-              default: () => row.name
+          RouterLink,
+          {
+            class: "gap-3 grid lg:grid-cols-[100px_1fr]",
+            to: {
+              name: 'parts-detail',
+              params: {
+                id: row.id
+              }
             },
-            {
-              default: () => [
-                h(
-                    NAvatar,
-                    {
-                      objectFit: 'cover',
-                      src: imageUrl,
-                      size: 100
-                    }
-                ),
+            default: () => row.name
+          },
+          {
+            default: () => [
+              h(
+                NAvatar,
+                {
+                  objectFit: 'cover',
+                  src: imageUrl,
+                  size: 100
+                }
+              ),
+              h('div', {}, [
+                h(NH6, {}, {
+                  default: () => row.name
+                }),
                 h('div', {}, [
-                  h(NH6, {}, {
-                    default: () => row.name
-                  }),
-                  h('div', {}, [
-                    h('div', {}, {default: () => `${row.modelCar.name} ${row.modelCar.startDate}`}),
-                    h('div', {}, {default: () => '2001 АКПП LHD '})
-                  ])
+                  h('div', {}, { default: () => `${row.modelCar.name} ${row.modelCar.startDate}` }),
+                  h('div', {}, { default: () => '2001 АКПП LHD ' })
                 ])
-              ]
-            }
+              ])
+            ]
+          }
         )
       }
     },
@@ -117,7 +113,7 @@ function createColumns(): DataTableColumns<RowData> {
       title: "Цена",
       key: "price",
       render(row) {
-        return h('div', {}, {default: () => `${row.price}₸`})
+        return h('div', {}, { default: () => `${row.price}₸` })
       }
     },
     {
@@ -132,7 +128,7 @@ function createColumns(): DataTableColumns<RowData> {
         if (row.status == 'Продан') {
           typeLabel = 'error'
         }
-        return h(NTag, {type: typeLabel}, {default: () => row.status})
+        return h(NTag, { type: typeLabel }, { default: () => row.status })
       }
     }
   ]
@@ -145,7 +141,7 @@ const paginationReactive = reactive({
   showSizePicker: true,
   itemCount: 168,
   pageSizes: [5, 10, 25, 50, 100],
-  prefix({itemCount}: any) {
+  prefix({ itemCount }: any) {
     return `Всего ${itemCount} заказов`
   },
   onChange: (page: number) => {
@@ -172,7 +168,7 @@ const rowKey = (row: RowData) => {
 }
 
 const onChangedPage = (page: number) => {
-  orderStore.loadOrders({page: page})
+  orderStore.loadOrders({ page: page })
 }
 
 watch(filterStore.filterValues, (state) => {
@@ -181,7 +177,7 @@ watch(filterStore.filterValues, (state) => {
 
 onMounted(() => {
   const page = route.query.page != undefined ? parseInt(route.query.page.toString()) : 1
-  orderStore.loadOrders({page: page})
+  orderStore.loadOrders({ page: page })
 });
 
 </script>

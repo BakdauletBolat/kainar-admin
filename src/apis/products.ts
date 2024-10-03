@@ -1,3 +1,4 @@
+import generateQuery from "@/utils/generateQuery";
 import axios from "./index";
 interface Category {
   id: number;
@@ -125,22 +126,11 @@ export interface ProductList {
   mileageType: null;
 }
 
-function generateQuery(queries: object) {
-  let query = "?";
-  Object.keys(queries).forEach(function (key, _) {
-    // @ts-ignore
-    const ne: any = queries[key];
-    if (ne != null) {
-      query += `${key}=${ne}&`;
-    }
-  });
-  return query;
-}
-
 export async function getProducts(options: object = {}) {
   const query = generateQuery(options);
   return await axios.get<{
     results: ProductList[];
+    count: number;
   }>(`/api/v2/product/${query}`);
 }
 
