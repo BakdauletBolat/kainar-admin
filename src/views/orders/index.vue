@@ -13,8 +13,7 @@
     </template>
   </n-page-header>
   <main class="grid">
-    <!--    <PartsFilter></PartsFilter>-->
-    <div class="overflow-scroll">
+    <div>
       <n-data-table remote :loading="orderStore.isLoadingOrders" ref="table" :columns="columns"
         :data="orderStore.orders" :pagination="paginationReactive" :row-key="rowKey"
         @update:checked-row-keys="handleCheck" />
@@ -33,6 +32,12 @@ import { useOrderStore } from "@/stores/order-store.ts";
 interface RowData {
   id: number
   name: string,
+  goods: {
+    product: {
+      name: string
+      pictures: []
+    }
+  }[]
   pictures: any[],
   price: number,
   status: string,
@@ -63,7 +68,7 @@ function createColumns(): DataTableColumns<RowData> {
       title: 'Навзание',
       key: 'name',
       render(row) {
-        const image = getFirstElementArray(row.pictures);
+        const image = getFirstElementArray(row.goods[0].product.pictures);
         const imageUrl = image ? image.image : undefined
         return h(
           RouterLink,
@@ -75,7 +80,7 @@ function createColumns(): DataTableColumns<RowData> {
                 id: row.id
               }
             },
-            default: () => row.name
+            default: () => row.id
           },
           {
             default: () => [
@@ -89,12 +94,8 @@ function createColumns(): DataTableColumns<RowData> {
               ),
               h('div', {}, [
                 h(NH6, {}, {
-                  default: () => row.name
-                }),
-                h('div', {}, [
-                  h('div', {}, { default: () => `${row.modelCar.name} ${row.modelCar.startDate}` }),
-                  h('div', {}, { default: () => '2001 АКПП LHD ' })
-                ])
+                  default: () => row.goods[0].product.name
+                })
               ])
             ]
           }
@@ -113,7 +114,7 @@ function createColumns(): DataTableColumns<RowData> {
       title: "Цена",
       key: "price",
       render(row) {
-        return h('div', {}, { default: () => `${row.price}₸` })
+        return h('div', {}, { default: () => `${row.price ?? 0} ₸` })
       }
     },
     {

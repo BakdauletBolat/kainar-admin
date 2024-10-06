@@ -14,7 +14,7 @@
   </n-page-header>
   <main class="grid pb-10">
     <PartsFilter></PartsFilter>
-    <div class="overflow-scroll">
+    <div>
       <n-data-table remote :loading="productStore.isLoadingProducts" ref="table" :columns="columns"
         :data="productStore.products" :pagination="paginationReactive" :row-key="rowKey"
         @update:checked-row-keys="handleCheck" />
@@ -173,13 +173,13 @@ const onChangedPage = (page: number) => {
 }
 
 watch(filterStore.filterValues, (state) => {
-  productStore.loadProducts(state);
+  productStore.loadProducts({ ...state, page_size: 10 });
 });
 
 onMounted(() => {
   filterStore.clearValues();
   const page = route.query.page != undefined ? parseInt(route.query.page.toString()) : 1
-  productStore.loadProducts({ ...filterStore.filterValues, page: page }).then(_ => {
+  productStore.loadProducts({ ...filterStore.filterValues, page: page, page_size: 10 }).then(_ => {
     paginationReactive.itemCount = productStore.productsCount;
   });
 });

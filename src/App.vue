@@ -2,8 +2,9 @@
   <n-config-provider :theme-overrides="themeOverrides">
     <n-message-provider>
       <n-layout has-sider>
-        <n-layout-sider bordered class="h-screen !z-[99] !fixed" collapse-mode="width" :collapsed-width="64"
-          :width="240" :collapsed="collapsed" show-trigger @collapse="collapsed = true" @expand="collapsed = false">
+        <n-layout-sider bordered class="!hidden md:!block h-screen !z-[99] !fixed" collapse-mode="width"
+          :collapsed-width="64" :width="240" :collapsed="collapsed" show-trigger @collapse="collapsed = true"
+          @expand="collapsed = false">
           <div class="flex justify-center p-3 gap-3 items-center">
             <Avatar class="h-[40px]" :url="Logo"></Avatar>
             <div :class="{
@@ -14,9 +15,10 @@
             :expand-icon="expandIcon" />
         </n-layout-sider>
         <n-layout>
-          <div class="container mx-auto px-4 mt-4">
+          <div class="container mx-auto px-4 mb-[120px] mt-4">
             <router-view></router-view>
           </div>
+          <BottomAppBar class="md:hidden"></BottomAppBar>
         </n-layout>
       </n-layout>
     </n-message-provider>
@@ -34,6 +36,7 @@ import { CogIcon, ShoppingCartIcon, InboxIcon, UsersIcon } from '@heroicons/vue/
 import { RouterLink } from "vue-router";
 import Logo from "@/assets/new-logo.png";
 import Avatar from "@/components/Avatar.vue";
+import BottomAppBar from './components/BottomAppBar.vue';
 
 const themeOverrides = {
   common: {

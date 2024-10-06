@@ -14,19 +14,21 @@
       </template>
     </n-page-header>
     <div class="grid">
-      <n-data-table
-          remote :loading="isLoading" ref="table"
-          :columns="columns" :data="items" :pagination="paginationReactive"
-          :row-key="rowKey" @update:checked-row-keys="handleCheck"/>
+      <div class="flex gap-2 py-3">
+        <n-input placeholder="Найти" v-model:value="searchRef"></n-input>
+        <n-button @click="searchResults">Найти</n-button>
+      </div>
+      <n-data-table remote :loading="warehouseStore.isLoading" ref="table" :columns="columns"
+        :data="warehouseStore.warehouses" :pagination="paginationReactive" :row-key="rowKey"
+        @update:checked-row-keys="handleCheck" />
     </div>
   </main>
 </template>
 <script setup lang="ts">
-import {onMounted, reactive, ref} from 'vue';
-import axios from '@/apis/index.ts';
-import {useRoute, useRouter} from 'vue-router';
-import {h} from 'vue';
-import {type DataTableColumns, NButton, NDataTable, NEllipsis, NPageHeader} from "naive-ui";
+import { onMounted, reactive, ref, h } from 'vue';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
+import { type DataTableColumns, NButton, NDataTable, NEllipsis, NPageHeader, NInput } from "naive-ui";
+import { useWarehouseStore } from '@/stores/warehouses-store';
 
 interface RowData {
   id: number
@@ -39,12 +41,11 @@ interface RowData {
   }[]
 }
 
+const warehouseStore = useWarehouseStore();
+
 const router = useRouter();
-const items = ref<any[]>([]);
-const isLoading = ref(false);
-
 const route = useRoute();
-
+const searchRef = ref();
 const columns = createColumns();
 
 const rowKey = (row: RowData) => {
@@ -59,34 +60,39 @@ function createColumns(): DataTableColumns<RowData> {
   return [{
     type: 'selection'
   },
-    {
-      title: "ID",
-      key: "id"
-    },
-    {
-      title: "Название",
-      key: "name"
-    },
-    {
-      title: "Категория деталей",
-      key: "category",
-      render(row) {
-        return h(NEllipsis, {style: 'max-width: 240px'}, {default: ()=>{
-          return row.categories.map(c=>c.name).join(', ')
-          }})
-      }
-    }]
+  {
+    title: "ID",
+    key: "id",
+    render(row) {
+      return h(RouterLink, {
+        to: {
+          name: 'warehouses-detail',
+          params: {
+            id: row.id
+          }
+        }
+      }, {
+        default: () => row.id
+      })
+    }
+  },
+  {
+    title: "Название",
+    key: "name"
+  },
+  {
+    title: "Категория деталей",
+    key: "category",
+    render(row) {
+      return h(NEllipsis, { style: 'max-width: 240px' }, {
+        default: () => {
+          return row.categories.map(c => c.name).join(', ')
+        }
+      })
+    }
+  }]
 }
 
-const getWarehouses = (page: number) => {
-  isLoading.value = true;
-  axios.get(`/api/stock/warehouses/?page=${page}&page_size=${paginationReactive.pageSize}`).then((response) => {
-    items.value = response.data.results;
-    paginationReactive.itemCount = response.data.count
-  }).finally(() => {
-    isLoading.value = false;
-  });
-}
 
 const paginationReactive = reactive({
   page: 1,
@@ -94,7 +100,7 @@ const paginationReactive = reactive({
   showSizePicker: true,
   itemCount: 168,
   pageSizes: [5, 10, 25, 50, 100],
-  prefix({itemCount}: any) {
+  prefix({ itemCount }: any) {
     return `Всего ${itemCount} запчастей`
   },
   onChange: (page: number) => {
@@ -108,17 +114,29 @@ const paginationReactive = reactive({
 });
 
 const onChangedPage = (page: number) => {
-  getWarehouses(page);
+  warehouseStore.loadWarehouses({
+    page: page,
+    page_size: paginationReactive.pageSize
+  })
 }
 
 onMounted(() => {
   const page = route.query.page != undefined ? parseInt(route.query.page.toString()) : 1
-  getWarehouses(page);
+  warehouseStore.loadWarehouses({ page: page, page_size: paginationReactive.pageSize }).then((_) => {
+    paginationReactive.itemCount = warehouseStore.itemCount
+  })
 });
 
 function createNavigate() {
   router.push({
     name: 'warehouses-create'
+  })
+}
+
+function searchResults() {
+  warehouseStore.loadWarehouses({
+    search: searchRef.value,
+    page_size: paginationReactive.pageSize
   })
 }
 
