@@ -13,11 +13,11 @@
     </template>
   </n-page-header>
   <main class="grid pb-10">
-    <PartsFilter></PartsFilter>
+    <parts-filter></parts-filter>
     <div>
       <n-data-table remote :loading="productStore.isLoadingProducts" ref="table" :columns="columns"
         :data="productStore.products" :pagination="paginationReactive" :row-key="rowKey"
-        @update:checked-row-keys="handleCheck" />
+        @update:checked-row-keys="handleCheck" @update:sorter="handleSorterChange" />
     </div>
   </main>
 </template>
@@ -30,6 +30,7 @@ import PartsFilter from '@/components/Parts/PartsFilter.vue';
 import type { DataTableColumns } from 'naive-ui'
 import { useProductStore } from "@/stores/product-store.ts";
 import { useFilterStore } from "@/stores/filter-store.ts";
+import { formatDate } from '@/utils/formatDate';
 
 interface RowData {
   id: number
@@ -107,6 +108,14 @@ function createColumns(): DataTableColumns<RowData> {
       key: "id"
     },
     {
+      title: "Дата создание",
+      key: "created_at",
+      sorter: true,
+      render(row) {
+        return h('div', {}, { default: () => formatDate(row.created_at) })
+      }
+    },
+    {
       title: "Склад",
       key: "warehouse.name"
     },
@@ -114,7 +123,11 @@ function createColumns(): DataTableColumns<RowData> {
       title: "Цена",
       key: "price",
       render(row) {
-        return h('div', {}, { default: () => `${row.price}₸` })
+        return h('div', {
+          style: {
+            textWrap: 'nowrap'
+          }
+        }, { default: () => `${row.price}₸` })
       }
     },
     {
@@ -133,6 +146,11 @@ function createColumns(): DataTableColumns<RowData> {
       }
     }
   ]
+}
+
+
+function handleSorterChange(sorter: any) {
+  console.log(sorter)
 }
 
 

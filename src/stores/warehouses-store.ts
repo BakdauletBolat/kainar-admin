@@ -63,6 +63,13 @@ export const useWarehouseStore = defineStore("warehouse-store", {
       this.isLoading = false;
       await axiosIns.delete(`/api/stock/warehouses/${id}/`);
     },
+    getByIdWarehouse(id: string) {
+      const index = this.warehouses.findIndex((item) => item.id == id);
+      if (index != -1) {
+        return this.warehouses[index].name;
+      }
+      return "";
+    },
   },
   getters: {
     warehousesOptions: (state) =>

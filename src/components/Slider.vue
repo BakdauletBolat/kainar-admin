@@ -10,7 +10,7 @@
                     <img alt="s" loading="lazy" class="w-full pointer-events-none h-full object-cover"
                         :src="picture.image" />
                     <button @click="showDeleteConfirmation(picture.id)"
-                        class="absolute top-2 right-2 bg-red-500 text-white p-1 rounded">
+                        class="absolute top-2 right-2 bg-black text-white p-1 rounded">
                         <TrashIcon class="text-white w-6 h-6"></TrashIcon>
                     </button>
                 </div>
@@ -46,22 +46,27 @@
     </div>
 
     <div class="w-full mt-4">
-        <label for="file-upload"
-            class="cursor-pointer inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
-            Загрузить фотографию
+        <label v-if="!selectedFileName" for="file-upload"
+            class="cursor-pointer inline-block bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600">
+            Выбрать фотографию
         </label>
         <input id="file-upload" type="file" class="hidden" @change="addPicture" accept="image/*" />
         <div v-if="selectedFileName" class="mt-2 text-gray-600">Выбранный файл: {{ selectedFileName }}</div>
+        <div v-if="selectedFileName">
+            <n-button :loading="isLoadingUploadPicture" type="primary" @click="confirmUpload">Сохранить</n-button>
+        </div>
     </div>
     <!-- Модальное окно для подтверждения удаления -->
     <n-modal v-model:show="showModal" title="Подтверждение удаления">
         <template #default>
-            <n-card>
+            <n-card class="!w-[400px]">
                 <div>
                     Вы уверены, что хотите удалить это изображение?
                 </div>
-                <n-button @click="confirmDelete" type="error">Удалить</n-button>
-                <n-button @click="cancelDelete">Отмена</n-button>
+                <div class="gap-2 flex mt-4">
+                    <n-button :loading="isLoadingRemovePicture" @click="confirmDelete" type="error">Удалить</n-button>
+                    <n-button @click="cancelDelete">Отмена</n-button>
+                </div>
             </n-card>
         </template>
         <template #action>
@@ -75,9 +80,11 @@ import Flicking from "@egjs/vue3-flicking";
 import { ref, watchEffect } from 'vue';
 import { ChevronLeftIcon, ChevronRightIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import { NModal, NButton, NCard, useMessage } from "naive-ui";
+import axiosIns from "@/apis";
 
 const props = defineProps<{
-    pictures: Picture[]
+    pictures: Picture[],
+    product_id: number
 }>();
 
 type ChangedValue = {
@@ -95,7 +102,9 @@ const message = useMessage();
 const flicking = ref<Flicking | null>(null);
 const flicking2 = ref<Flicking | null>(null);
 const selectedFileName = ref<string | null>(null);
-
+const selectedFile = ref<any>(null);
+const isLoadingRemovePicture = ref<boolean>(false);
+const isLoadingUploadPicture = ref<boolean>(false);
 const showModal = ref(false); // Отвечает за отображение модального окна
 const pictureToDelete = ref<number | null>(null);
 
@@ -137,16 +146,11 @@ function showDeleteConfirmation(id: number) {
     showModal.value = true;
 }
 
-// Функция для удаления изображения
-function removePicture(id: number) {
-    const index = props.pictures.findIndex(picture => picture.id === id);
-    if (index !== -1) {
-        props.pictures.splice(index, 1);
-    }
-}
+
 // Функция для добавления изображения
 function addPicture(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
+    selectedFile.value = file;
     if (file) {
         selectedFileName.value = file.name;
         const reader = new FileReader();
@@ -178,11 +182,49 @@ function confirmDelete() {
     if (pictureToDelete.value !== null) {
         const index = props.pictures.findIndex(picture => picture.id === pictureToDelete.value);
         if (index !== -1) {
-            props.pictures.splice(index, 1);
-            message.success('Изображение удалено');
+            isLoadingRemovePicture.value = true;
+            axiosIns.delete(`/api/product/image/${props.pictures[index].id}/`)
+                .then((_) => {
+                    message.success('Изображение удалено');
+                    props.pictures.splice(index, 1);
+                })
+                .catch(e => {
+                    message.success('Ошибка при удалении ' + e.toString());
+                })
+                .finally(() => {
+                    isLoadingRemovePicture.value = false;
+                    closeDeleteModal();
+                })
         }
     }
-    closeDeleteModal();
+}
+
+const confirmUpload = async () => {
+    if (selectedFile.value == null) {
+        message.error('Пожалуйста, выберите файлы для загрузки.')
+        return
+    }
+
+    const formData = new FormData()
+    formData.append('product', props.product_id.toString()) // Добавление идентификатора продукта
+    formData.append('image', selectedFile.value)
+
+    try {
+        isLoadingUploadPicture.value = true;
+        await axiosIns.post('/api/product/image/', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'accept': 'application/json'
+            }
+        })
+        message.success('Фотографии успешно загружены!');
+        selectedFile.value = null;
+        selectedFileName.value = null;
+    } catch (error) {
+        message.error('Ошибка при загрузке фотографий.')
+    } finally {
+        isLoadingUploadPicture.value = false;
+    }
 }
 
 </script>

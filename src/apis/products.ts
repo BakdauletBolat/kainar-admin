@@ -77,7 +77,7 @@ export interface ProductDetail {
   price: number | null;
   color: string | null;
   category: Category;
-  code: any[]; // Assuming the code is an array, adjust if necessary
+  code: number[]; // Assuming the code is an array, adjust if necessary
   warehouse: Warehouse;
   detail: Detail;
   status: string;

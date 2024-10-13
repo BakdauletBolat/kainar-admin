@@ -1,5 +1,5 @@
 <template>
-    <main>
+    <main class="w-full">
         <n-page-header class="mb-4" @back="handleBack">
             <template #title>
                 {{ product?.name }}
@@ -13,110 +13,215 @@
             <NSkeleton height="400px" width="100%" :sharp="false"></NSkeleton>
             <NSkeleton height="400px" width="100%" :sharp="false"></NSkeleton>
         </div>
-        <div v-else class="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
-            <NCard>
+        <div v-else class="grid w-full md:grid-cols-2 lg:grid-cols-3 gap-2">
+            <n-card>
                 <n-descriptions :column="2" label-placement="top" title="Параметры детали">
                     <n-descriptions-item label="Статус">
-                        <NTag type="success">
-                            {{ product?.status }}
-                        </NTag>
+                        <status-component @onChangedProp="onChangedStatus" :value="product?.status"></status-component>
                     </n-descriptions-item>
                     <n-descriptions-item label="ID">
                         #{{ product?.id }}
                     </n-descriptions-item>
                     <n-descriptions-item label="ОЕМ коды">
-                        {{ product?.code.join(', ') ? product?.code : '-' }}
+                        <vin-code-component @on-changed-prop="onChangeCode" :code="product?.code"></vin-code-component>
                     </n-descriptions-item>
                     <n-descriptions-item label="Цветовой код">
-                        -
+                        {{ product?.color }}
                     </n-descriptions-item>
                     <n-descriptions-item label="Цена">
-                        <price-component @onChangedProp="onChangedPrice" :price="product?.price"></price-component>
+                        <price-component @on-changed-prop="onChangedPrice" :price="product?.price"></price-component>
                     </n-descriptions-item>
                     <n-descriptions-item label="Состояние">
                         {{ product?.defect ? product?.defect : '-' }}
                     </n-descriptions-item>
                     <n-descriptions-item label="Место нахождения">
-                        {{ product?.warehouse?.name }}
+                        <warehouse-component @on-changed-prop="onChangeWarehouse"
+                            :warehouse="product?.warehouse"></warehouse-component>
                     </n-descriptions-item>
                     <n-descriptions-item label="Комментарий">
-                        {{ product?.comment ? product?.comment : '-' }}
+                        <comment-component @onChangedProp="onChangedComment"
+                            :value="product?.comment"></comment-component>
                     </n-descriptions-item>
                     <n-descriptions-item label="Дата загрузки">
                         <!-- {{ product?.created_at }} -->
                         {{ formatDate(product?.created_at) }}
                     </n-descriptions-item>
                 </n-descriptions>
-            </NCard>
-            <NCard>
-                <Slider v-if="product?.pictures" :pictures="product?.pictures" />
-            </NCard>
-            <NCard>
-                <n-descriptions label-placement="top" title="Технические характеристики автомобиля">
-                    <n-descriptions-item>
-                        <template #label>
-                            Breakfast
-                        </template>
-                        Apple
-                    </n-descriptions-item>
-                    <n-descriptions-item label="Brunch">
-                        Apple
-                    </n-descriptions-item>
-                    <n-descriptions-item label="Lunch">
-                        Apple
-                    </n-descriptions-item>
-                    <n-descriptions-item label="Supper" :span="2">
-                        Two<br>
-                        Apples
-                    </n-descriptions-item>
-                    <n-descriptions-item label="Midnight Snack">
-                        Apple
+            </n-card>
+            <n-card class="w-full">
+                <slider class="w-full" :product_id="product.id" v-if="product?.pictures"
+                    :pictures="product?.pictures" />
+            </n-card>
+            <n-card>
+                <n-descriptions :column="2" label-placement="top" title="Технические характеристики автомобиля">
+                    <n-descriptions-item :key="modelCar.key" :label="modelCar.key" v-for="modelCar in modelCarValues">
+                        {{ modelCar.value }}
                     </n-descriptions-item>
                 </n-descriptions>
-            </NCard>
-            <div>
-                <image-upload-form></image-upload-form>
-            </div>
+            </n-card>
+            <n-card>
+                <part-dimensions-component :detail="product?.detail"></part-dimensions-component>
+            </n-card>
         </div>
     </main>
 </template>
 <script setup lang="ts">
-import { NPageHeader, NCard, NDescriptions, NDescriptionsItem, NTag, NSkeleton } from 'naive-ui';
+import { NPageHeader, NCard, NDescriptions, NDescriptionsItem, NSkeleton, useMessage } from 'naive-ui';
 import axiosIns from '@/apis';
 import { useRouter, useRoute } from 'vue-router';
-import { IProduct } from '@/stores/models';
 import Slider from '@/components/Slider.vue';
 import { formatDate } from '@/utils/formatDate';
-import { ref, onMounted } from 'vue';
-import { PriceComponent, ImageUploadForm } from './ui';
+import { ref, onMounted, computed } from 'vue';
+import { PriceComponent, StatusComponent, CommentComponent, WarehouseComponent, PartDimensionsComponent, VinCodeComponent } from './ui';
+import { ProductDetail } from '@/apis/products';
 
 const router = useRouter();
 const route = useRoute();
-const product = ref<IProduct | null>(null);
+const product = ref<ProductDetail | null>(null);
+
 const isLoading = ref<boolean>(false);
+const message = useMessage();
 
 onMounted(() => {
+    loadProduct()
+})
+
+
+const carInfoMapper: any = {
+    manufacturer: 'Производитель',       // MERCEDES-BENZ
+    name: 'Модель',                    // CLK (C208) (1997 - 2002)
+    modification: 'Модификация',         // -
+    engineCode: 'Код двигателя',         // -
+    endDate: 'Год окончание',
+    startDate: 'Год',                         // 1998
+    bodyType: 'Телосложение',            // -
+    color: 'Цвет',                       // -
+    fuelType: 'Тип топлива',             // -
+    capacity: 'Вместимость',             // 2.0 L
+    gearboxType: 'Тип КПП',              // -
+    driveType: 'Тип вождения',           // -
+    steeringType: 'Тип рулевого управления', // -
+    mileage: 'Пробег',                   // -
+    vinCode: 'VIN код',
+    id: 'Идентификатор'                   // -
+};
+
+
+const modelCarValues = computed<{
+    key: string,
+    value: string
+}[]>(() => {
+    if (product.value?.eav_attributes.modelCar != undefined) {
+        const modelCar: any = product.value?.eav_attributes.modelCar;
+        return Object.keys(modelCar).map((key: string) => {
+            return {
+                value: modelCar[key],
+                key: carInfoMapper[key]
+            }
+        })
+    }
+    return []
+})
+
+
+async function loadProduct() {
     const productId = route.params.id.toString();
     isLoading.value = true;
-    axiosIns.get<IProduct>(`/api/v2/product/${productId}/`).then(res => {
+    axiosIns.get<ProductDetail>(`/api/v2/product/${productId}/`).then(res => {
         product.value = res.data;
     }).finally(() => {
         isLoading.value = false;
     })
-})
+}
 
-
-function patchProduct(key: string, value: string, productId: number) {
-    axiosIns.patch(`/api/v2/product/${productId}/update/`, {
+async function patchProduct(key: string, value: string, productId: number) {
+    return await axiosIns.patch(`/api/v2/product/${productId}/update/`, {
         [key]: value
     }).then(res => {
-        console.log(res)
+        return res.data;
+    })
+}
+
+async function moveProduct(body: Object) {
+    return await axiosIns.post('/api/stock/move/', body).then(res => {
+        console.log('Успешно перемещен', res.data);
     })
 }
 
 
 function onChangedPrice(key: string, value: string) {
-    patchProduct(key, value, product.value!.id)
+    patchProduct(key, value, product.value!.id).then((_) => {
+        message.info("Цена успешно обновлен");
+        if (product.value) {
+            product.value.price = parseInt(value);
+        }
+
+    }).catch(e => {
+        message.error("Что то не так " + e.toString())
+    })
+}
+
+function onChangedComment(key: string, value: string) {
+    patchProduct(key, value, product.value!.id).then((_) => {
+        message.info("Коммент успешно обновлен");
+        if (product.value) {
+            product.value.comment = value;
+        }
+
+    }).catch(e => {
+        message.error("Что то не так " + e.toString())
+    })
+}
+
+
+function onChangeCode(key: string, value: string) {
+    patchProduct(key, value, product.value!.id).then((res) => {
+        message.info("Vin code успешно обновлен");
+        if (product.value) {
+            product.value = res;
+        }
+
+    }).catch(e => {
+        message.error("Что то не так " + e.toString())
+    })
+}
+
+function onChangedStatus(key: string, value: {
+    value: number,
+    label: string
+}) {
+    patchProduct(key, value.value.toString(), product.value!.id).then((_) => {
+        message.info("Статус успешно обновлен");
+        if (product.value) {
+            product.value.status = value.label;
+        }
+
+    }).catch(e => {
+        message.error("Что то не так " + e.toString())
+    })
+}
+
+
+function onChangeWarehouse(body: Object) {
+    if (product.value) {
+        moveProduct({
+            ...body,
+            product_id: product.value.id
+        }).then(_ => {
+            message.info("Склад успешно обновлен");
+            loadProduct();
+        }).catch(e => {
+            if (e.response.data) {
+                let messageText = ''
+                if (e.response.data.message.non_field_errors) {
+                    messageText = e.response.data.message.non_field_errors.join(',')
+                }
+                message.error(messageText);
+                return;
+            }
+            message.error("Что то не так " + e.toString())
+        })
+    }
 }
 
 

@@ -1,30 +1,40 @@
 <template>
-    <div v-if="!isVisible" @click="isVisible = true">
-        {{ price ?? '-' }}
-    </div>
-    <div v-if="isVisible">
-        <n-input class="!min-w-min !w-auto" placeholder="Поменять цену" v-model:value="priceRef"></n-input>
-        <n-button-group>
-            <n-button @click="onChange" type="primary">Сохранить</n-button>
-            <n-button @click="isVisible = false">Отменить</n-button>
-        </n-button-group>
+    <div>
+        <!-- Выпадающее меню для редактирования цены -->
+        <n-popover v-model:show="popoverRef" trigger="click" placement="bottom">
+            <template #trigger>
+                <div class="cursor-pointer">
+                    <TengeAmount :value="price"></TengeAmount>
+                </div>
+            </template>
+            <n-card>
+                <n-input class="!min-w-min !w-auto" placeholder="Поменять цену" v-model:value="priceRef"></n-input>
+                <n-space justify="end" class="mt-4">
+                    <n-button @click="onChange" type="primary">Сохранить</n-button>
+                </n-space>
+            </n-card>
+        </n-popover>
     </div>
 </template>
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
-import { NInput, NButtonGroup, NButton } from 'naive-ui';
+import { NInput, NSpace, NCard, NPopover, NButton } from 'naive-ui';
+import TengeAmount from '@/components/TengeAmount.vue';
 
 const props = defineProps(['price'])
 const emit = defineEmits(['onChangedProp'])
-const isVisible = ref<boolean>(false);
 const priceRef = ref<string>('0');
+const popoverRef = ref<boolean>(false);
 
 onMounted(() => {
     priceRef.value = props.price;
 })
 
 function onChange() {
-    emit('onChangedProp', 'price', priceRef.value)
+    emit('onChangedProp', 'price', priceRef.value);
+    popoverRef.value = false;
 }
 
 </script>
+
+<style scoped></style>

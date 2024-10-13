@@ -45,18 +45,18 @@ export interface ICarFiltersData {
   drive_types: DriveType[];
   gear_types: GearType[];
   colors: Color[];
-  powers: number[]
+  powers: number[];
 }
-
 
 export interface IProduct {
   id: number;
   price: number;
   warehouse: {
-    name: string,
+    id: string;
+    name: string;
     city: {
-      name: string
-    }
+      name: string;
+    };
   };
   color: string | null;
   category: string;
