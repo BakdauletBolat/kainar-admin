@@ -150,7 +150,13 @@ function createColumns(): DataTableColumns<RowData> {
 
 
 function handleSorterChange(sorter: any) {
-  console.log(sorter)
+  if (sorter.columnKey == 'created_at') {
+    let key = '-created_at'
+    if (sorter.order == 'descend') {
+      key = 'created_at'
+    }
+    productStore.loadProducts({...filterStore.filterValues, sort: key})
+  }
 }
 
 
@@ -187,7 +193,7 @@ const rowKey = (row: RowData) => {
 }
 
 const onChangedPage = (page: number) => {
-  productStore.loadProducts({ ...filterStore.filterValues, page: page })
+  productStore.loadProducts({...filterStore.filterValues, page: page })
 }
 
 watch(filterStore.filterValues, (state) => {

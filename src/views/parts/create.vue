@@ -17,7 +17,7 @@
           <Manufacturers @confirm="current = 2"></Manufacturers>
         </div>
         <div v-if="current == 2">
-          <Modifications></Modifications>
+          <Modifications @confirm="current = 3"></Modifications>
         </div>
         <div v-if="current == 3">
           <create-form></create-form>

@@ -1,9 +1,9 @@
 <template>
     <div class="flex flex-col gap-6">
-        <n-input @input="searchModifications" placeholder="Искать"></n-input>
+<!--        <n-input @input="searchModifications" placeholder="Искать"></n-input>-->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <SelectCard v-for="(item, index) in modificationStore.modifications" :key="index" :title="getTitle(item)"
-                :logo="item.image" :id="item.id" :is-selected="item.id == manufacturerId" @select="onSelect(item.id)" />
+                :logo="item.image" :id="item.id" :is-selected="item.id == modificationId" @confirm="onConfirm" @select="onSelect(item.id)" />
         </div>
     </div>
 </template>
@@ -11,21 +11,25 @@
 import { ref } from 'vue';
 import { onMounted } from 'vue';
 import { SelectCard } from '@/views/parts/ui';
-import { NInput } from 'naive-ui';
 import { useRoute, useRouter } from 'vue-router';
 import { useModificationsStore } from '@/stores/modifications-store';
 
 const modificationStore = useModificationsStore();
 const router = useRouter();
 const route = useRoute();
+const emit = defineEmits('confirm')
+const modificationId = ref();
 
-const manufacturerId = ref<number>();
 
-function searchModifications() {
-
+function onSelect(value: number) {
+  modificationId.value = value;
+  router.push({query: {...route.query, modificationId: modificationId.value }})
 }
 
-function onSelect(v: number) { }
+function onConfirm(id: number) {
+  router.push({query: {...route.query, step: 3 }})
+  emit('confirm', id);
+}
 
 function getTitle(item: any) {
     return `${item.modelCar.name}, Тип кузова: ${item.bodyType}, Мощность: ${item.capacity}`
@@ -34,7 +38,7 @@ function getTitle(item: any) {
 onMounted(() => {
     console.log("Mounted modifications")
     if (route.query.modificationId != undefined) {
-        console.log(route.query);
+        modificationId.value = parseInt(route.query.modificationId.toString());
     }
     if (route.query.modelCarId != undefined) {
         modificationStore.loadModifications(parseInt(route.query.modelCarId.toString()));

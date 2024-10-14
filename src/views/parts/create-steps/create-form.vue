@@ -1,5 +1,6 @@
 <template>
     <n-form :model="form" ref="formRef" label-width="120px">
+        {{form}}
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <n-form-item label="Название">
@@ -7,7 +8,7 @@
                 </n-form-item>
 
                 <n-form-item label="Цена">
-                    <n-input-number v-model:value="form.price" placeholder="Введите цену" />
+                    <n-select :options="colorStore.colorOptions" v-model:value="form.price" placeholder="Введите цену" />
                 </n-form-item>
 
                 <n-form-item label="Код">
@@ -27,12 +28,7 @@
                     <n-select v-model:value="form.category" :options="categoryStore.categoriesOptions"
                         placeholder="Введите категорию" />
                 </n-form-item>
-
-                <n-form-item label="Цвет">
-                    <n-input-number v-model:value="form.color" placeholder="Введите цвет" />
-                </n-form-item>
             </div>
-
             <!-- Правая колонка -->
             <div>
                 <n-form-item label="Тип кузова">
@@ -92,12 +88,18 @@ import axiosIns from "@/apis";
 import { useCategoryStore } from "@/stores/category-storage";
 import { useMessage, NForm, NFormItem, NButton, NSelect, NInput, NInputNumber, NDynamicInput } from "naive-ui";
 import { onMounted, ref } from 'vue'
+import {IModification, useModificationsStore} from "@/stores/modifications-store.ts";
+import {useRoute} from "vue-router";
+import {useColorStore} from "@/stores/color-store.ts";
 
 const categoryStore = useCategoryStore();
+const modificationStore = useModificationsStore();
+const colorStore = useColorStore();
+const route = useRoute();
 
 const form = ref({
     name: '',
-    price: 0,
+    price: null,
     code: [''],
     detail: {
         height: 0,
@@ -108,14 +110,14 @@ const form = ref({
     eav_attributes: {
         axleConfiguration: "Передняя",
         bodyType: 'Внедорожник',
-        capacity: 100.1,
+        capacity: 0,
         driveType: 'Передние ведущие',
-        engineDisplacement: 1233.1,
+        engineDisplacement: 0,
         fuelType: 'Бензин / электричество',
         gearType: 'Полуавтомат',
-        numberOfCycle: 10,
-        numberOfValves: 10,
-        power: 10,
+        numberOfCycle: 0,
+        numberOfValves: 0,
+        power: 0,
         steeringType: 'LHD',
         vinCode: ''
     },
@@ -178,8 +180,26 @@ const handleSubmit = () => {
     axiosIns.post(`/api/v2/product/create/`, form.value).then(res => console.log(res)).catch(e => console.log(e))
 }
 
+
+function updateIfNotNull(item: Object, excludeKeys: string[], setRef: any) {
+    Object.keys(item).map(key=>{
+      if (!excludeKeys.includes(key)) {
+        if (item[key] != undefined || item[key] != null) {
+          setRef.value[key] = item[key]
+        }
+      }
+    })
+}
+
+function updateForm(item: IModification) {
+  updateIfNotNull(item, ['modelCar', 'id', 'name'], form);
+}
+
 onMounted(() => {
-    console.log("Mounted form")
+    modificationStore.loadModification(parseInt(route.query.modificationId)).then((res)=>{
+      updateForm(res)
+    })
+    colorStore.loadColors();
     categoryStore.loadCategories();
 })
 

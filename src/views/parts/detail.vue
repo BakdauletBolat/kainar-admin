@@ -5,7 +5,7 @@
                 {{ product?.name }}
             </template>
             <template #subtitle>
-                {{ product?.warehouse?.name }} / {{ product?.warehouse?.city.name }}
+                {{ product?.warehouse?.name }} / {{ product?.warehouse?.city?.name }}
             </template>
         </n-page-header>
         <div v-if="isLoading" class="grid grid-cols-3 gap-2">
