@@ -54,7 +54,7 @@ export const useModificationsStore = defineStore("modifications-store", {
     },
     async loadModification(modificationId: number) {
       return axiosInstance
-          .get(`/api/car/${modificationId}/modifications/`)
+          .get(`/api/car/modifications/${modificationId}/`)
           .then((res) => {
             this.modification = res.data;
             return res.data;

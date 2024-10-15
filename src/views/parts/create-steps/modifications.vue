@@ -17,7 +17,7 @@ import { useModificationsStore } from '@/stores/modifications-store';
 const modificationStore = useModificationsStore();
 const router = useRouter();
 const route = useRoute();
-const emit = defineEmits('confirm')
+const emit = defineEmits(['confirm'])
 const modificationId = ref();
 
 
@@ -37,10 +37,10 @@ function getTitle(item: any) {
 
 onMounted(() => {
     console.log("Mounted modifications")
-    if (route.query.modificationId != undefined) {
+    if (route.query.modificationId != null) {
         modificationId.value = parseInt(route.query.modificationId.toString());
     }
-    if (route.query.modelCarId != undefined) {
+    if (route.query.modelCarId != null) {
         modificationStore.loadModifications(parseInt(route.query.modelCarId.toString()));
     }
 })

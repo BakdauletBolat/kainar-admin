@@ -1,14 +1,16 @@
 <template>
     <n-form :model="form" ref="formRef" label-width="120px">
-        {{form}}
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <n-form-item label="Название">
                     <n-input v-model:value="form.name" placeholder="Введите название продукта" />
                 </n-form-item>
-
+              <n-form-item label="Категория">
+                <n-select v-model:value="form.category" :options="categoryStore.categoriesOptions"
+                          placeholder="Введите категорию" />
+              </n-form-item>
                 <n-form-item label="Цена">
-                    <n-select :options="colorStore.colorOptions" v-model:value="form.price" placeholder="Введите цену" />
+                    <n-input-number v-model:value="form.price" placeholder="Введите цену" />
                 </n-form-item>
 
                 <n-form-item label="Код">
@@ -16,18 +18,21 @@
                 </n-form-item>
 
                 <n-form-item label="Объем двигателя">
-                    <n-input v-model:value="form.eav_attributes.engineDisplacement"
+                    <n-input-number v-model:value="form.eav_attributes.engineDisplacement"
                         placeholder="Введите объем двигателя" />
                 </n-form-item>
-
                 <n-form-item label="Пробег">
                     <n-input-number v-model:value="form.mileage" placeholder="Введите пробег" />
                 </n-form-item>
-
-                <n-form-item label="Категория">
-                    <n-select v-model:value="form.category" :options="categoryStore.categoriesOptions"
-                        placeholder="Введите категорию" />
-                </n-form-item>
+              <n-form-item label="Цвет">
+                <n-select :options="colorStore.colorOptions" v-model:value="form.color" placeholder="Введите цвет" />
+              </n-form-item>
+              <n-form-item label="VIN код">
+                <n-input v-model:value="form.eav_attributes.vinCode" placeholder="Введите VIN код" />
+              </n-form-item>
+              <n-form-item label="Eмкость">
+                <n-input-number v-model:value="form.eav_attributes.capacity" placeholder="Eмкость" />
+              </n-form-item>
             </div>
             <!-- Правая колонка -->
             <div>
@@ -55,15 +60,19 @@
                     <n-select v-model:value="form.eav_attributes.gearType" :options="gearTypeOptions"
                         placeholder="Выберите коробку передач" />
                 </n-form-item>
-
                 <n-form-item label="Рулевое управление">
                     <n-select v-model:value="form.eav_attributes.steeringType" :options="steeringTypeOptions"
                         placeholder="Выберите тип рулевого управления" />
                 </n-form-item>
-
-                <n-form-item label="VIN код">
-                    <n-input v-model:value="form.eav_attributes.vinCode" placeholder="Введите VIN код" />
-                </n-form-item>
+              <n-form-item label="Количество циклов">
+                <n-input-number v-model:value="form.eav_attributes.numberOfCycle" placeholder="Количество циклов" />
+              </n-form-item>
+              <n-form-item label="Количество клапанов">
+                <n-input-number v-model:value="form.eav_attributes.numberOfValves" placeholder="Количество клапанов" />
+              </n-form-item>
+              <n-form-item label="Мощность">
+                <n-input-number v-model:value="form.eav_attributes.power" placeholder="Мощность" />
+              </n-form-item>
             </div>
         </div>
 
@@ -99,7 +108,7 @@ const route = useRoute();
 
 const form = ref({
     name: '',
-    price: null,
+    price: 1,
     code: [''],
     detail: {
         height: 0,
@@ -110,7 +119,6 @@ const form = ref({
     eav_attributes: {
         axleConfiguration: "Передняя",
         bodyType: 'Внедорожник',
-        capacity: 0,
         driveType: 'Передние ведущие',
         engineDisplacement: 0,
         fuelType: 'Бензин / электричество',
@@ -118,12 +126,13 @@ const form = ref({
         numberOfCycle: 0,
         numberOfValves: 0,
         power: 0,
+        capacity: 0,
         steeringType: 'LHD',
         vinCode: ''
     },
     mileage: 0,
     category: null,
-    color: 0,
+    color: null,
     defect: '',
     comment: ''
 })
@@ -185,14 +194,14 @@ function updateIfNotNull(item: Object, excludeKeys: string[], setRef: any) {
     Object.keys(item).map(key=>{
       if (!excludeKeys.includes(key)) {
         if (item[key] != undefined || item[key] != null) {
-          setRef.value[key] = item[key]
+          setRef.value.eav_attributes[key] = item[key]
         }
       }
     })
 }
 
 function updateForm(item: IModification) {
-  updateIfNotNull(item, ['modelCar', 'id', 'name'], form);
+  updateIfNotNull(item, ['modelCar', 'id', 'name', 'engines'], form);
 }
 
 onMounted(() => {
