@@ -1,7 +1,5 @@
 import { defineStore } from "pinia";
 import axiosInstance from "@/apis";
-import type { IDefaultAPI } from "@/apis/interfaces";
-
 
 
 export const useColorStore = defineStore("color-store", {
@@ -12,13 +10,13 @@ export const useColorStore = defineStore("color-store", {
   },
     getters: {
     colorOptions: state => {
-        return state.colors.map(item=>{
+        return state.colors.map((item:any)=>{
             return {label: item.name, value: item.id}
         })
     }
     },
   actions: {
-    async loadColors(modelCar: number) {
+    async loadColors() {
       return axiosInstance
         .get(`/api/car/color/`)
         .then((res) => {

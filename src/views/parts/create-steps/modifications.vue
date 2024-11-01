@@ -13,6 +13,7 @@ import { onMounted } from 'vue';
 import { SelectCard } from '@/views/parts/ui';
 import { useRoute, useRouter } from 'vue-router';
 import { useModificationsStore } from '@/stores/modifications-store';
+import {setCurrent} from "@/views/parts/create-steps/index.ts";
 
 const modificationStore = useModificationsStore();
 const router = useRouter();
@@ -27,7 +28,8 @@ function onSelect(value: number) {
 }
 
 function onConfirm(id: number) {
-  router.push({query: {...route.query, step: 3 }})
+  router.push({query: {...route.query }})
+  setCurrent(3);
   emit('confirm', id);
 }
 

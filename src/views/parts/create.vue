@@ -22,32 +22,23 @@
         <div v-if="current == 3">
           <create-form></create-form>
         </div>
+        <div v-if="current == 4">
+          <assign-warehouse></assign-warehouse>
+        </div>
       </n-card>
     </section>
   </main>
 </template>
 <script setup lang="ts">
 import { NPageHeader, NStep, NSteps, NCard } from "naive-ui";
-import { onMounted, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { CreateForm, Manufacturers, Modifications } from "./create-steps";
+import { useRouter } from "vue-router";
+import { CreateForm, Manufacturers, Modifications, AssignWarehouse, current } from "./create-steps";
 const router = useRouter();
-const route = useRoute();
-const current = ref<number | null>(null);
 
 function handleBack() {
   router.back();
 }
 
 
-onMounted(() => {
-  console.log("Mounted create", route.query)
-  if (route.query.step != undefined) {
-    current.value = parseInt(route.query.step.toString());
-  }
-  else {
-    current.value = 1;
-  }
-})
 
 </script>

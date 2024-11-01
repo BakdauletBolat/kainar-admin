@@ -27,6 +27,7 @@ import { onMounted } from 'vue';
 import { SelectCard } from '@/views/parts/ui';
 import { NInput } from 'naive-ui';
 import { useRoute, useRouter } from 'vue-router';
+import {setCurrent} from "@/views/parts/create-steps/index.ts";
 
 const manufacturerStore = useManufacturerStore();
 const emit = defineEmits(['confirm']);
@@ -46,7 +47,8 @@ function onSelect(id: number) {
 
 function onSelectModelCar(id: number) {
     modelCarId.value = id;
-    router.push({ query: { ...route.query, modelCarId: id, step: 1 } })
+    router.push({ query: { ...route.query, modelCarId: id } })
+    setCurrent(1)
 }
 
 function clearManufacturers() {
@@ -74,18 +76,19 @@ function searchModelCar(value: string) {
 }
 
 function confirmModelCar() {
-    router.push({ query: { ...route.query, step: 2 } })
+    router.push({ query: { ...route.query} })
+    setCurrent(2)
     emit('confirm')
 }
 onMounted(() => {
     console.log("Mounted manufacturers")
-    if (route.query.manufacturerId != undefined) {
+    if (route.query.manufacturerId != null) {
         manufacturerId.value = parseInt(route.query.manufacturerId.toString());
         manufacturerStore.loadModelCars(manufacturerId.value).then(res => {
             manufacturerStore.searchModelCars = res;
         });
     }
-    if (route.query.modelCarId != undefined) {
+    if (route.query.modelCarId != null) {
         modelCarId.value = parseInt(route.query.modelCarId.toString());
 
     }

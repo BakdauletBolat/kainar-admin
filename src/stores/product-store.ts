@@ -1,10 +1,11 @@
 import { defineStore } from "pinia";
-import {getProducts, ProductList} from "@/apis/products";
+import {getProducts, ProductList, getProduct} from "@/apis/products";
 
 export const useProductStore = defineStore("product-store", {
   state: () => {
     return {
       products: [] as ProductList[],
+      product: null as ProductList | null,
       productsCount: 0,
       isLoadingProducts: false,
       popularProducts: [] as ProductList[],
@@ -21,6 +22,16 @@ export const useProductStore = defineStore("product-store", {
         .finally(() => {
           this.isLoadingProducts = false;
         });
+    },
+    async loadProduct(id: string) {
+      this.isLoadingProducts = true;
+      return await getProduct(id)
+          .then((res) => {
+            this.product = res.data;
+          })
+          .finally(() => {
+            this.isLoadingProducts = false;
+          });
     },
     loadPopularProducts(options: object) {
       const popularOptions = { page_size: 4, ...options };

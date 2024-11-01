@@ -98,14 +98,15 @@ import { useCategoryStore } from "@/stores/category-storage";
 import { useMessage, NForm, NFormItem, NButton, NSelect, NInput, NInputNumber, NDynamicInput } from "naive-ui";
 import { onMounted, ref } from 'vue'
 import {IModification, useModificationsStore} from "@/stores/modifications-store.ts";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {useColorStore} from "@/stores/color-store.ts";
+import {setCurrent} from "@/views/parts/create-steps/index.ts";
 
 const categoryStore = useCategoryStore();
 const modificationStore = useModificationsStore();
 const colorStore = useColorStore();
 const route = useRoute();
-
+const router  = useRouter();
 const form = ref({
     name: '',
     price: 1,
@@ -128,7 +129,7 @@ const form = ref({
         power: 0,
         capacity: 0,
         steeringType: 'LHD',
-        vinCode: ''
+        vinCode: null
     },
     mileage: 0,
     category: null,
@@ -185,15 +186,22 @@ const steeringTypeOptions = [
 const message = useMessage()
 
 const handleSubmit = () => {
-    message.success('Продукт сохранен!')
-    axiosIns.post(`/api/v2/product/create/`, form.value).then(res => console.log(res)).catch(e => console.log(e))
+    axiosIns.post(`/api/v2/product/create/`, form.value).then(res => {
+      router.push({ query: { ...route.query, productId: res.data.id } })
+      message.success("Успешно создан продукт")
+      setCurrent(4);
+    }).catch(e => {
+      message.error(e)
+    })
 }
 
 
 function updateIfNotNull(item: Object, excludeKeys: string[], setRef: any) {
     Object.keys(item).map(key=>{
       if (!excludeKeys.includes(key)) {
+        //@ts-ignore
         if (item[key] != undefined || item[key] != null) {
+          //@ts-ignore
           setRef.value.eav_attributes[key] = item[key]
         }
       }
@@ -205,9 +213,11 @@ function updateForm(item: IModification) {
 }
 
 onMounted(() => {
-    modificationStore.loadModification(parseInt(route.query.modificationId)).then((res)=>{
-      updateForm(res)
-    })
+    if (route.query.modificationId != null) {
+        modificationStore.loadModification(parseInt(route.query.modificationId!.toString())).then((res)=>{
+          updateForm(res)
+        })
+    }
     colorStore.loadColors();
     categoryStore.loadCategories();
 })
