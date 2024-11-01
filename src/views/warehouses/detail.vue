@@ -104,7 +104,7 @@ const submitForm = () => {
 };
 
 function removeWarehouse() {
-    warehouseStore.removeWarehouse(route.params.id.toString()).then(res => {
+    warehouseStore.removeWarehouse(route.params.id.toString()).then(_ => {
         message.success("Успешно удален")
         router.push({
             name: 'warehouses-list'

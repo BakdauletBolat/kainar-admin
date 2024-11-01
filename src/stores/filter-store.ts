@@ -100,6 +100,7 @@ export const useFilterStore = defineStore("filter-products", {
         numberOfValves: null,
         power: null,
         steeringType: null,
+        warehouse_id: null,
         vinCode: null,
       };
     },

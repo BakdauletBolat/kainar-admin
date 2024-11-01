@@ -28,28 +28,9 @@ import { useRoute, RouterLink, useRouter } from 'vue-router';
 import type { DataTableColumns } from 'naive-ui'
 import { useFilterStore } from "@/stores/filter-store.ts";
 import { useOrderStore } from "@/stores/order-store.ts";
+import {Order} from "@/apis/domain";
 
-interface RowData {
-  id: number
-  name: string,
-  goods: {
-    product: {
-      name: string
-      pictures: []
-    }
-  }[]
-  pictures: any[],
-  price: number,
-  status: string,
-  created_at: string,
-  category: {
-    id: number,
-  },
-  modelCar: {
-    name: string,
-    startDate: string
-  }
-}
+
 
 const router = useRouter();
 
@@ -59,7 +40,7 @@ function createNavigate() {
   })
 }
 
-function createColumns(): DataTableColumns<RowData> {
+function createColumns(): DataTableColumns<Order> {
   return [
     {
       type: 'selection',
@@ -75,7 +56,7 @@ function createColumns(): DataTableColumns<RowData> {
           {
             class: "gap-3 grid lg:grid-cols-[100px_1fr]",
             to: {
-              name: 'parts-detail',
+              name: 'orders-detail',
               params: {
                 id: row.id
               }
@@ -95,6 +76,9 @@ function createColumns(): DataTableColumns<RowData> {
               h('div', {}, [
                 h(NH6, {}, {
                   default: () => row.goods[0].product.name
+                }),
+                h('div', {}, {
+                  default: () => `${row.goods.length} штук (${row.total}KZT)`
                 })
               ])
             ]
@@ -114,7 +98,7 @@ function createColumns(): DataTableColumns<RowData> {
       title: "Цена",
       key: "price",
       render(row) {
-        return h('div', {}, { default: () => `${row.price ?? 0} ₸` })
+        return h('div', {}, { default: () => `${row.total ?? 0} ₸` })
       }
     },
     {
@@ -164,21 +148,31 @@ const handleCheck = () => {
 
 }
 
-const rowKey = (row: RowData) => {
+const rowKey = (row: Order) => {
   return row.id
 }
 
 const onChangedPage = (page: number) => {
-  orderStore.loadOrders({ page: page })
+  orderStore.loadOrders({ page: page }).then(res=>{
+    //@ts-ignore
+    paginationReactive.itemCount = res.count;
+
+  })
 }
 
 watch(filterStore.filterValues, (state) => {
-  orderStore.loadOrders(state);
+  orderStore.loadOrders(state).then(res=>{
+    //@ts-ignore
+    paginationReactive.itemCount = res.count;
+  });
 });
 
 onMounted(() => {
   const page = route.query.page != undefined ? parseInt(route.query.page.toString()) : 1
-  orderStore.loadOrders({ page: page })
+  orderStore.loadOrders({ page: page }).then(res=>{
+    //@ts-ignore
+    paginationReactive.itemCount = res.count;
+  })
 });
 
 </script>

@@ -23,13 +23,13 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { CogIcon, ShoppingCartIcon, InboxIcon, UsersIcon } from '@heroicons/vue/24/outline';
+import { CogIcon, ShoppingCartIcon, InboxIcon } from '@heroicons/vue/24/outline';
 import { NIcon, NButton } from 'naive-ui';
 const router = useRouter()
 
-const navigateTo = (route) => {
+const navigateTo = (route: any) => {
     router.push(route)
 }
 </script>

@@ -87,7 +87,7 @@
             </n-form-item>
 
             <div class="flex justify-end">
-                <n-button type="primary" @click="handleSubmit">Сохранить</n-button>
+                <n-button :loading="isLoading" type="primary" @click="handleSubmit">Сохранить</n-button>
             </div>
         </div>
     </n-form>
@@ -102,6 +102,7 @@ import {useRoute, useRouter} from "vue-router";
 import {useColorStore} from "@/stores/color-store.ts";
 import {setCurrent} from "@/views/parts/create-steps/index.ts";
 
+const isLoading = ref(false);
 const categoryStore = useCategoryStore();
 const modificationStore = useModificationsStore();
 const colorStore = useColorStore();
@@ -110,7 +111,7 @@ const router  = useRouter();
 const form = ref({
     name: '',
     price: 1,
-    code: [''],
+    code: [],
     detail: {
         height: 0,
         width: 0,
@@ -129,7 +130,8 @@ const form = ref({
         power: 0,
         capacity: 0,
         steeringType: 'LHD',
-        vinCode: null
+        vinCode: null as string | null,
+        modelCarId: null as number | null,
     },
     mileage: 0,
     category: null,
@@ -186,12 +188,21 @@ const steeringTypeOptions = [
 const message = useMessage()
 
 const handleSubmit = () => {
+
+    if (form.value.name == null || form.value.name === '') {
+      message.error("Заполните имя детали.")
+      return
+    }
+    isLoading.value = true;
+
     axiosIns.post(`/api/v2/product/create/`, form.value).then(res => {
       router.push({ query: { ...route.query, productId: res.data.id } })
       message.success("Успешно создан продукт")
       setCurrent(4);
     }).catch(e => {
       message.error(e)
+    }).finally(()=>{
+      isLoading.value = false
     })
 }
 
@@ -210,11 +221,19 @@ function updateIfNotNull(item: Object, excludeKeys: string[], setRef: any) {
 
 function updateForm(item: IModification) {
   updateIfNotNull(item, ['modelCar', 'id', 'name', 'engines'], form);
+  form.value.eav_attributes.modelCarId = item.modelCar.id
+  if ( form.value.eav_attributes.vinCode != null ){
+    form.value.eav_attributes.vinCode = form.value.eav_attributes.vinCode!.toString();
+  }
+
 }
 
 onMounted(() => {
+    if (route.query.productId != null) {
+      setCurrent(4)
+    }
     if (route.query.modificationId != null) {
-        modificationStore.loadModification(parseInt(route.query.modificationId!.toString())).then((res)=>{
+        modificationStore.loadModification(parseInt(route.query.modificationId!.toString())).then((res: any)=>{
           updateForm(res)
         })
     }

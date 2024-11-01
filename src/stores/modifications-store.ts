@@ -16,6 +16,7 @@ interface ModelCar {
 
 export interface IModification {
     axleConfiguration: null;
+    image: string | null;
     bodyType: string;
     capacity: number;
     driveType: string;
@@ -38,7 +39,7 @@ export const useModificationsStore = defineStore("modifications-store", {
   state: () => {
     return {
       modifications: [] as IModification[],
-      modification: null as IModification,
+      modification: null as unknown as IModification,
       searchManufacturers: [] as IDefaultAPI[],
       isLoadingModelCarList: false as boolean,
     };

@@ -1,6 +1,5 @@
 import {defineStore} from 'pinia'
 import axiosInstance from "@/apis";
-import type {ISelectOption} from "@/apis/interfaces";
 import type {TreeSelectOption} from "naive-ui";
 
 
@@ -35,7 +34,8 @@ export const useCategoryStore = defineStore('category', {
     },
     getters: {
         categoriesOptions: (state) => {
-            return state.categories.map<ISelectOption>(item=>{
+            // @ts-ignore
+            return state.categories.map<any>((item: any)=>{
                 return {label: item.name,value:item.id}
             })
         },

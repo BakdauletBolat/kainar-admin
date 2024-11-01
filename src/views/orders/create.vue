@@ -6,7 +6,7 @@
             </template>
         </n-page-header>
         <n-card>
-            <SelectProduct :selected-products="selectedProducts" @selected="selectProduct"></SelectProduct>
+            <select-product :selected-products="selectedProducts" @selected="selectProductFunc"></select-product>
             <div class="mt-8 p-4 rounded-lg">
                 <h2 class="text-2xl font-bold mb-4">Форма заказа</h2>
                 <n-form label-placement="left" label-width="160px">
@@ -45,10 +45,10 @@
                         <n-input v-model:value="form.email" type="text" placeholder="Введите email" />
                     </n-form-item>
 
-                    <!-- Address -->
-                    <n-form-item label="Адрес">
-                        <n-select v-model:value="form.address" :options="addressOptions" placeholder="Выберите адрес" />
-                    </n-form-item>
+<!--                    &lt;!&ndash; Address &ndash;&gt;-->
+<!--                    <n-form-item label="Адрес">-->
+<!--                        <n-select v-model:value="form.address" :options="addressOptions" placeholder="Выберите адрес" />-->
+<!--                    </n-form-item>-->
 
                     <!-- Discount -->
                     <n-form-item label="Скидка">
@@ -61,7 +61,7 @@
                         <n-input v-model:value="form.comment" type="textarea" placeholder="Введите комментарий" />
                     </n-form-item>
 
-                    <n-button block type="primary" @click="submitForm">Отправить</n-button>
+                    <n-button block type="primary" :loading="orderStore.isLoadingCreate" @click="submitForm">Создать заказ</n-button>
                 </n-form>
             </div>
         </n-card>
@@ -69,7 +69,7 @@
 </template>
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import { NPageHeader, NCard, NInput, NForm, NFormItem, NSelect, NInputNumber, NButton } from "naive-ui";
+import { NPageHeader, NCard, NInput, NForm, NFormItem, NSelect, NInputNumber, NButton, useMessage } from "naive-ui";
 import SelectProduct from './ui/SelectProduct.vue';
 import { onMounted, ref } from 'vue'
 import { useWarehouseStore } from '@/stores/warehouses-store';
@@ -79,6 +79,7 @@ import {ProductList} from "@/apis/orders.ts";
 const router = useRouter();
 const warehouseStore = useWarehouseStore();
 const orderStore = useOrderStore();
+const message = useMessage();
 
 // Форма и ее данные
 const form = ref<any>({
@@ -109,10 +110,10 @@ const paymentTypeOptions = ref([
 ])
 
 
-const addressOptions = ref([
-    { label: 'Адрес 1', value: 1 },
-    { label: 'Адрес 2', value: 2 }
-])
+// const addressOptions = ref([
+//     { label: 'Адрес 1', value: 1 },
+//     { label: 'Адрес 2', value: 2 }
+// ])
 
 function submitForm() {
   console.log('Форма отправлена:', form.value)
@@ -132,6 +133,16 @@ function submitForm() {
         quality_id: 1
       }
     })
+  }).then(res=>{
+    message.success("Успешно создан")
+    router.push({
+      name: 'orders-detail',
+      params: {
+        id: res.id
+      }
+    })
+  }).catch((e)=>{
+    message.error(e.toString())
   })
 }
 
@@ -150,7 +161,7 @@ function handleSearchWarehouse(value: string) {
 }
 
 // Функция выбора товара
-function selectProduct(product: any) {
+function selectProductFunc(product: any) {
   const productIndex = selectedProducts.value.findIndex(p => p.id === product.id)
   if (productIndex !== -1) {
     // Если товар уже выбран, удаляем его

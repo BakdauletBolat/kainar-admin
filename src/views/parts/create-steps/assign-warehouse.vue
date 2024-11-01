@@ -47,7 +47,7 @@ function assignWarehouse() {
     router.push({
       name: "parts-detail",
       params: {
-        product_id: route.query.productId?.toString()
+        id: route.query.productId?.toString()
       }
     }).catch((e)=>{
       console.log(e)

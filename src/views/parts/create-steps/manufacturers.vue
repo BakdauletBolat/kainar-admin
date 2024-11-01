@@ -81,7 +81,6 @@ function confirmModelCar() {
     emit('confirm')
 }
 onMounted(() => {
-    console.log("Mounted manufacturers")
     if (route.query.manufacturerId != null) {
         manufacturerId.value = parseInt(route.query.manufacturerId.toString());
         manufacturerStore.loadModelCars(manufacturerId.value).then(res => {
@@ -90,8 +89,12 @@ onMounted(() => {
     }
     if (route.query.modelCarId != null) {
         modelCarId.value = parseInt(route.query.modelCarId.toString());
-
     }
+
+    if (route.query.productId != null) {
+      setCurrent(4)
+    }
+
     manufacturerStore.loadManufacturers().then(manufacturers => {
         manufacturerStore.searchManufacturers = manufacturers;
     });

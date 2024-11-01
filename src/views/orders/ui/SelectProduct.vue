@@ -16,7 +16,7 @@
                     <n-spin size="large" />
                 </div>
                 <!-- Список товаров в виде карточек -->
-                <div v-if="productStore.products.length > 0"
+                <div v-else-if="productStore.products.length > 0"
                     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div v-for="product in productStore.products" :key="product.id"
                         @click="() => emit('selected', product)"
@@ -25,7 +25,7 @@
                             class="w-full h-32 object-cover rounded-md" />
                         <div class="mt-4">
                             <div class="font-bold text-lg">{{ product.name }}</div>
-                            <div class="text-gray-500 text-sm">{{ product.status }}</div>
+                            <tenge-amount :value="product.price"></tenge-amount>
                         </div>
                     </div>
                 </div>
@@ -42,8 +42,9 @@
             <div v-for="product in selectedProducts" :key="product.id" class="p-4 bg-white rounded flex">
                 <img :src="product.pictures[0].image" alt="product image" class="w-24 h-24 object-cover rounded-md" />
                 <div class="ml-4">
-                    <div class="font-bold text-lg">{{ product.name }}</div>
-                    <div class="text-gray-500">{{ product.status }}</div>
+                    <div class="font-bold text-lg">{{ product.name }} (#{{product.id}})</div>
+
+                    <tenge-amount :value="product.price"></tenge-amount>
                 </div>
             </div>
         </div>
@@ -56,6 +57,7 @@ import { NButton, NModal, NInput, NSpin } from 'naive-ui'
 import { useProductStore } from '@/stores/product-store';
 import { ProductList } from "@/apis/orders.ts";
 import { useDebounceFn } from '@vueuse/core';
+import TengeAmount from "@/components/TengeAmount.vue";
 
 
 const productStore = useProductStore();

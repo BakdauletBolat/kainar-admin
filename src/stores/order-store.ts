@@ -1,5 +1,6 @@
 import {defineStore} from "pinia";
 import {getOrders} from "@/apis/orders.ts";
+import {Order} from '@/apis/domain';
 import axiosIns from "@/apis";
 
 
@@ -8,58 +9,6 @@ interface Goods {
     quality_id: number;
     quantity: number;
 }
-
-interface Product {
-    category: Category;
-    modification: Modification;
-    detail: Detail;
-    status: string;
-    name: string;
-    market_price: number;
-    properties: string;
-    defect: string;
-    comment: string;
-    mileage: number;
-    mileageType: number;
-}
-
-interface Category {
-    name: string;
-    recar_category_id: number;
-    parent: number;
-}
-
-interface Modification {
-    axleConfiguration: string;
-    driveType: string;
-    gearType: string;
-    fuelType: string;
-    bodyType: string;
-    modelCar: ModelCar;
-    name: string;
-    capacity: number;
-    power: number;
-    numberOfCycle: number;
-    numberOfValves: number;
-    vinCode: number;
-    engineDisplacement: number;
-    steeringType: number;
-}
-
-interface ModelCar {
-    name: string;
-    startDate: string; // Use Date type if you need to handle dates
-    endDate: string;   // Use Date type if you need to handle dates
-    manufacturer: number;
-}
-
-interface Detail {
-    height: number;
-    width: number;
-    length: number;
-    weight: number;
-}
-
 
 
 interface CreateBodyInterface {
@@ -78,25 +27,40 @@ interface CreateBodyInterface {
 export const useOrderStore = defineStore("order-store", {
     state: () => {
         return {
-            orders: [] as Product[],
+            orders: [] as Order[],
+            order: null as Order | null,
             isLoadingOrders: false,
             isLoadingCreate: false
+        }
+    },
+    getters: {
+        orderName(state) {
+            return state.order?.goods.map((good)=>good.product.name).join(", ");
         }
     },
     actions: {
         async loadOrders(options: object) {
             this.isLoadingOrders = true;
-            getOrders(options).then(res => {
+            return getOrders(options).then(res => {
                 //@ts-ignore
                 this.orders = res.data.results;
+                return res.data;
             }).finally(() => {
+                this.isLoadingOrders = false;
+            })
+        },
+        async loadOrder(pk: string) {
+            this.isLoadingOrders = true;
+            axiosIns.get(`/api/orders/${pk}/`).then(res=>{
+                this.order = res.data;
+            }).finally(()=>{
                 this.isLoadingOrders = false;
             })
         },
         async createOrder(body: CreateBodyInterface) {
             this.isLoadingCreate = true;
-            axiosIns.post('/api/orders/', body).then((res) => {
-                console.log(res.data)
+            return axiosIns.post('/api/orders/', body).then((res) => {
+                return res.data;
             })
                 .catch(e => {
                     console.log(e)

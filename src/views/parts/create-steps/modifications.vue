@@ -45,6 +45,9 @@ onMounted(() => {
     if (route.query.modelCarId != null) {
         modificationStore.loadModifications(parseInt(route.query.modelCarId.toString()));
     }
+    if (route.query.productId != null) {
+      setCurrent(4)
+    }
 })
 
 
