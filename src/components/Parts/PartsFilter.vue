@@ -15,14 +15,13 @@ import { NInput, NButton, NCollapseTransition } from 'naive-ui';
 import { ref } from 'vue';
 import FilterForm from "@/components/Parts/FilterForm.vue";
 import { useProductStore } from '@/stores/product-store';
+import {useFilterStore} from "@/stores/filter-store.ts";
 
 const show = ref<boolean>(false);
 const inputValue = ref<string>('');
 const productStore = useProductStore();
-
+const filterStore = useFilterStore();
 async function searchProducts() {
-	productStore.loadProducts({
-		search: inputValue.value
-	})
+	productStore.loadProducts({...filterStore.filterValues, search: inputValue.value})
 }
 </script>
