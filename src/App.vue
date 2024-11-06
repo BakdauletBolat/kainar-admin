@@ -15,9 +15,13 @@
             :expand-icon="expandIcon" />
         </n-layout-sider>
         <n-layout>
-          <div class="container mx-auto px-4 mb-[120px] mt-4">
-            <router-view></router-view>
+          <div class="flex">
+            <div class="w-[64px] h-full"></div>
+            <div class="container mx-auto px-4 mb-[120px] mt-4">
+              <router-view></router-view>
+            </div>
           </div>
+
           <BottomAppBar class="md:hidden"></BottomAppBar>
         </n-layout>
       </n-layout>

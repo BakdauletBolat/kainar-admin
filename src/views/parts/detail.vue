@@ -74,6 +74,7 @@ import { formatDate } from '@/utils/formatDate';
 import { ref, onMounted, computed } from 'vue';
 import { PriceComponent, StatusComponent, CommentComponent, WarehouseComponent, PartDimensionsComponent, VinCodeComponent } from './ui';
 import { ProductDetail } from '@/apis/products';
+import {valueOf} from "tailwindcss";
 
 const router = useRouter();
 const route = useRoute();
@@ -107,6 +108,11 @@ const carInfoMapper: any = {
 };
 
 
+function isObject(value) {
+  return value !== null && typeof value === 'object';
+}
+
+
 const modelCarValues = computed<{
     key: string,
     value: string
@@ -114,6 +120,12 @@ const modelCarValues = computed<{
     if (product.value?.eav_attributes.modelCar != undefined) {
         const modelCar: any = product.value?.eav_attributes.modelCar;
         return Object.keys(modelCar).map((key: string) => {
+            if (key == 'manufacturer') {
+              return {
+                value: modelCar[key].name,
+                key: carInfoMapper[key]
+              }
+            }
             return {
                 value: modelCar[key],
                 key: carInfoMapper[key]

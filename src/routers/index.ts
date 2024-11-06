@@ -16,7 +16,7 @@ import ClientsList from "@/views/clients/index.vue";
 
 
 const routes = [
-  { path: '/', component: Home },
+  { path: '/', component: PartsList },
   { path: '/order/list',name: 'orders-list', component: OrderList },
   { path: '/order/create',name: 'orders-create', component: OrderCreate },
   { path: '/order/:id/edit',name: 'orders-edit', component: OrderEdit },
@@ -37,5 +37,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes, 
 })
+
+
 
 export default router;
