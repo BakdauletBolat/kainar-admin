@@ -21,7 +21,9 @@ const show = ref<boolean>(false);
 const inputValue = ref<string>('');
 const productStore = useProductStore();
 const filterStore = useFilterStore();
+
 async function searchProducts() {
-	productStore.loadProducts({...filterStore.filterValues, search: inputValue.value})
+	await productStore.loadProducts({...filterStore.filterValues, search: inputValue.value})
 }
+
 </script>

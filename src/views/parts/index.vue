@@ -15,9 +15,16 @@
   <main class="grid pb-10">
     <parts-filter></parts-filter>
     <div>
-      <n-data-table remote :loading="productStore.isLoadingProducts" ref="table" :columns="columns"
-        :data="productStore.products" :pagination="paginationReactive" :row-key="rowKey"
-        @update:checked-row-keys="handleCheck" @update:sorter="handleSorterChange" />
+      <n-data-table remote
+                    ref="table"
+                    :loading="productStore.isLoadingProducts"
+                    :columns="columns"
+                    :data="productStore.products"
+                    :pagination="paginationReactive"
+                    :row-key="rowKey"
+                    @update:filters="handleFiltersChange"
+                    @update:checked-row-keys="handleCheck"
+                    @update:sorter="handleSorterChange" />
     </div>
   </main>
 </template>
@@ -143,7 +150,31 @@ function createColumns(): DataTableColumns<RowData> {
           typeLabel = 'error'
         }
         return h(NTag, { type: typeLabel }, { default: () => row.status })
-      }
+      },
+      filter: true,
+      filterOptionValues: [],
+      filterOptions: [
+        {
+          label: 'Необработан',
+          value: 1
+        },
+        {
+          label: 'В наличии',
+          value: 2
+        },
+        {
+          label: 'Зарезервирован',
+          value: 3
+        },
+        {
+          label: 'Удален',
+          value: 4
+        },
+        {
+          label: 'Продан',
+          value: 5
+        }
+      ]
     }
   ]
 }
@@ -191,6 +222,13 @@ const handleCheck = () => {
 const rowKey = (row: RowData) => {
   return row.id
 }
+
+function handleFiltersChange(filters: any) {
+  if (filters?.status != undefined) {
+      productStore.loadProducts({ ...filterStore.filterValues, status: filters.status })
+  }
+}
+
 
 const onChangedPage = (page: number) => {
   productStore.loadProducts({...filterStore.filterValues, page: page })

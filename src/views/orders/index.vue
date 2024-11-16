@@ -14,9 +14,12 @@
   </n-page-header>
   <main class="grid">
     <div>
-      <n-data-table remote :loading="orderStore.isLoadingOrders" ref="table" :columns="columns"
-        :data="orderStore.orders" :pagination="paginationReactive" :row-key="rowKey"
-        @update:checked-row-keys="handleCheck" />
+      <n-data-table remote :loading="orderStore.isLoadingOrders"
+                    ref="table" :columns="columns"
+                    :data="orderStore.orders"
+                    :pagination="paginationReactive"
+                    :row-key="rowKey"
+                    @update:checked-row-keys="handleCheck" />
     </div>
   </main>
 </template>
@@ -39,6 +42,8 @@ function createNavigate() {
     name: 'orders-create'
   })
 }
+
+
 
 function createColumns(): DataTableColumns<Order> {
   return [
@@ -109,11 +114,28 @@ function createColumns(): DataTableColumns<Order> {
       title: "Статус",
       key: "status",
       render(row) {
-        let typeLabel: "success" | "error" = 'success'
-        if (row.status == 'Продан') {
+        let typeLabel: any = 'success';
+        if (row.status == 'Отменен') {
           typeLabel = 'error'
         }
+        if (row.status == 'В процессе') {
+          typeLabel = 'warning'
+        }
         return h(NTag, { type: typeLabel }, { default: () => row.status })
+      }
+    },
+    {
+      title: "Статус оплаты",
+      key: "payment_status",
+      render(row) {
+        let typeLabel: any = 'success'
+        if (row.payment_status == 'Отклонен') {
+          typeLabel = 'error'
+        }
+        if (row.payment_status == 'В ожидании') {
+          typeLabel = 'warning'
+        }
+        return h(NTag, { type: typeLabel }, { default: () => row.payment_status })
       }
     }
   ]

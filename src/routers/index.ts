@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router"
-import Home from '@/views/Home.vue';
 import WarehouseList from "@/views/warehouses/index.vue";
 import WarehouseCreate from "@/views/warehouses/create.vue";
 import WarehouseEdit from "@/views/warehouses/edit.vue";
@@ -30,12 +29,13 @@ const routes = [
   { path: '/warehouse/:id/edit',name: 'warehouses-edit', component: WarehouseEdit },
   { path: '/warehouse/:id',name: 'warehouses-detail', component: WarehouseDetail },
   { path: '/clients/list',name: 'clients-list', component: ClientsList },
+  { path: '/clients/:id',name: 'clients-detail', component: ClientsList },
 ];
 
 
 const router = createRouter({
   history: createWebHistory(),
-  routes, 
+  routes,
 })
 
 
