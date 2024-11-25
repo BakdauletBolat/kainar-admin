@@ -20,31 +20,37 @@ interface AuthUser {
 export const useAuthStore = defineStore("auth-store", {
     state: () => {
         return {
-            user: null as AuthUser | null
+            user: null as AuthUser | null,
+            isLoading: false as boolean,
+            isAuthenticated: localStorage.getItem("auth-token") !== null,
         };
-    },
-    getters: {
-        isAuthenticated: () => {
-            return localStorage.getItem("auth-token") !== null;
-        }
     },
     actions: {
         async authUser(body: AuthPayload) {
+            this.isLoading = true;
             return axiosInstance
-                .post(`/api/users/token`, body)
+                .post(`/api/users/token/?is_admin_user=true`, body)
                 .then((res) => {
-                    localStorage.setItem("auth-token", res.data.token);
+                    localStorage.setItem("auth-token", res.data.access);
+                    this.isAuthenticated = true;
+                }).finally(()=>{
+                    this.isLoading = false
                 });
         },
         async userMe() {
             return axiosInstance
-                .get(`/api/users/me`)
+                .get(`/api/users/me/`)
                 .then((res) => {
                     this.user = res.data;
                 }).catch((err) => {
                     console.error(err);
                     localStorage.removeItem("auth-token");
+                    this.isAuthenticated = false;
                 });
+        },
+        async logout() {
+            localStorage.removeItem("auth-token");
+            this.isAuthenticated = false;
         }
     },
 });

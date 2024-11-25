@@ -16,6 +16,7 @@
     "@vueuse/core": "^11.1.0",
     "axios": "^1.6.7",
     "flowbite-vue": "^0.1.2",
+    "imask": "^7.6.1",
     "pinia": "^2.2.2",
     "vee-validate": "^4.12.5",
     "vue": "^3.4.19",

@@ -36,7 +36,7 @@ import type { MenuOption } from 'naive-ui'
 //@ts-ignore
 import { CaretDownOutline } from '@vicons/ionicons5';
 
-import { CogIcon, ShoppingCartIcon, InboxIcon, UsersIcon } from '@heroicons/vue/24/outline';
+import {CogIcon, ShoppingCartIcon, InboxIcon, UsersIcon, UserIcon} from '@heroicons/vue/24/outline';
 import { RouterLink } from "vue-router";
 import Logo from "@/assets/new-logo.png";
 import Avatar from "@/components/Avatar.vue";
@@ -118,6 +118,20 @@ const menuOptions: MenuOption[] = [
       ),
     key: 'clients-list',
     icon: renderIcon(UsersIcon)
+  },
+  {
+    label: () =>
+        h(
+            RouterLink,
+            {
+              to: {
+                name: 'profile'
+              },
+            },
+            { default: () => 'Профиль' }
+        ),
+    key: 'profile',
+    icon: renderIcon(UserIcon)
   },
 ]
 

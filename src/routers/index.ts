@@ -12,10 +12,14 @@ import PartsCreate from "@/views/parts/create.vue";
 import PartsEdit from "@/views/parts/edit.vue";
 import PartsDetail from "@/views/parts/detail.vue";
 import ClientsList from "@/views/clients/index.vue";
+import Login from "@/views/auth/login.vue";
+import Profile from "@/views/auth/profile.vue";
+
+import {useAuthStore} from "@/stores/auth-store.ts";
 
 
 const routes = [
-  { path: '/', component: PartsList },
+  { path: '/', name: 'main', component: PartsList },
   { path: '/order/list',name: 'orders-list', component: OrderList },
   { path: '/order/create',name: 'orders-create', component: OrderCreate },
   { path: '/order/:id/edit',name: 'orders-edit', component: OrderEdit },
@@ -30,12 +34,26 @@ const routes = [
   { path: '/warehouse/:id',name: 'warehouses-detail', component: WarehouseDetail },
   { path: '/clients/list',name: 'clients-list', component: ClientsList },
   { path: '/clients/:id',name: 'clients-detail', component: ClientsList },
+  { path: '/login', name: 'login', component: Login },
+  { path: '/profile', name: 'profile', component: Profile },
 ];
 
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+})
+
+router.beforeEach((to, _) => {
+  const authStore = useAuthStore();
+  if (!authStore.isAuthenticated && to.name !== 'login') {
+    return {name: 'login', query: {
+        redirectUrl: to.fullPath
+      }}
+  }
+  if (authStore.isAuthenticated && to.name == 'login') {
+    return {name: 'main'}
+  }
 })
 
 
