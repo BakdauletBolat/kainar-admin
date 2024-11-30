@@ -58,9 +58,11 @@ export const useManufacturerStore = defineStore("manufacturer-store", {
         });
     },
     loadManufacturerById(id: number) {
-      axiosInstance.get(`/api/car/manufacturers/${id}`).then((res) => {
-        this.manufacturer = res.data;
-      });
+      axiosInstance
+        .get(`/api/car/manufacturers/${id}&page_size=1000`)
+        .then((res) => {
+          this.manufacturer = res.data;
+        });
     },
   },
 });

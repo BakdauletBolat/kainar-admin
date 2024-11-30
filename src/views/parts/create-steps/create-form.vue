@@ -10,6 +10,7 @@
                 </n-form-item>
                 <n-form-item label="Категория">
                     <n-select
+                        filterable
                         v-model:value="form.category"
                         :options="categoryStore.categoriesOptions"
                         placeholder="Введите категорию"
