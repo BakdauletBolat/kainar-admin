@@ -51,7 +51,7 @@ export const useManufacturerStore = defineStore("manufacturer-store", {
     },
     async loadModelCars(manufacturerId: number) {
       return axiosInstance
-        .get(`/api/car/models/?manufacturer=${manufacturerId}`)
+        .get(`/api/car/models/?manufacturer=${manufacturerId}&page_size=1000`)
         .then((res) => {
           this.modelCars = res.data.results;
           return res.data.results;
