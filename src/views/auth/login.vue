@@ -10,7 +10,9 @@
                  placeholder="+7 (___) ___-__-__"></n-input>
       </n-form-item>
       <n-form-item label="Пароль" path="password">
-        <n-input type="password" v-model:value="formValue.password"
+        <n-input type="password"
+                 @keyup.enter="onClickLogin"
+                 v-model:value="formValue.password"
                  placeholder="Пароль"></n-input>
       </n-form-item>
         <n-button type="primary" :loading="authStore.isLoading" @click="onClickLogin">Авторизоваться</n-button>
