@@ -87,6 +87,7 @@ const paginationReactive = reactive({
   onUpdatePageSize: (pageSize: number) => {
     paginationReactive.pageSize = pageSize
     paginationReactive.page = 1
+    onChangedPage(paginationReactive.page);
   }
 });
 
@@ -100,7 +101,7 @@ const rowKey = (row: Client) => {
 }
 
 const onChangedPage = (page: number) => {
-  clientStore.loadClients({page: page })
+  clientStore.loadClients({page: page, page_size: paginationReactive.pageSize })
 }
 
 
