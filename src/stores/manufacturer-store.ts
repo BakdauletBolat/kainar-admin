@@ -44,14 +44,14 @@ export const useManufacturerStore = defineStore("manufacturer-store", {
   },
   actions: {
     async loadManufacturers() {
-      return axiosInstance.get("/api/car/manufacturers/").then((res) => {
+      return axiosInstance.get("/api/admin/car/manufacturers/").then((res) => {
         this.manufacturers = res.data.results;
         return res.data.results;
       });
     },
     async loadModelCars(manufacturerId: number) {
       return axiosInstance
-        .get(`/api/car/models/?manufacturer=${manufacturerId}&page_size=1000`)
+        .get(`/api/admin/car/models/?manufacturer=${manufacturerId}&page_size=1000`)
         .then((res) => {
           this.modelCars = res.data.results;
           return res.data.results;
@@ -59,7 +59,7 @@ export const useManufacturerStore = defineStore("manufacturer-store", {
     },
     loadManufacturerById(id: number) {
       axiosInstance
-        .get(`/api/car/manufacturers/${id}&page_size=1000`)
+        .get(`/api/car/admin/manufacturers/${id}&page_size=1000`)
         .then((res) => {
           this.manufacturer = res.data;
         });

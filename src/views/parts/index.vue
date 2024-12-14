@@ -206,7 +206,8 @@ const paginationReactive = reactive({
   },
   onUpdatePageSize: (pageSize: number) => {
     paginationReactive.pageSize = pageSize
-    paginationReactive.page = 1
+    paginationReactive.page = 1;
+    onChangedPage(paginationReactive.page);
   }
 });
 
@@ -231,7 +232,8 @@ function handleFiltersChange(filters: any) {
 
 
 const onChangedPage = (page: number) => {
-  productStore.loadProducts({...filterStore.filterValues, page: page })
+  productStore.loadProducts({...filterStore.filterValues, page: page,
+    page_size: paginationReactive.pageSize })
 }
 
 watch(filterStore.filterValues, (state) => {
@@ -240,7 +242,7 @@ watch(filterStore.filterValues, (state) => {
 
 onMounted(() => {
   filterStore.clearValues();
-  const page = route.query.page != undefined ? parseInt(route.query.page.toString()) : 1
+  const page = route.query.page != null ? parseInt(route.query.page.toString()) : 1
   productStore.loadProducts({ ...filterStore.filterValues, page: page, page_size: 10 }).then(_ => {
     paginationReactive.itemCount = productStore.productsCount;
   });

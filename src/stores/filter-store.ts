@@ -79,7 +79,7 @@ export const useFilterStore = defineStore("filter-products", {
   },
   actions: {
     loadFilters() {
-      axiosInstance.get<CarFilterData>("/api/car/filters/").then((res) => {
+      axiosInstance.get<CarFilterData>("/api/admin/car/filters/").then((res) => {
         this.filterData = res.data;
       });
     },

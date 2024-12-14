@@ -18,7 +18,7 @@ export const useColorStore = defineStore("color-store", {
   actions: {
     async loadColors() {
       return axiosInstance
-        .get(`/api/car/color/`)
+        .get(`/api/admin/car/color/`)
         .then((res) => {
           this.colors = res.data.results;
           return res.data.results;

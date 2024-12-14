@@ -29,7 +29,7 @@ export const useAuthStore = defineStore("auth-store", {
         async authUser(body: AuthPayload) {
             this.isLoading = true;
             return axiosInstance
-                .post(`/api/users/token/?is_admin_user=true`, body)
+                .post(`/api/admin/users/token/?is_admin_user=true`, body)
                 .then((res) => {
                     localStorage.setItem("auth-token", res.data.access);
                     this.isAuthenticated = true;
@@ -39,7 +39,7 @@ export const useAuthStore = defineStore("auth-store", {
         },
         async userMe() {
             return axiosInstance
-                .get(`/api/users/me/`)
+                .get(`/api/admin/users/me/`)
                 .then((res) => {
                     this.user = res.data;
                 }).catch((err) => {

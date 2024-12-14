@@ -27,7 +27,7 @@ export const useClientStore = defineStore("client-store", {
             this.isLoadingClients = true;
             const query = generateQuery(options);
             return axiosInstance
-                .get(`/api/users/${query}`)
+                .get(`/api/admin/users/${query}`)
                 .then((res) => {
                     this.clients = res.data.results;
                     this.clientsCount = res.data.count;

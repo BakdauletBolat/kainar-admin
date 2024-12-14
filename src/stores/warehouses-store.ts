@@ -5,11 +5,11 @@ import { Category } from "./category-storage";
 
 const getWarehouses = (object: any) => {
   const query = generateQuery(object);
-  return axiosIns.get(`/api/stock/warehouses/${query}`);
+  return axiosIns.get(`/api/admin/stock/warehouses/${query}`);
 };
 
 const getWarehouse = (id: number) => {
-  return axiosIns.get(`/api/stock/warehouses/${id}/`);
+  return axiosIns.get(`/api/admin/stock/warehouses/${id}/`);
 };
 
 export interface WarehouseList {
@@ -61,7 +61,7 @@ export const useWarehouseStore = defineStore("warehouse-store", {
     },
     async removeWarehouse(id: string) {
       this.isLoading = false;
-      await axiosIns.delete(`/api/stock/warehouses/${id}/`);
+      await axiosIns.delete(`/api/admin/stock/warehouses/${id}/`);
     },
     getByIdWarehouse(id: string) {
       const index = this.warehouses.findIndex((item) => item.id == id);

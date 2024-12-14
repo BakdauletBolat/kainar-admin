@@ -131,9 +131,9 @@ export async function getProducts(options: object = {}) {
   return await axios.get<{
     results: ProductList[];
     count: number;
-  }>(`/api/v2/product/${query}`);
+  }>(`/api/admin/product/v2/product/${query}`);
 }
 
 export async function getProduct(id: string) {
-  return await axios.get(`/api/v2/product/${id}`);
+  return await axios.get(`/api/admin/product/v2/${id}/product/`);
 }

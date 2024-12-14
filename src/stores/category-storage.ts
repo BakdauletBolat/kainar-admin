@@ -47,21 +47,21 @@ export const useCategoryStore = defineStore('category', {
     },
     actions: {
         loadCategoryById(id: number) {
-          axiosInstance.get(`/api/category/${id}`).then(
+          axiosInstance.get(`/api/admin/category/${id}`).then(
               res=>{
                   this.category = res.data
               }
           )
         },
         loadCategories() {
-            axiosInstance.get(`/api/category?page_size=2000`).then(
+            axiosInstance.get(`/api/admin/category?page_size=2000`).then(
                 (res) => {
                     this.categories = res.data.results
                 }
             ).catch(e => console.log(e));
         },
         loadCategoriesTree() {
-            axiosInstance.get(`/api/category/tree`).then(
+            axiosInstance.get(`/api/admin/category/tree`).then(
                 (res) => {
                     this.categoriesTree = res.data;
                 }

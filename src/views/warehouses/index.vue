@@ -110,6 +110,7 @@ const paginationReactive = reactive({
   onUpdatePageSize: (pageSize: number) => {
     paginationReactive.pageSize = pageSize
     paginationReactive.page = 1
+    onChangedPage(paginationReactive.page);
   }
 });
 

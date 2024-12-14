@@ -8,11 +8,11 @@ export const getCarFilters = () => {
 export const getCarManufacturers = () => {
     return axiosIns.get<{
         results: IManufacturerType[]
-    }>('/api/car/manufacturers/');
+    }>('/api/admin/car/manufacturers/');
 }
 
 export const getModelCars = (manufacturerId: number) => {
     return axiosIns.get<{
         results: ICarModelType[]
-    }>(`/api/car/models/?manufacturer=${manufacturerId}`);
+    }>(`/api/admin/car/models/?manufacturer=${manufacturerId}`);
 }

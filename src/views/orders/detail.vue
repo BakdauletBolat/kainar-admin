@@ -26,7 +26,7 @@
                   <tbody>
                   <tr v-for="good in orderStore.order?.goods">
                     <td>
-                      <NAvatar :src="good.product.pictures[0].image" class="object-cover !w-[140px] !h-[140px]" />
+                      <NAvatar v-if="good.product.pictures.length > 0" :src="good.product.pictures[0].image" class="object-cover !w-[140px] !h-[140px]" />
                     </td>
                     <td>{{good.product.name}}</td>
                     <td>{{good.quantity}}</td>

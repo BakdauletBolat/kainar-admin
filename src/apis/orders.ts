@@ -142,9 +142,9 @@ export async function getOrders(options: object = {}) {
   const query = generateQuery(options);
   return await axios.get<{
     results: ProductList[];
-  }>(`/api/orders/${query}`);
+  }>(`/api/admin/orders/${query}`);
 }
 
 export async function getOrder(id: string) {
-  return await axios.get(`/api/orders/${id}`);
+  return await axios.get(`/api/admin/orders/${id}`);
 }

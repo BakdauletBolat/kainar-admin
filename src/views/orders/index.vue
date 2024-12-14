@@ -157,7 +157,8 @@ const paginationReactive = reactive({
   },
   onUpdatePageSize: (pageSize: number) => {
     paginationReactive.pageSize = pageSize
-    paginationReactive.page = 1
+    paginationReactive.page = 1;
+    onChangedPage(paginationReactive.page);
   }
 });
 
@@ -175,7 +176,8 @@ const rowKey = (row: Order) => {
 }
 
 const onChangedPage = (page: number) => {
-  orderStore.loadOrders({ page: page }).then(res=>{
+  orderStore.loadOrders({ page: page,
+    page_size: paginationReactive.pageSize }).then(res=>{
     //@ts-ignore
     paginationReactive.itemCount = res.count;
 
@@ -190,8 +192,8 @@ watch(filterStore.filterValues, (state) => {
 });
 
 onMounted(() => {
-  const page = route.query.page != undefined ? parseInt(route.query.page.toString()) : 1
-  orderStore.loadOrders({ page: page }).then(res=>{
+  const page = route.query.page != null ? parseInt(route.query.page.toString()) : 1
+  orderStore.loadOrders({ page: page, page_size: 10 }).then(res=>{
     //@ts-ignore
     paginationReactive.itemCount = res.count;
   })

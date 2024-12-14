@@ -51,7 +51,7 @@ export const useOrderStore = defineStore("order-store", {
         },
         async loadOrder(pk: string) {
             this.isLoadingOrders = true;
-            axiosIns.get(`/api/orders/${pk}/`).then(res=>{
+            axiosIns.get(`/api/admin/orders/${pk}/`).then(res=>{
                 this.order = res.data;
             }).finally(()=>{
                 this.isLoadingOrders = false;
@@ -59,7 +59,7 @@ export const useOrderStore = defineStore("order-store", {
         },
         async createOrder(body: CreateBodyInterface) {
             this.isLoadingCreate = true;
-            return axiosIns.post('/api/orders/', body).then((res) => {
+            return axiosIns.post('/api/admin/orders/', body).then((res) => {
                 return res.data;
             })
                 .catch(e => {
