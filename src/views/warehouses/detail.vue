@@ -19,10 +19,15 @@
                     <n-select v-model:value="warehouseStore.warehouse.city.id" placeholder="Выбрать город"
                         :options="cityOptions" />
                 </n-form-item>
-                <n-form-item v-else="warehouseStore.warehouse.city" label="Город" path="city.id">
+                <n-form-item v-else label="Город" path="city.id">
                     <n-select v-model:value="city_id" placeholder="Выбрать город" :options="cityOptions" />
                 </n-form-item>
-
+              <n-form-item label="Категории">
+                <n-select v-model:value="categories" placeholder="Выбрать категории"
+                          multiple
+                          filterable
+                          :options="categoryStore.categoriesOptions" />
+              </n-form-item>
                 <n-form-item label="Минимальный уровень запасов">
                     <n-input-number v-model:value="warehouseStore.warehouse.min_stock_level" />
                 </n-form-item>
@@ -52,8 +57,10 @@ import {
 } from 'naive-ui';
 import { useWarehouseStore } from '@/stores/warehouses-store';
 import axiosIns from '@/apis';
+import {useCategoryStore} from "@/stores/category-storage.ts";
 
 const warehouseStore = useWarehouseStore();
+const categoryStore = useCategoryStore();
 
 // Ссылка на форму для валидации
 const formRef = ref();
@@ -61,6 +68,8 @@ const router = useRouter();
 const route = useRoute();
 const message = useMessage();
 const city_id = ref();
+const categories = ref<any[]>([]);
+
 const cityOptions = [
     {
         label: "Шымкент",
@@ -73,13 +82,18 @@ const cityOptions = [
 
 
 onMounted(() => {
-    warehouseStore.loadWarehouse(parseInt(route.params.id.toString()))
+    warehouseStore.loadWarehouse(parseInt(route.params.id.toString())).then((warehouse)=>{
+      if (warehouse) {
+        city_id.value = warehouse.city?.id;
+        categories.value = warehouse.categories.map(category=>category.id);
+      }
+    })
+    categoryStore.loadCategories();
 })
 
 
 function patchWarehouse(id: string, body: Object) {
-    axiosIns.patch(`/api/stock/warehouses/${id}/`, body).then(res => {
-        console.log(res)
+    axiosIns.patch(`/api/admin/stock/warehouses/${id}/`, body).then(_ => {
         router.push({
             name: 'warehouses-list'
         })
@@ -97,7 +111,8 @@ const submitForm = () => {
             patchWarehouse(warehouseStore.warehouse.id, {
                 name: warehouseStore.warehouse.name,
                 min_stock_level: warehouseStore.warehouse.min_stock_level,
-                city_id: warehouseStore.warehouse.city?.id ?? city_id.value
+                city_id: city_id.value,
+                category_ids: categories.value
             })
         }
     });

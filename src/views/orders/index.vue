@@ -18,8 +18,7 @@
                     ref="table" :columns="columns"
                     :data="orderStore.orders"
                     :pagination="paginationReactive"
-                    :row-key="rowKey"
-                    @update:checked-row-keys="handleCheck" />
+                    :row-key="rowKey"/>
     </div>
   </main>
 </template>
@@ -34,7 +33,6 @@ import { useOrderStore } from "@/stores/order-store.ts";
 import {Order} from "@/apis/domain";
 
 
-
 const router = useRouter();
 
 function createNavigate() {
@@ -42,8 +40,6 @@ function createNavigate() {
     name: 'orders-create'
   })
 }
-
-
 
 function createColumns(): DataTableColumns<Order> {
   return [
@@ -146,7 +142,7 @@ const paginationReactive = reactive({
   page: 1,
   pageSize: 10,
   showSizePicker: true,
-  itemCount: 168,
+  itemCount: 0,
   pageSizes: [5, 10, 25, 50, 100],
   prefix({ itemCount }: any) {
     return `Всего ${itemCount} заказов`
@@ -167,9 +163,6 @@ const route = useRoute();
 const orderStore = useOrderStore();
 const filterStore = useFilterStore();
 
-const handleCheck = () => {
-
-}
 
 const rowKey = (row: Order) => {
   return row.id

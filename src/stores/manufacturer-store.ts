@@ -41,6 +41,14 @@ export const useManufacturerStore = defineStore("manufacturer-store", {
         };
       });
     },
+    modelCarOptions: (state) => {
+      return state.modelCars.map((option) => {
+        return {
+          label: option.name,
+          value: option.id,
+        };
+      });
+    },
   },
   actions: {
     async loadManufacturers() {

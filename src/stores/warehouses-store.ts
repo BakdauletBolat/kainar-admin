@@ -61,9 +61,10 @@ export const useWarehouseStore = defineStore("warehouse-store", {
     },
     async loadWarehouse(id: number) {
       this.isLoading = false;
-      await getWarehouse(id)
+      return await getWarehouse(id)
         .then((res) => {
           this.warehouse = res.data;
+          return this.warehouse;
         })
           .catch((e)=>{
             if (e.response.status === 401) {

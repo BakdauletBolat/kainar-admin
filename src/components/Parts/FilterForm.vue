@@ -1,9 +1,18 @@
 <template>
   <n-form :model="filterStore.filterValues" ref="formRef">
     <div>
-      <n-form-item label="Искать по модели" path="manufacturer">
+      <n-form-item label="Искать по производителю" path="manufacturer">
         <n-select placeholder="Выберите варианты" filterable :options="manufacturerStore.manufacturerOptions"
-          v-model:value="filterStore.filterValues.manufacturer" />
+          v-model:value="filterStore.filterValues.manufacturer"
+                  @update:value="onUpdateManufacturer"
+          />
+      </n-form-item>
+    </div>
+    <div>
+      <n-form-item label="Искать по модели" path="modelCar">
+        <n-select placeholder="Выберите варианты" filterable
+                  :options="manufacturerStore.modelCarOptions"
+                  v-model:value="filterStore.filterValues.modification" />
       </n-form-item>
     </div>
     <div>
@@ -57,7 +66,6 @@ const filterStore = useFilterStore();
 const categoryStore = useCategoryStore();
 const manufacturerStore = useManufacturerStore();
 const warehouseStore = useWarehouseStore();
-
 const productStore = useProductStore();
 const formRef = ref();
 
@@ -87,6 +95,10 @@ function handleSearchWarehouse(value: string) {
   warehouseStore.loadWarehouses({
     search: value
   })
+}
+
+function onUpdateManufacturer(value: number) {
+  manufacturerStore.loadModelCars(value);
 }
 
 </script>

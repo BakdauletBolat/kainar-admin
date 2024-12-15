@@ -23,7 +23,8 @@ const productStore = useProductStore();
 const filterStore = useFilterStore();
 
 async function searchProducts() {
-	await productStore.loadProducts({...filterStore.filterValues, search: inputValue.value})
+  show.value = false;
+	await productStore.loadProducts({...filterStore.filterValues, search: inputValue.value, page_size: 10})
 }
 
 </script>

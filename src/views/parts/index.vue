@@ -207,16 +207,16 @@ const onChangedPage = (page: number) => {
     page_size: paginationReactive.pageSize })
 }
 
-watch(filterStore.filterValues, (state) => {
-  productStore.loadProducts({ ...state, page_size: 10 });
-});
+watch(()=> productStore.productsCount, (state, oldValue)=> {
+  if (state != oldValue) {
+    paginationReactive.itemCount = state;
+  }
+})
 
 onMounted(() => {
   filterStore.clearValues();
   const page = route.query.page != null ? parseInt(route.query.page.toString()) : 1
-  productStore.loadProducts({ ...filterStore.filterValues, page: page, page_size: 10 }).then(_ => {
-    paginationReactive.itemCount = productStore.productsCount;
-  });
+  productStore.loadProducts({ ...filterStore.filterValues, page: page, page_size: 10 })
 });
 
 </script>

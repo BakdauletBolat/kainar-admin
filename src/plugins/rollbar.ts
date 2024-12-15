@@ -4,8 +4,8 @@ import config from '../../rollbar.config';
 const rollbar = new Rollbar(config);
 
 export default {
-    install(app) {
-        app.config.errorHandler = (error, vm, info) => {
+    install(app: any) {
+        app.config.errorHandler = (error: any, vm: any, info: any) => {
             rollbar.error(error, { vueComponent: vm, info });
             if (app.config.devtools) {
                 console.error(error);
