@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import {getProducts, ProductList, getProduct} from "@/apis/products";
+import {useAuthStore} from "@/stores/auth-store.ts";
+import {useRouter} from "vue-router";
 
 export const useProductStore = defineStore("product-store", {
   state: () => {
@@ -19,6 +21,13 @@ export const useProductStore = defineStore("product-store", {
           this.products = res.data.results;
           this.productsCount = res.data.count;
         })
+        .catch(e=>{
+          if (e.response.status === 401) {
+            const authStore = useAuthStore();
+            const router = useRouter();
+            authStore.logout(router);
+          }
+        })
         .finally(() => {
           this.isLoadingProducts = false;
         });
@@ -29,15 +38,16 @@ export const useProductStore = defineStore("product-store", {
           .then((res) => {
             this.product = res.data;
           })
+          .catch(e=>{
+            if (e.response.status === 401) {
+              const authStore = useAuthStore();
+              const router = useRouter();
+              authStore.logout(router);
+            }
+          })
           .finally(() => {
             this.isLoadingProducts = false;
           });
-    },
-    loadPopularProducts(options: object) {
-      const popularOptions = { page_size: 4, ...options };
-      getProducts(popularOptions).then((res) => {
-        this.popularProducts = res.data.results;
-      });
-    },
+    }
   },
 });

@@ -15,7 +15,6 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, defineEmits } from 'vue';
 import { NButton, NCard } from 'naive-ui';
 import SlideLeaveAnimated from '@/components/SlideLeaveAnimated.vue';
 interface CardProps {

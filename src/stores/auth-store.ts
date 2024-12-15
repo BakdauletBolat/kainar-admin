@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axiosInstance from "@/apis";
+import {Router} from "vue-router";
 
 interface AuthPayload {
     phone: string;
@@ -48,9 +49,14 @@ export const useAuthStore = defineStore("auth-store", {
                     this.isAuthenticated = false;
                 });
         },
-        async logout() {
+        async logout(router?: Router) {
             localStorage.removeItem("auth-token");
             this.isAuthenticated = false;
+            if (router != undefined) {
+                await router.push({
+                    name: "login"
+                })
+            }
         }
     },
 });

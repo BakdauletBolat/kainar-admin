@@ -52,7 +52,10 @@ const create = (values: any) => {
     router.push({
       name: 'warehouses-list'
     })
-  }).finally(() => {
+  }).catch(e=>{
+    throw e;
+  })
+      .finally(() => {
     isLoading.value = false;
   });
 }

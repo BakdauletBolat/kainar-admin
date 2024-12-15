@@ -286,6 +286,7 @@ const handleSubmit = () => {
         })
         .catch((e) => {
             message.error(e);
+            throw e;
         })
         .finally(() => {
             isLoading.value = false;

@@ -122,7 +122,7 @@ const onChangedPage = (page: number) => {
 }
 
 onMounted(() => {
-  const page = route.query.page != undefined ? parseInt(route.query.page.toString()) : 1
+  const page = route.query.page != null ? parseInt(route.query.page.toString()) : 1
   warehouseStore.loadWarehouses({ page: page, page_size: paginationReactive.pageSize }).then((_) => {
     paginationReactive.itemCount = warehouseStore.itemCount
   })

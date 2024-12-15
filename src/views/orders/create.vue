@@ -143,6 +143,7 @@ function submitForm() {
     })
   }).catch((e)=>{
     message.error(e.toString())
+    throw e;
   })
 }
 

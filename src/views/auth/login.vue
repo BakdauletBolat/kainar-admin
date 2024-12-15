@@ -79,13 +79,12 @@ async function onClickLogin() {
           //@ts-ignore
           messageText = error.response!.data!.message;
         }
-
         message.error(messageText)
+        throw error;
       }
     }
     else {
-      console.log(errors);
-      message.error("Введите все поля")
+      message.error("Введите все поля");
     }
   })
 

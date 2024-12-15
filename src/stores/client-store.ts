@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import axiosInstance from "@/apis";
 import generateQuery from "@/utils/generateQuery.ts";
+import {useAuthStore} from "@/stores/auth-store.ts";
+import {useRouter} from "vue-router";
 
 export interface Client {
     city: undefined;
@@ -32,7 +34,15 @@ export const useClientStore = defineStore("client-store", {
                     this.clients = res.data.results;
                     this.clientsCount = res.data.count;
                     return res.data.results;
-                }).finally(() => {
+                })
+                .catch(e=>{
+                    if (e.response.status === 401) {
+                        const authStore = useAuthStore();
+                        const router = useRouter();
+                        authStore.logout(router);
+                    }
+                })
+                .finally(() => {
                     this.isLoadingClients = false;
                 });
         }

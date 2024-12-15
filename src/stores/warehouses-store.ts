@@ -2,6 +2,8 @@ import generateQuery from "@/utils/generateQuery";
 import { defineStore } from "pinia";
 import axiosIns from "@/apis";
 import { Category } from "./category-storage";
+import {useAuthStore} from "@/stores/auth-store.ts";
+import {useRouter} from "vue-router";
 
 const getWarehouses = (object: any) => {
   const query = generateQuery(object);
@@ -46,7 +48,13 @@ export const useWarehouseStore = defineStore("warehouse-store", {
         .then((res) => {
           this.warehouses = res.data.results;
           this.itemCount = res.data.count;
-        })
+        }).catch((e)=>{
+            if (e.response.status === 401) {
+              const authStore = useAuthStore();
+              const router = useRouter();
+              authStore.logout(router);
+            }
+          })
         .finally(() => {
           this.isLoading = false;
         });
@@ -57,19 +65,19 @@ export const useWarehouseStore = defineStore("warehouse-store", {
         .then((res) => {
           this.warehouse = res.data;
         })
+          .catch((e)=>{
+            if (e.response.status === 401) {
+              const authStore = useAuthStore();
+              const router = useRouter();
+              authStore.logout(router);
+            }
+          })
         .finally(() => (this.isLoading = false));
     },
     async removeWarehouse(id: string) {
       this.isLoading = false;
       await axiosIns.delete(`/api/admin/stock/warehouses/${id}/`);
-    },
-    getByIdWarehouse(id: string) {
-      const index = this.warehouses.findIndex((item) => item.id == id);
-      if (index != -1) {
-        return this.warehouses[index].name;
-      }
-      return "";
-    },
+    }
   },
   getters: {
     warehousesOptions: (state) =>

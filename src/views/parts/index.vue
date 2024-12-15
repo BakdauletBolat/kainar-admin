@@ -1,39 +1,10 @@
-<template>
-  <n-page-header class="mb-4">
-    <template #title>
-      Запчасти
-    </template>
-    <template #subtitle>
-      {{ paginationReactive.itemCount }}
-    </template>
-    <template #extra>
-      <div>
-        <n-button @click="createNavigate" type="primary" round>Создать</n-button>
-      </div>
-    </template>
-  </n-page-header>
-  <main class="grid pb-10">
-    <parts-filter></parts-filter>
-    <div>
-      <n-data-table remote
-                    ref="table"
-                    :loading="productStore.isLoadingProducts"
-                    :columns="columns"
-                    :data="productStore.products"
-                    :pagination="paginationReactive"
-                    :row-key="rowKey"
-                    @update:filters="handleFiltersChange"
-                    @update:checked-row-keys="handleCheck"
-                    @update:sorter="handleSorterChange" />
-    </div>
-  </main>
-</template>
+
 <script setup lang="ts">
+import PartsFilter from '@/components/Parts/PartsFilter.vue';
 import { onMounted, h, reactive, watch } from 'vue';
 import { NDataTable, NAvatar, NH6, NTag, NPageHeader, NButton } from 'naive-ui';
 import { getFirstElementArray } from '@/utils/getFirstElementFromArray.ts';
 import { useRoute, RouterLink, useRouter } from 'vue-router';
-import PartsFilter from '@/components/Parts/PartsFilter.vue';
 import type { DataTableColumns } from 'naive-ui'
 import { useProductStore } from "@/stores/product-store.ts";
 import { useFilterStore } from "@/stores/filter-store.ts";
@@ -75,38 +46,38 @@ function createColumns(): DataTableColumns<RowData> {
         const image = getFirstElementArray(row.pictures);
         const imageUrl = image ? image.image : undefined
         return h(
-          RouterLink,
-          {
-            class: "gap-3 grid lg:grid-cols-[100px_1fr]",
-            to: {
-              name: 'parts-detail',
-              params: {
-                id: row.id
-              }
-            },
-            default: () => row.name
-          },
-          {
-            default: () => [
-              h(
-                NAvatar,
-                {
-                  objectFit: 'cover',
-                  src: imageUrl,
-                  size: 100
+            RouterLink,
+            {
+              class: "gap-3 grid lg:grid-cols-[100px_1fr]",
+              to: {
+                name: 'parts-detail',
+                params: {
+                  id: row.id
                 }
-              ),
-              h('div', {}, [
-                h(NH6, {}, {
-                  default: () => row.name
-                }),
+              },
+              default: () => row.name
+            },
+            {
+              default: () => [
+                h(
+                    NAvatar,
+                    {
+                      objectFit: 'cover',
+                      src: imageUrl,
+                      size: 100
+                    }
+                ),
                 h('div', {}, [
-                  h('div', {}, { default: () => `${row.modelCar.name} ${row.modelCar.startDate}` }),
-                  h('div', {}, { default: () => '2001 АКПП LHD ' })
+                  h(NH6, {}, {
+                    default: () => row.name
+                  }),
+                  h('div', {}, [
+                    h('div', {}, { default: () => `${row.modelCar.name} ${row.modelCar.startDate}` }),
+                    h('div', {}, { default: () => '2001 АКПП LHD ' })
+                  ])
                 ])
-              ])
-            ]
-          }
+              ]
+            }
         )
       }
     },
@@ -226,7 +197,7 @@ const rowKey = (row: RowData) => {
 
 function handleFiltersChange(filters: any) {
   if (filters?.status != undefined) {
-      productStore.loadProducts({ ...filterStore.filterValues, status: filters.status })
+    productStore.loadProducts({ ...filterStore.filterValues, status: filters.status })
   }
 }
 
@@ -249,3 +220,33 @@ onMounted(() => {
 });
 
 </script>
+<template>
+  <n-page-header class="mb-4">
+    <template #title>
+      Запчасти
+    </template>
+    <template #subtitle>
+      {{ paginationReactive.itemCount }}
+    </template>
+    <template #extra>
+      <div>
+        <n-button @click="createNavigate" type="primary" round>Создать</n-button>
+      </div>
+    </template>
+  </n-page-header>
+  <main class="grid pb-10">
+    <parts-filter></parts-filter>
+    <div>
+      <n-data-table remote
+                    ref="table"
+                    :loading="productStore.isLoadingProducts"
+                    :columns="columns"
+                    :data="productStore.products"
+                    :pagination="paginationReactive"
+                    :row-key="rowKey"
+                    @update:filters="handleFiltersChange"
+                    @update:checked-row-keys="handleCheck"
+                    @update:sorter="handleSorterChange" />
+    </div>
+  </main>
+</template>

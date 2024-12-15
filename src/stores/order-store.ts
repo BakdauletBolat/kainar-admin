@@ -2,6 +2,8 @@ import {defineStore} from "pinia";
 import {getOrders} from "@/apis/orders.ts";
 import {Order} from '@/apis/domain';
 import axiosIns from "@/apis";
+import {useAuthStore} from "@/stores/auth-store.ts";
+import {useRouter} from "vue-router";
 
 
 interface Goods {
@@ -45,7 +47,15 @@ export const useOrderStore = defineStore("order-store", {
                 //@ts-ignore
                 this.orders = res.data.results;
                 return res.data;
-            }).finally(() => {
+            })
+                .catch(e=>{
+                    if (e.response.status === 401) {
+                        const authStore = useAuthStore();
+                        const router = useRouter();
+                        authStore.logout(router);
+                    }
+                })
+                .finally(() => {
                 this.isLoadingOrders = false;
             })
         },
@@ -53,7 +63,15 @@ export const useOrderStore = defineStore("order-store", {
             this.isLoadingOrders = true;
             axiosIns.get(`/api/admin/orders/${pk}/`).then(res=>{
                 this.order = res.data;
-            }).finally(()=>{
+            })
+                .catch(e=>{
+                    if (e.response.status === 401) {
+                        const authStore = useAuthStore();
+                        const router = useRouter();
+                        authStore.logout(router);
+                    }
+                })
+                .finally(()=>{
                 this.isLoadingOrders = false;
             })
         },
@@ -63,7 +81,11 @@ export const useOrderStore = defineStore("order-store", {
                 return res.data;
             })
                 .catch(e => {
-                    console.log(e)
+                    if (e.response.status === 401) {
+                        const authStore = useAuthStore();
+                        const router = useRouter();
+                        authStore.logout(router);
+                    }
                 })
         }
     }
