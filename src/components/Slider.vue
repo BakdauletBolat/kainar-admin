@@ -183,13 +183,13 @@ function confirmDelete() {
         const index = props.pictures.findIndex(picture => picture.id === pictureToDelete.value);
         if (index !== -1) {
             isLoadingRemovePicture.value = true;
-            axiosIns.delete(`/api/product/image/${props.pictures[index].id}/`)
+            axiosIns.delete(`/api/admin/product/image/${props.pictures[index].id}/`)
                 .then((_) => {
                     message.success('Изображение удалено');
                     props.pictures.splice(index, 1);
                 })
                 .catch(e => {
-                    message.success('Ошибка при удалении ' + e.toString());
+                    message.error('Ошибка при удалении ' + e.toString());
                 })
                 .finally(() => {
                     isLoadingRemovePicture.value = false;
@@ -211,7 +211,7 @@ const confirmUpload = async () => {
 
     try {
         isLoadingUploadPicture.value = true;
-        await axiosIns.post('/api/product/image/', formData, {
+        await axiosIns.post('/api/admin/product/image/', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'accept': 'application/json'

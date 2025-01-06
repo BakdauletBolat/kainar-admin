@@ -12,7 +12,7 @@
       <n-form-item label="Искать по модели" path="modelCar">
         <n-select placeholder="Выберите варианты" filterable
                   :options="manufacturerStore.modelCarOptions"
-                  v-model:value="filterStore.filterValues.modification" />
+                  v-model:value="filterStore.filterValues.modelCar" />
       </n-form-item>
     </div>
     <div>

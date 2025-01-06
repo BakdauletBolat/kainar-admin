@@ -15,7 +15,7 @@
     "@vicons/ionicons5": "^0.12.0",
     "@vueuse/core": "^11.1.0",
     "axios": "^1.6.7",
-    "flowbite-vue": "^0.1.2",
+    "flowbite-vue": "^0.0.7",
     "imask": "^7.6.1",
     "pinia": "^2.2.2",
     "rollbar": "^2.26.4",

@@ -60,7 +60,7 @@ const uploadImages = async () => {
     }
 
     try {
-        const response = await axiosIns.post('/api/product/image/', formData, {
+        const response = await axiosIns.post('/admin/product/image/', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'accept': 'application/json'

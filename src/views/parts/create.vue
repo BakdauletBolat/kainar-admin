@@ -34,6 +34,7 @@ import { NPageHeader, NStep, NSteps, NCard } from "naive-ui";
 import {useRoute, useRouter} from "vue-router";
 import {CreateForm, Manufacturers, Modifications, AssignWarehouse, current, setCurrent} from "./create-steps";
 import {onMounted} from "vue";
+
 const router = useRouter();
 const route = useRoute();
 

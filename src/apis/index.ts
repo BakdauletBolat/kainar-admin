@@ -14,9 +14,8 @@ axiosIns.interceptors.request.use((config)=>{
 })
 
 axiosIns.interceptors.response.use(response=>{
-	if (response.status > 201) {
-		console.log("Testing")
-		throw new Error("Testing")
+	if (response.status == 500) {
+		throw new Error(response.data)
 	}
 	return response;
 })
