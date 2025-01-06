@@ -1,5 +1,29 @@
 <template>
   <main>
+    <n-modal v-model:show="showModal">
+      <n-card
+        style="width: 600px"
+        title="Вы хотите сделать возврат?"
+        :bordered="false"
+        size="huge"
+        role="dialog"
+        aria-modal="true"
+      >
+        <n-input v-model:value="comment" placeholder="Причина возврата"></n-input>
+        <template #footer>
+          <div class="w-full flex gap-2 justify-end">
+            <n-button @click="showModal = false">Отмена</n-button>
+            <n-button :loading="orderStore.isLoadingRefundOrder" 
+            type="error" @click="()=>orderStore.refundOrder(comment).then(_=>{
+              showModal=false;
+              message.success('Заказ успешно возвращен');
+            }).catch(e=>{
+              message.error(`Ошибка возврата заказа ${e}`);
+            })">Подтвердить</n-button>
+          </div>
+        </template>
+      </n-card>
+  </n-modal>
     <n-page-header class="mb-4" @back="handleBack">
       <template #title>
         <n-ellipsis style="max-width: 240px">
@@ -11,7 +35,12 @@
       </template>
     </n-page-header>
     <section>
-        <h1 class="text-2xl font-bold mb-4">Детали заказа</h1>
+          <div class="flex w-full justify-between">
+            <h1 class="text-2xl font-bold mb-4">Детали заказа</h1>
+            <div>
+              <n-button @click="showModal=true">Сделать возврат</n-button>
+            </div>
+          </div>
           <section class="grid gap-2 grid-cols-[2fr_1fr]">
               <article class="grid gap-2">
                 <n-table bordered single-column>
@@ -102,9 +131,11 @@
   </main>
 </template>
 <script setup lang="ts">
-import {NPageHeader, NEllipsis, NCard, NTimeline, NDivider, NTimelineItem, NTable,  NIcon, NAvatar} from "naive-ui";
+import {NPageHeader, NEllipsis, NCard, NTimeline, NDivider, NTimelineItem, NTable,  NIcon, NAvatar,
+       NButton, NModal, NInput,
+       useMessage} from "naive-ui";
 import {useRoute, useRouter} from "vue-router";
-import {onMounted} from "vue";
+import {onMounted, ref} from "vue";
 import {useOrderStore} from "@/stores/order-store.ts";
 import TengeAmount from "@/components/TengeAmount.vue";
 import {Person} from '@vicons/ionicons5';
@@ -113,6 +144,9 @@ import {Person} from '@vicons/ionicons5';
 const router = useRouter();
 const route = useRoute();
 const orderStore = useOrderStore();
+const showModal = ref(false);
+const comment = ref('');
+const message = useMessage();
 
 
 function getPaymentTypeStatus(): [any, string] {

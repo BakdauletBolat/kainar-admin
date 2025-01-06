@@ -32,7 +32,8 @@ export const useOrderStore = defineStore("order-store", {
             orders: [] as Order[],
             order: null as Order | null,
             isLoadingOrders: false,
-            isLoadingCreate: false
+            isLoadingCreate: false,
+            isLoadingRefundOrder: false
         }
     },
     getters: {
@@ -74,6 +75,33 @@ export const useOrderStore = defineStore("order-store", {
                 .finally(()=>{
                 this.isLoadingOrders = false;
             })
+        },
+        async refundOrder(comment: string) {
+            this.isLoadingRefundOrder = true;
+            const body = {
+                comment: comment,
+                warehouse_id: this.order?.warehouse.id,
+                refund_order_id: this.order?.id,
+                goods: this.order?.goods.map((good)=>{
+                    return {
+                        product_id: good.product.id,
+                        quantity: good.quantity,
+                        quality_id: 1
+                    }
+                })
+            }
+            return axiosIns.post('/api/admin/orders/refund/', body).then(_ => {
+                this.loadOrder(this.order!.id.toString());
+            })
+                .catch(e=>{
+                    if (e.response.status === 401) {
+                        const authStore = useAuthStore();
+                        const router = useRouter();
+                        authStore.logout(router);
+                    }
+                    throw e;
+                })
+                .finally(()=>{this.isLoadingRefundOrder = false;})
         },
         async createOrder(body: CreateBodyInterface) {
             this.isLoadingCreate = true;
