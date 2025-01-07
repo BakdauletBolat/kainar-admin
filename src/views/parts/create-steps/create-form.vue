@@ -278,7 +278,7 @@ const handleSubmit = () => {
     isLoading.value = true;
 
     axiosIns
-        .post(`/api/v2/product/create/`, form.value)
+        .post(`/api/admin/product/v2/product/create/`, form.value)
         .then((res) => {
             router.push({ query: { ...route.query, productId: res.data.id } });
             message.success("Успешно создан продукт");

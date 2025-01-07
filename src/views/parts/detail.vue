@@ -190,7 +190,7 @@ async function loadProduct() {
 
 async function patchProduct(key: string, value: string, productId: number) {
     return await axiosIns
-        .patch(`/api/admin/product/${productId}/update/`, {
+        .patch(`/api/admin/product/v2/product/${productId}/update/`, {
             [key]: value,
         })
         .then((res) => {

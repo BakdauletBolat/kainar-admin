@@ -89,13 +89,13 @@ const debouncedLoadProducts = useDebounceFn((value: string) => {
         page: 1,
         search: value,
         page_size: 10,
-        status: 3
+        status: 2
     });
 }, 500);
 
 
 onMounted(() => {
-    productStore.loadProducts({ page: 1, page_size: 3, status: "5" })
+    productStore.loadProducts({ page: 1, page_size: 3, status: 2 })
 })
 
 </script>

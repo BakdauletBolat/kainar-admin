@@ -39,7 +39,7 @@ onMounted(() => {
 })
 
 function assignWarehouse() {
-  axiosIns.post("/api/v2/product/assign-warehouse/", {
+  axiosIns.post("/api/admin/product/v2/product/assign-warehouse/", {
     warehouse_id:  warehouseId.value,
     product_id: route.query.productId,
   }).then(_ => {
