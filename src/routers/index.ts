@@ -36,6 +36,7 @@ const routes = [
   { path: '/clients/:id',name: 'clients-detail', component: ClientsList },
   { path: '/login', name: 'login', component: Login },
   { path: '/profile', name: 'profile', component: Profile },
+  { path: '/order/list/in-progress',name: 'orders-list-in-progress', component: OrderList },
 ];
 
 

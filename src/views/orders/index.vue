@@ -169,8 +169,15 @@ const rowKey = (row: Order) => {
 }
 
 const onChangedPage = (page: number) => {
-  orderStore.loadOrders({ page: page,
-    page_size: paginationReactive.pageSize }).then(res=>{
+  const filterOrder: any = { page: page, page_size: paginationReactive.pageSize, status: null }
+
+  const status = route.path.includes('in-progress') 
+
+  if (status) {
+    filterOrder.status = 1;
+  }
+
+  orderStore.loadOrders(filterOrder).then(res=>{
     //@ts-ignore
     paginationReactive.itemCount = res.count;
 
@@ -184,12 +191,28 @@ watch(filterStore.filterValues, (state) => {
   });
 });
 
-onMounted(() => {
+function loadOrders() {
   const page = route.query.page != null ? parseInt(route.query.page.toString()) : 1
-  orderStore.loadOrders({ page: page, page_size: 10 }).then(res=>{
+  const filterOrder: any = { page: page, page_size: 10, status: null }
+
+  const status = route.path.includes('in-progress') 
+
+  if (status) {
+    filterOrder.status = 1;
+  }
+
+  orderStore.loadOrders(filterOrder).then(res=>{
     //@ts-ignore
     paginationReactive.itemCount = res.count;
   })
+}
+
+watch(()=>route.path, (_)=>{
+  loadOrders()
+})
+
+onMounted(() => {
+  loadOrders()
 });
 
 </script>
