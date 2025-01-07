@@ -47,6 +47,7 @@
                   <thead>
                   <tr>
                     <th>Фото</th>
+                    <th>Идентификатор товара</th>
                     <th>Название</th>
                     <th>Кол-во</th>
                     <th>Цена</th>
@@ -57,7 +58,8 @@
                     <td>
                       <NAvatar v-if="good.product.pictures.length > 0" :src="good.product.pictures[0].image" class="object-cover !w-[140px] !h-[140px]" />
                     </td>
-                    <td>{{good.product.name}}</td>
+                    <td class="font-bold">#{{ good.product.id }}</td>
+                    <td>{{good.product.name}} ({{ good.product.modification?.modelCar?.manufacturer.name }})</td>
                     <td>{{good.quantity}}</td>
                     <td> <tenge-amount :value="good.product.price"></tenge-amount> </td>
                   </tr>

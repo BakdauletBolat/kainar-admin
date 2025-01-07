@@ -22,7 +22,10 @@ interface RowData {
   },
   modelCar: {
     name: string,
-    startDate: string
+    startDate: string,
+    manufacturer: {
+      name: string
+    }
   }
 }
 
@@ -72,7 +75,7 @@ function createColumns(): DataTableColumns<RowData> {
                     default: () => row.name
                   }),
                   h('div', {}, [
-                    h('div', {}, { default: () => `${row.modelCar.name} ${row.modelCar.startDate}` }),
+                    h('div', {}, { default: () => `${row.modelCar.manufacturer.name} ${row.modelCar.name} ${row.modelCar.startDate}` }),
                     h('div', {}, { default: () => '2001 АКПП LHD ' })
                   ])
                 ])

@@ -61,8 +61,10 @@
                         ></comment-component>
                     </n-descriptions-item>
                     <n-descriptions-item label="Дата загрузки">
-                        <!-- {{ product?.created_at }} -->
                         {{ formatDate(product?.created_at) }}
+                    </n-descriptions-item>
+                    <n-descriptions-item label="Объем двигателя, л">
+                        {{ product?.eav_attributes?.capacity }} ({{ product?.eav_attributes?.fuelType }})
                     </n-descriptions-item>
                 </n-descriptions>
             </n-card>

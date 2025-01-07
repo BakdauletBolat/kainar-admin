@@ -1,4 +1,5 @@
 <template>
+    <div>
     <div v-if="pictures.length > 0" class="w-full flex flex-col gap-3">
         <div class="w-full relative">
             <Flicking @changed="onChange" class="rounded-sm" ref="flicking" :options="{
@@ -73,6 +74,7 @@
 
         </template>
     </n-modal>
+</div>
 </template>
 
 <script setup lang="ts">

@@ -53,7 +53,13 @@ interface Product {
     color: string | null;
     category: Category;
     code: any[];
-    modification: string | null;
+    modification: {
+        modelCar: {
+            manufacturer: {
+                name: string;
+            };
+        }
+    };
     detail: ProductDetail;
     status: string;
     pictures: Picture[];
