@@ -31,6 +31,7 @@ import type { DataTableColumns } from 'naive-ui'
 import { useFilterStore } from "@/stores/filter-store.ts";
 import { useOrderStore } from "@/stores/order-store.ts";
 import {Order} from "@/apis/domain";
+import { rand } from '@vueuse/core';
 
 
 const router = useRouter();
@@ -165,7 +166,8 @@ const filterStore = useFilterStore();
 
 
 const rowKey = (row: Order) => {
-  return row.id
+  console.log(row.id)
+  return row.id+`${rand(1,10000)}`
 }
 
 const onChangedPage = (page: number) => {
