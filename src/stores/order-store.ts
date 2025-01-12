@@ -33,7 +33,10 @@ export const useOrderStore = defineStore("order-store", {
             order: null as Order | null,
             isLoadingOrders: false,
             isLoadingCreate: false,
-            isLoadingRefundOrder: false
+            isLoadingRefundOrder: false,
+            isLoadingConfirmPaymentOrder: false,
+            isLoadingConfirmOrder: false,
+            isLoadingCancelOrder: false
         }
     },
     getters: {
@@ -102,6 +105,56 @@ export const useOrderStore = defineStore("order-store", {
                     throw e;
                 })
                 .finally(()=>{this.isLoadingRefundOrder = false;})
+        },
+        async confirmPaymentOrder() {
+            this.isLoadingConfirmPaymentOrder = true;
+            return axiosIns.patch(`/api/admin/orders/${this.order?.id}/`, {
+                payment_status: 2
+            }).then(_ => {
+                this.loadOrder(this.order!.id.toString());
+            })
+                .catch(e=>{
+                    if (e.response.status === 401) {
+                        const authStore = useAuthStore();
+                        const router = useRouter();
+                        authStore.logout(router);
+                    }
+                    throw e;
+                })
+                .finally(()=>{this.isLoadingConfirmPaymentOrder = false;})
+        },
+        async confirmOrder() {
+            this.isLoadingConfirmOrder = true;
+            return axiosIns.post(`/api/admin/orders/${this.order?.id}/confirm/`).then(_ => {
+                this.loadOrder(this.order!.id.toString());
+            })
+                .catch(e=>{
+                    if (e.response.status === 401) {
+                        const authStore = useAuthStore();
+                        const router = useRouter();
+                        authStore.logout(router);
+                    }
+                    throw e;
+                })
+                .finally(()=>{this.isLoadingConfirmOrder = false;})
+        },
+        async cancelOrder() {
+            this.isLoadingCancelOrder = true;
+            return axiosIns.patch(`/api/admin/orders/${this.order?.id}/`, {
+                status: 3,
+                payment_status: 3
+            }).then(_ => {
+                this.loadOrder(this.order!.id.toString());
+            })
+                .catch(e=>{
+                    if (e.response.status === 401) {
+                        const authStore = useAuthStore();
+                        const router = useRouter();
+                        authStore.logout(router);
+                    }
+                    throw e;
+                })
+                .finally(()=>{this.isLoadingCancelOrder = false;})
         },
         async createOrder(body: CreateBodyInterface) {
             this.isLoadingCreate = true;

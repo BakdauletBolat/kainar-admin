@@ -56,7 +56,7 @@ function createColumns(): DataTableColumns<Order> {
         return h(
           RouterLink,
           {
-            class: "gap-3 grid lg:grid-cols-[100px_1fr]",
+            class: "gap-2 grid lg:grid-cols-[70px_1fr]",
             to: {
               name: 'orders-detail',
               params: {
@@ -72,11 +72,13 @@ function createColumns(): DataTableColumns<Order> {
                 {
                   objectFit: 'cover',
                   src: imageUrl,
-                  size: 100
+                  size: 70
                 }
               ),
               h('div', {}, [
-                h(NH6, {}, {
+                h(NH6, {
+                  class: "!mb-2"
+                }, {
                   default: () => row.goods[0].product.name
                 }),
                 h('div', {}, {
@@ -91,6 +93,10 @@ function createColumns(): DataTableColumns<Order> {
     {
       title: "ID",
       key: "id"
+    },
+    {
+      title: "Клиент",
+      key: "first_name"
     },
     {
       title: "Склад",
@@ -166,7 +172,6 @@ const filterStore = useFilterStore();
 
 
 const rowKey = (row: Order) => {
-  console.log(row.id)
   return row.id+`${rand(1,10000)}`
 }
 
