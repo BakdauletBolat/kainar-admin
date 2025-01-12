@@ -105,7 +105,7 @@ function patchWarehouse(id: string, body: Object) {
 
 // Метод для отправки формы
 const submitForm = () => {
-    (formRef.value as InstanceType<typeof NForm>).validate((errors) => {
+    (formRef.value as InstanceType<typeof NForm>).validate((errors: any) => {
         if (!errors) {
             // Обработка отправки формы
             patchWarehouse(warehouseStore.warehouse.id, {
