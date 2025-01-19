@@ -140,10 +140,7 @@ export const useOrderStore = defineStore("order-store", {
         },
         async cancelOrder() {
             this.isLoadingCancelOrder = true;
-            return axiosIns.patch(`/api/admin/orders/${this.order?.id}/`, {
-                status: 3,
-                payment_status: 3
-            }).then(_ => {
+            return axiosIns.delete(`/api/admin/orders/${this.order?.id}/`).then(_ => {
                 this.loadOrder(this.order!.id.toString());
             })
                 .catch(e=>{

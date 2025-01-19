@@ -23,15 +23,16 @@
   </main>
 </template>
 <script setup lang="ts">
-import { onMounted, h, reactive, watch } from 'vue';
-import { NDataTable, NAvatar, NH6, NTag, NPageHeader, NButton } from 'naive-ui';
-import { getFirstElementArray } from '@/utils/getFirstElementFromArray.ts';
-import { useRoute, RouterLink, useRouter } from 'vue-router';
-import type { DataTableColumns } from 'naive-ui'
-import { useFilterStore } from "@/stores/filter-store.ts";
-import { useOrderStore } from "@/stores/order-store.ts";
+import {onMounted, h, reactive, watch} from 'vue';
+import {NDataTable, NAvatar, NH6, NTag, NPageHeader, NButton} from 'naive-ui';
+import {getFirstElementArray} from '@/utils/getFirstElementFromArray.ts';
+import {useRoute, RouterLink, useRouter} from 'vue-router';
+import type {DataTableColumns} from 'naive-ui'
+import {useFilterStore} from "@/stores/filter-store.ts";
+import {useOrderStore} from "@/stores/order-store.ts";
 import {Order} from "@/apis/domain";
-import { rand } from '@vueuse/core';
+import {rand} from '@vueuse/core';
+import {timeAgo} from "@/utils/formatDate.ts";
 
 
 const router = useRouter();
@@ -54,39 +55,39 @@ function createColumns(): DataTableColumns<Order> {
         const image = getFirstElementArray(row.goods[0].product.pictures);
         const imageUrl = image ? image.image : undefined
         return h(
-          RouterLink,
-          {
-            class: "gap-2 grid lg:grid-cols-[70px_1fr]",
-            to: {
-              name: 'orders-detail',
-              params: {
-                id: row.id
-              }
-            },
-            default: () => row.id
-          },
-          {
-            default: () => [
-              h(
-                NAvatar,
-                {
-                  objectFit: 'cover',
-                  src: imageUrl,
-                  size: 70
+            RouterLink,
+            {
+              class: "gap-2 grid lg:grid-cols-[70px_1fr]",
+              to: {
+                name: 'orders-detail',
+                params: {
+                  id: row.id
                 }
-              ),
-              h('div', {}, [
-                h(NH6, {
-                  class: "!mb-2"
-                }, {
-                  default: () => row.goods[0].product.name
-                }),
-                h('div', {}, {
-                  default: () => `${row.goods.length} штук (${row.total}KZT)`
-                })
-              ])
-            ]
-          }
+              },
+              default: () => row.id
+            },
+            {
+              default: () => [
+                h(
+                    NAvatar,
+                    {
+                      objectFit: 'cover',
+                      src: imageUrl,
+                      size: 70
+                    }
+                ),
+                h('div', {}, [
+                  h(NH6, {
+                    class: "!mb-2"
+                  }, {
+                    default: () => row.goods[0].product.name
+                  }),
+                  h('div', {}, {
+                    default: () => `${row.goods.length} штук (${row.total}KZT)`
+                  })
+                ])
+              ]
+            }
         )
       }
     },
@@ -103,10 +104,17 @@ function createColumns(): DataTableColumns<Order> {
       key: "warehouse.name"
     },
     {
+      title: "Дата обновление",
+      key: "updated_at",
+      render(row) {
+        return h('div', {}, {default: () => `${timeAgo(new Date(row.updated_at))}`})
+      }
+    },
+    {
       title: "Цена",
       key: "price",
       render(row) {
-        return h('div', {}, { default: () => `${row.total ?? 0} ₸` })
+        return h('div', {}, {default: () => `${row.total ?? 0} ₸`})
       }
     },
     {
@@ -124,7 +132,7 @@ function createColumns(): DataTableColumns<Order> {
         if (row.status == 'В процессе') {
           typeLabel = 'warning'
         }
-        return h(NTag, { type: typeLabel }, { default: () => row.status })
+        return h(NTag, {type: typeLabel}, {default: () => row.status})
       }
     },
     {
@@ -138,7 +146,7 @@ function createColumns(): DataTableColumns<Order> {
         if (row.payment_status == 'В ожидании') {
           typeLabel = 'warning'
         }
-        return h(NTag, { type: typeLabel }, { default: () => row.payment_status })
+        return h(NTag, {type: typeLabel}, {default: () => row.payment_status})
       }
     }
   ]
@@ -151,7 +159,7 @@ const paginationReactive = reactive({
   showSizePicker: true,
   itemCount: 0,
   pageSizes: [5, 10, 25, 50, 100],
-  prefix({ itemCount }: any) {
+  prefix({itemCount}: any) {
     return `Всего ${itemCount} заказов`
   },
   onChange: (page: number) => {
@@ -172,19 +180,19 @@ const filterStore = useFilterStore();
 
 
 const rowKey = (row: Order) => {
-  return row.id+`${rand(1,10000)}`
+  return row.id + `${rand(1, 10000)}`
 }
 
 const onChangedPage = (page: number) => {
-  const filterOrder: any = { page: page, page_size: paginationReactive.pageSize, status: null }
+  const filterOrder: any = {page: page, page_size: paginationReactive.pageSize, status: null}
 
-  const status = route.path.includes('in-progress') 
+  const status = route.path.includes('in-progress')
 
   if (status) {
     filterOrder.status = 1;
   }
 
-  orderStore.loadOrders(filterOrder).then(res=>{
+  orderStore.loadOrders(filterOrder).then(res => {
     //@ts-ignore
     paginationReactive.itemCount = res.count;
 
@@ -192,7 +200,7 @@ const onChangedPage = (page: number) => {
 }
 
 watch(filterStore.filterValues, (state) => {
-  orderStore.loadOrders(state).then(res=>{
+  orderStore.loadOrders(state).then(res => {
     //@ts-ignore
     paginationReactive.itemCount = res.count;
   });
@@ -200,21 +208,21 @@ watch(filterStore.filterValues, (state) => {
 
 function loadOrders() {
   const page = route.query.page != null ? parseInt(route.query.page.toString()) : 1
-  const filterOrder: any = { page: page, page_size: 10, status: null }
+  const filterOrder: any = {page: page, page_size: 10, status: null}
 
-  const status = route.path.includes('in-progress') 
+  const status = route.path.includes('in-progress')
 
   if (status) {
     filterOrder.status = 1;
   }
 
-  orderStore.loadOrders(filterOrder).then(res=>{
+  orderStore.loadOrders(filterOrder).then(res => {
     //@ts-ignore
     paginationReactive.itemCount = res.count;
   })
 }
 
-watch(()=>route.path, (_)=>{
+watch(() => route.path, (_) => {
   loadOrders()
 })
 
