@@ -219,7 +219,7 @@ watch(()=> productStore.productsCount, (state, oldValue)=> {
 onMounted(() => {
   filterStore.clearValues();
   const page = route.query.page != null ? parseInt(route.query.page.toString()) : 1
-  productStore.loadProducts({ ...filterStore.filterValues, page: page, page_size: 10 }).then(data=>{
+  productStore.loadProducts({ ...filterStore.filterValues, page: page, page_size: 10 }).then((data: any)=>{
     paginationReactive.itemCount = data.count;
   })
 });
