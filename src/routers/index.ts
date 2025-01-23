@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router"
+
 import WarehouseList from "@/views/warehouses/index.vue";
 import WarehouseCreate from "@/views/warehouses/create.vue";
 import WarehouseEdit from "@/views/warehouses/edit.vue";
@@ -12,8 +13,12 @@ import PartsCreate from "@/views/parts/create.vue";
 import PartsEdit from "@/views/parts/edit.vue";
 import PartsDetail from "@/views/parts/detail.vue";
 import ClientsList from "@/views/clients/index.vue";
+import FeedbackList from "@/views/feedbacks/index.vue";
+
 import Login from "@/views/auth/login.vue";
 import Profile from "@/views/auth/profile.vue";
+
+
 
 import {useAuthStore} from "@/stores/auth-store.ts";
 
@@ -34,6 +39,7 @@ const routes = [
   { path: '/warehouse/:id',name: 'warehouses-detail', component: WarehouseDetail },
   { path: '/clients/list',name: 'clients-list', component: ClientsList },
   { path: '/clients/:id',name: 'clients-detail', component: ClientsList },
+  { path: '/feedbacks/list', name: 'feedbacks-list', component: FeedbackList},
   { path: '/login', name: 'login', component: Login },
   { path: '/profile', name: 'profile', component: Profile },
   { path: '/order/list/in-progress',name: 'orders-list-in-progress', component: OrderList },

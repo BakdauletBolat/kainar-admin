@@ -29,18 +29,40 @@
   </n-config-provider>
 </template>
 <script setup lang="ts">
-import { NMessageProvider, NConfigProvider, NLayout, NMenu, NLayoutSider, NIcon } from 'naive-ui';
-import { Component, h, ref } from 'vue'
+import { NMessageProvider, NConfigProvider, NLayout, NMenu, NLayoutSider, NIcon, NBadge } from 'naive-ui';
+import {Component, h, onMounted, ref} from 'vue'
 import type { MenuOption } from 'naive-ui'
 
 //@ts-ignore
 import { CaretDownOutline } from '@vicons/ionicons5';
 
-import {CogIcon, ShoppingCartIcon, InboxIcon, UsersIcon, UserIcon, ShoppingBagIcon} from '@heroicons/vue/24/outline';
+import {CogIcon, ShoppingCartIcon, InboxIcon, UsersIcon, UserIcon,
+  ShoppingBagIcon, QuestionMarkCircleIcon} from '@heroicons/vue/24/outline';
 import { RouterLink } from "vue-router";
 import Logo from "@/assets/new-logo.png";
 import Avatar from "@/components/Avatar.vue";
 import BottomAppBar from './components/BottomAppBar.vue';
+import axiosIns from "@/apis";
+
+
+interface DashboardInfo {
+  orders_count: number;
+  orders_inprogress_count: number;
+  parts_count: number;
+  sale_for_today: number;
+
+}
+const dashboardInfo = ref<DashboardInfo>({
+  orders_inprogress_count: 0,
+  orders_count: 0,
+  parts_count: 0,
+  sale_for_today: 0,
+});
+
+onMounted(async ()=>{
+  const res = await axiosIns.get("/api/admin/dashboard-info/");
+  dashboardInfo.value = res.data;
+})
 
 const themeOverrides = {
   common: {
@@ -56,6 +78,16 @@ const collapsed = ref(true);
 
 function renderIcon(icon: Component) {
   return () => h(NIcon, null, { default: () => h(icon) })
+}
+
+function renderOrdersInProgressIcon(icon: Component) {
+  return () => h(
+      NBadge, {
+        value: dashboardInfo.value.orders_inprogress_count
+      }, {
+        default: () => h(NIcon, null, { default: () => h(icon) })
+      }
+  )
 }
 
 function expandIcon() {
@@ -103,7 +135,7 @@ const menuOptions: MenuOption[] = [
         { default: () => 'Заказы в процессе' }
       ),
     key: 'orders-list-in-progress',
-    icon: renderIcon(ShoppingBagIcon)
+    icon: renderOrdersInProgressIcon(ShoppingBagIcon)
   },
   {
     label: () =>
@@ -146,6 +178,20 @@ const menuOptions: MenuOption[] = [
         ),
     key: 'profile',
     icon: renderIcon(UserIcon)
+  },
+  {
+    label: () =>
+        h(
+            RouterLink,
+            {
+              to: {
+                name: 'feedbacks-list'
+              },
+            },
+            { default: () => 'Заявки' }
+        ),
+    key: 'feedbacks-list',
+    icon: renderIcon(QuestionMarkCircleIcon)
   },
 ]
 

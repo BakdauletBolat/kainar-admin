@@ -169,7 +169,7 @@ const paginationReactive = reactive({
   page: 1,
   pageSize: 10,
   showSizePicker: true,
-  itemCount: 168,
+  itemCount: 0,
   pageSizes: [5, 10, 25, 50, 100],
   prefix({ itemCount }: any) {
     return `Всего ${itemCount} запчастей`
@@ -219,7 +219,9 @@ watch(()=> productStore.productsCount, (state, oldValue)=> {
 onMounted(() => {
   filterStore.clearValues();
   const page = route.query.page != null ? parseInt(route.query.page.toString()) : 1
-  productStore.loadProducts({ ...filterStore.filterValues, page: page, page_size: 10 })
+  productStore.loadProducts({ ...filterStore.filterValues, page: page, page_size: 10 }).then(data=>{
+    paginationReactive.itemCount = data.count;
+  })
 });
 
 </script>

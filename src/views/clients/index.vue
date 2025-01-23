@@ -73,9 +73,9 @@ function createColumns(): DataTableColumns<Client> {
 
 const paginationReactive = reactive({
   page: 1,
-  pageSize: 10,
+  pageSize: 25,
   showSizePicker: true,
-  itemCount: 168,
+  itemCount: 0,
   pageSizes: [5, 10, 25, 50, 100],
   prefix({ itemCount }: any) {
     return `Всего ${itemCount} клиентов`
@@ -107,7 +107,7 @@ const onChangedPage = (page: number) => {
 
 onMounted(() => {
   const page = route.query.page != null ? parseInt(route.query.page.toString()) : 1
-  clientStore.loadClients({page: page, page_size: 10 }).then(_ => {
+  clientStore.loadClients({page: page, page_size: 25 }).then(_ => {
     paginationReactive.itemCount =clientStore.clientsCount;
   });
 });

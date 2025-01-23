@@ -1,4 +1,7 @@
 import axios from 'axios';
+import {useAuthStore} from "@/stores/auth-store.ts";
+import {useRouter} from "vue-router";
+
 
 const axiosIns = axios.create({
 baseURL: 'https://back-kaynar.kz',
@@ -18,6 +21,13 @@ axiosIns.interceptors.response.use(response=>{
 		throw new Error(response.data)
 	}
 	return response;
+}, error => {
+	if (error.status === 403 || error.status === 401) {
+		const authStore = useAuthStore()
+		const router = useRouter()
+		authStore.logout(router);
+	}
+	return Promise.reject(error)
 })
 
 export default axiosIns;

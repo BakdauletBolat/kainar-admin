@@ -20,6 +20,7 @@ export const useProductStore = defineStore("product-store", {
         .then((res) => {
           this.products = res.data.results;
           this.productsCount = res.data.count;
+          return res.data;
         })
         .catch(e=>{
           if (e.response.status === 401) {
