@@ -6,38 +6,64 @@
             </template>
         </n-page-header>
         <section>
-            <n-form :model="warehouseStore.warehouse" ref="formRef">
-                <n-form-item label="ID" path="id">
-                    <n-input v-model:value="warehouseStore.warehouse.id" disabled />
-                </n-form-item>
-
-                <n-form-item label="Название" path="name">
-                    <n-input v-model:value="warehouseStore.warehouse.name" />
-                </n-form-item>
-
-                <n-form-item v-if="warehouseStore.warehouse.city" label="Город" path="city.id">
-                    <n-select v-model:value="warehouseStore.warehouse.city.id" placeholder="Выбрать город"
-                        :options="cityOptions" />
-                </n-form-item>
-                <n-form-item v-else label="Город" path="city.id">
-                    <n-select v-model:value="city_id" placeholder="Выбрать город" :options="cityOptions" />
-                </n-form-item>
-              <n-form-item label="Категории">
-                <n-select v-model:value="categories" placeholder="Выбрать категории"
-                          multiple
-                          filterable
-                          :options="categoryStore.categoriesOptions" />
-              </n-form-item>
-                <n-form-item label="Минимальный уровень запасов">
-                    <n-input-number v-model:value="warehouseStore.warehouse.min_stock_level" />
-                </n-form-item>
-                <n-button-group>
-                    <n-button :loading="warehouseStore.isLoading" type="primary" @click="submitForm">Обновить</n-button>
-                    <n-button :loading="warehouseStore.isLoading" type="error"
-                        @click="removeWarehouse">Удалить</n-button>
-                </n-button-group>
-
-            </n-form>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <n-spin :show="warehouseStore.isLoading" class="col-span-2">
+                    <n-form :model="warehouseStore.warehouse" ref="formRef">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <n-form-item label="Название" path="name">
+                                    <n-input v-model:value="warehouseStore.warehouse.name" />
+                                </n-form-item>
+                                <n-form-item label="ID" path="id">
+                                    <n-input v-model:value="warehouseStore.warehouse.id" disabled />
+                                </n-form-item>
+                            </div>
+                            <div>
+                                <n-form-item v-if="warehouseStore.warehouse.city" label="Город" path="city.id">
+                                    <n-select v-model:value="warehouseStore.warehouse.city.id" placeholder="Выбрать город"
+                                        :options="cityOptions" />
+                                </n-form-item>
+                                <n-form-item v-else label="Город" path="city.id">
+                                    <n-select v-model:value="city_id" placeholder="Выбрать город" :options="cityOptions" />
+                                </n-form-item>
+                                <n-form-item label="Категории">
+                                    <n-select v-model:value="categories" placeholder="Выбрать категории"
+                                            multiple
+                                            filterable
+                                            :options="categoryStore.categoriesOptions" />
+                                </n-form-item>
+                            </div>
+                            <div>
+                                <n-form-item label="Минимальный уровень запасов">
+                                    <n-input-number v-model:value="warehouseStore.warehouse.min_stock_level" />
+                                </n-form-item>
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-3 mt-6">
+                            <n-button
+                                :loading="warehouseStore.isLoading"
+                                type="primary"
+                                @click="submitForm"
+                            >
+                                Сохранить изменения
+                            </n-button>
+                            <n-button
+                                :loading="warehouseStore.isLoading"
+                                type="error"
+                                secondary
+                                @click="removeWarehouse"
+                            >
+                                Удалить склад
+                            </n-button>
+                        </div>
+                    </n-form>
+                </n-spin>
+                <!-- Третий блок: можно добавить дополнительную информацию о складе или оставить пустым для будущего расширения -->
+                <div class="hidden md:block"></div>
+            </div>
+        </section>
+        <section class="mt-8">
+            <warehouse-products-list :warehouse-id="warehouseStore.warehouse.id" />
         </section>
     </main>
 </template>
@@ -53,11 +79,12 @@ import {
     NPageHeader,
     NSelect,
     useMessage,
-    NButtonGroup
+    NSpin
 } from 'naive-ui';
 import { useWarehouseStore } from '@/stores/warehouses-store';
 import axiosIns from '@/apis';
 import {useCategoryStore} from "@/stores/category-storage.ts";
+import WarehouseProductsList from '@/components/warehouse/WarehouseProductsList.vue'
 
 const warehouseStore = useWarehouseStore();
 const categoryStore = useCategoryStore();

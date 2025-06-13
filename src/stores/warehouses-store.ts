@@ -60,7 +60,7 @@ export const useWarehouseStore = defineStore("warehouse-store", {
         });
     },
     async loadWarehouse(id: number) {
-      this.isLoading = false;
+      this.isLoading = true;
       return await getWarehouse(id)
         .then((res) => {
           this.warehouse = res.data;

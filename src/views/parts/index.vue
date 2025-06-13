@@ -1,8 +1,7 @@
-
 <script setup lang="ts">
 import PartsFilter from '@/components/Parts/PartsFilter.vue';
-import { onMounted, h, reactive, watch } from 'vue';
-import { NDataTable, NAvatar, NH6, NTag, NPageHeader, NButton } from 'naive-ui';
+import { onMounted, h, reactive, watch, ref } from 'vue';
+import { NDataTable, NAvatar, NH6, NTag, NPageHeader, NButton, NPopconfirm } from 'naive-ui';
 import { getFirstElementArray } from '@/utils/getFirstElementFromArray.ts';
 import { useRoute, RouterLink, useRouter } from 'vue-router';
 import type { DataTableColumns } from 'naive-ui'
@@ -190,8 +189,21 @@ const route = useRoute();
 const productStore = useProductStore();
 const filterStore = useFilterStore();
 
-const handleCheck = () => {
+const checkedRowKeys = ref<number[]>([])
 
+const handleCheck = (keys: number[]) => {
+  checkedRowKeys.value = keys
+}
+
+const handleDeleteSelected = async () => {
+  if (!checkedRowKeys.value.length) return
+  try {
+    await productStore.bulkDeleteProducts(checkedRowKeys.value);
+    checkedRowKeys.value = []
+    productStore.loadProducts({ ...filterStore.filterValues, page: paginationReactive.page, page_size: paginationReactive.pageSize })
+  } catch (e) {
+    // Можно добавить обработку ошибок
+  }
 }
 
 const rowKey = (row: RowData) => {
@@ -242,16 +254,29 @@ onMounted(() => {
   <main class="grid pb-10">
     <parts-filter></parts-filter>
     <div>
-      <n-data-table remote
-                    ref="table"
-                    :loading="productStore.isLoadingProducts"
-                    :columns="columns"
-                    :data="productStore.products"
-                    :pagination="paginationReactive"
-                    :row-key="rowKey"
-                    @update:filters="handleFiltersChange"
-                    @update:checked-row-keys="handleCheck"
-                    @update:sorter="handleSorterChange" />
+      <div v-if="checkedRowKeys.length" class="mb-4 flex items-center justify-end gap-2">
+        <n-popconfirm @positive-click="handleDeleteSelected" :negative-text="'Отмена'" :positive-text="'Удалить'">
+          <template #trigger>
+            <n-button type="error" size="small">
+              Удалить выбранные ({{ checkedRowKeys.length }})
+            </n-button>
+          </template>
+          Вы уверены, что хотите удалить выбранные запчасти?
+        </n-popconfirm>
+      </div>
+      <n-data-table
+        remote
+        ref="table"
+        :loading="productStore.isLoadingProducts"
+        :columns="columns"
+        :data="productStore.products"
+        :pagination="paginationReactive"
+        :row-key="rowKey"
+        :checked-row-keys="checkedRowKeys"
+        @update:filters="handleFiltersChange"
+        @update:checked-row-keys="handleCheck"
+        @update:sorter="handleSorterChange"
+      />
     </div>
   </main>
 </template>

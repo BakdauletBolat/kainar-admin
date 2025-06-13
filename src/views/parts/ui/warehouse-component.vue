@@ -3,7 +3,8 @@
         <!-- Выпадающее меню для выбора статуса -->
         <n-popover v-if="warehouse" v-model:show="popoverRef" trigger="click" placement="bottom">
             <template #trigger>
-                <div>{{ warehouse.name }}</div>
+                <div v-if="view_mode == 'named'" class="cursor-pointer">{{ warehouse.name }}</div>
+                <n-button v-if="view_mode == 'to_move'">Переместить</n-button>
             </template>
             <n-card>
                 <div class="flex gap-2 items-start">
@@ -35,7 +36,7 @@ import { NSelect, NPopover, NSpace, NCard, NButton } from 'naive-ui'
 import { useWarehouseStore } from '@/stores/warehouses-store';
 
 // Входные параметры
-const props = defineProps(['warehouse'])
+const props = defineProps(['warehouse', 'view_mode'])
 
 const warehouseStore = useWarehouseStore();
 const popoverRef = ref<boolean>(false);

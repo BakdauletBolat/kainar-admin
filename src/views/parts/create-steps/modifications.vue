@@ -2,8 +2,15 @@
     <div class="flex flex-col gap-6">
 <!--        <n-input @input="searchModifications" placeholder="Искать"></n-input>-->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <SelectCard v-for="(item, index) in modificationStore.modifications" :key="index" :title="getTitle(item)"
-                :logo="item.image" :id="item.id" :is-selected="item.id == modificationId" @confirm="onConfirm" @select="onSelect(item.id)" />
+            <SelectCard 
+                v-for="(item, index) in modificationStore.modifications" 
+                :key="index" :title="getTitle(item)"
+                :logo="item.image" 
+                :id="item.id" 
+                :is-selected="item.id == modificationId" 
+                @confirm="onConfirm" 
+                @select="onSelect(item.id)" 
+            />
         </div>
     </div>
 </template>
@@ -34,7 +41,8 @@ function onConfirm(id: number) {
 }
 
 function getTitle(item: any) {
-    return `${item.modelCar.name}, Тип кузова: ${item.bodyType}, Мощность: ${item.capacity}`
+    console.log("getTitle", item)
+    return `${item.modelCar.name}, ${item.bodyType}, ${item.capacity}лс, ${item.modelCar.startDate}`;
 }
 
 onMounted(() => {

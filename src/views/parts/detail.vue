@@ -51,6 +51,7 @@
                     <n-descriptions-item label="Место нахождения">
                         <warehouse-component
                             @on-changed-prop="onChangeWarehouse"
+                            :view_mode="'named'"
                             :warehouse="product?.warehouse"
                         ></warehouse-component>
                     </n-descriptions-item>

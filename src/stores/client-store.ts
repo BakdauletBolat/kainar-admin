@@ -26,7 +26,8 @@ export const useClientStore = defineStore("client-store", {
     },
     actions: {
         async loadClients(options: any) {
-            options.ordering = '-date_joined'
+            options.ordering = '-id'
+            console.log("Loading clients with options:", options);
             this.isLoadingClients = true;
             const query = generateQuery(options);
             return axiosInstance

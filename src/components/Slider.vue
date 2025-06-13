@@ -1,80 +1,112 @@
 <template>
     <div>
-    <div v-if="pictures.length > 0" class="w-full flex flex-col gap-3">
-        <div class="w-full relative">
-            <Flicking @changed="onChange" class="rounded-sm" ref="flicking" :options="{
-                preventClickOnDrag: true,
-                duration: 100
-            }">
-                <div :key="picture.id" v-for="picture in pictures"
-                    class="panel relative border-b cursor-pointer w-full h-[300px]">
-                    <img alt="s" loading="lazy" class="w-full pointer-events-none h-full object-cover"
-                        :src="picture.image" />
-                    <button @click="showDeleteConfirmation(picture.id)"
-                        class="absolute top-2 right-2 bg-black text-white p-1 rounded">
-                        <TrashIcon class="text-white w-6 h-6"></TrashIcon>
-                    </button>
+        <div v-if="pictures.length > 0 || previewImages.length > 0" class="w-full flex flex-col gap-3">
+            <div class="w-full relative">
+                <Flicking @changed="onChange" class="rounded-sm" ref="flicking" :options="{
+                    preventClickOnDrag: true,
+                    duration: 100
+                }">
+                    <div :key="picture.id" v-for="picture in pictures"
+                        class="panel relative border-b cursor-pointer w-full h-[300px]">
+                        <img alt="s" loading="lazy" class="w-full pointer-events-none h-full object-cover"
+                            :src="picture.image" />
+                        <button @click="showDeleteConfirmation(picture.id)"
+                            class="absolute top-2 right-2 bg-black text-white p-1 rounded">
+                            <TrashIcon class="text-white w-6 h-6"></TrashIcon>
+                        </button>
+                    </div>
+                    <div v-for="(img, idx) in previewImages" :key="'preview-' + idx"
+                        class="panel relative border-b cursor-pointer w-full h-[300px]">
+                        <img alt="preview" loading="lazy" class="w-full pointer-events-none h-full object-cover"
+                            :src="img" />
+                    </div>
+                </Flicking>
+                <div>
+                    <ChevronLeftIcon @click="prev" class="absolute z-10 top-1/2 cursor-pointer w-7 h-7"></ChevronLeftIcon>
+                    <ChevronRightIcon @click="next" class="absolute z-10 top-1/2 right-0 w-7 h-7 cursor-pointer">
+                    </ChevronRightIcon>
                 </div>
-            </Flicking>
-            <div>
-                <ChevronLeftIcon @click="prev" class="absolute z-10 top-1/2 cursor-pointer w-7 h-7"></ChevronLeftIcon>
-                <ChevronRightIcon @click="next" class="absolute z-10 top-1/2 right-0 w-7 h-7 cursor-pointer">
-                </ChevronRightIcon>
             </div>
-        </div>
-        <div class="w-full">
-            <Flicking ref="flicking2" :options="{
-                preventClickOnDrag: true,
-                panelsPerView: 3,
-                duration: 100,
-                bound: true,
-                align: 'center',
-            }">
-                <div @click="currentValue = index" :key="product.id" v-for="(product, index) in pictures"
-                    class="mx-1 rounded-sm border-b overflow-hidden cursor-pointer">
-                    <div class="w-full h-[80px] relative">
-                        <img loading="lazy" class="w-full absolute top-0 left-0 pointer-events-none h-full object-cover"
-                            :src="product.image" />
-                        <div v-if="currentValue == index" class="w-full h-full bg-black opacity-10 absolute top-0">
+            <div class="w-full">
+                <Flicking ref="flicking2" :options="{
+                    preventClickOnDrag: true,
+                    panelsPerView: 3,
+                    duration: 100,
+                    bound: true,
+                    align: 'center',
+                }">
+                    <div @click="currentValue = index" :key="product.id" v-for="(product, index) in pictures"
+                        class="mx-1 rounded-sm border-b overflow-hidden cursor-pointer">
+                        <div class="w-full h-[80px] relative">
+                            <img loading="lazy" class="w-full absolute top-0 left-0 pointer-events-none h-full object-cover"
+                                :src="product.image" />
+                            <div v-if="currentValue == index" class="w-full h-full bg-black opacity-10 absolute top-0">
+                            </div>
                         </div>
                     </div>
-                </div>
-            </Flicking>
+                    <div v-for="(img, idx) in previewImages" :key="'preview-thumb-' + idx"
+                        @click="currentValue = pictures.length + idx"
+                        class="mx-1 rounded-sm border-b overflow-hidden cursor-pointer">
+                        <div class="w-full h-[80px] relative">
+                            <img loading="lazy" class="w-full absolute top-0 left-0 pointer-events-none h-full object-cover"
+                                :src="img" />
+                            <div v-if="currentValue == pictures.length + idx" class="w-full h-full bg-black opacity-10 absolute top-0">
+                            </div>
+                        </div>
+                    </div>
+                </Flicking>
+            </div>
         </div>
-    </div>
-    <div v-else>
-        Нету фотографий
-    </div>
-
-    <div class="w-full mt-4">
-        <label v-if="!selectedFileName" for="file-upload"
-            class="cursor-pointer inline-block bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600">
-            Выбрать фотографию
-        </label>
-        <input id="file-upload" type="file" class="hidden" @change="addPicture" accept="image/*" />
-        <div v-if="selectedFileName" class="mt-2 text-gray-600">Выбранный файл: {{ selectedFileName }}</div>
-        <div v-if="selectedFileName">
-            <n-button :loading="isLoadingUploadPicture" type="primary" @click="confirmUpload">Сохранить</n-button>
+        <div v-else>
+            Нету фотографий
         </div>
-    </div>
-    <!-- Модальное окно для подтверждения удаления -->
-    <n-modal v-model:show="showModal" title="Подтверждение удаления">
-        <template #default>
-            <n-card class="!w-[400px]">
-                <div>
-                    Вы уверены, что хотите удалить это изображение?
-                </div>
-                <div class="gap-2 flex mt-4">
-                    <n-button :loading="isLoadingRemovePicture" @click="confirmDelete" type="error">Удалить</n-button>
-                    <n-button @click="cancelDelete">Отмена</n-button>
-                </div>
-            </n-card>
-        </template>
-        <template #action>
 
-        </template>
-    </n-modal>
-</div>
+        <div class="w-full mt-4">
+            <n-button
+                v-if="!selectedFileNames.length"
+                @click="triggerFileInput"
+                type="primary"
+                class="mb-2"
+            >
+                Загрузить фотографии
+            </n-button>
+            <input
+                id="file-upload"
+                ref="fileInputRef"
+                type="file"
+                class="hidden"
+                @change="addPictures"
+                accept="image/*"
+                multiple
+            />
+            <div v-if="selectedFileNames.length" class="mt-2 text-gray-600">
+                Выбранные файлы:
+                <ul>
+                    <li v-for="name in selectedFileNames" :key="name">{{ name }}</li>
+                </ul>
+            </div>
+            <div class="mt-4" v-if="selectedFileNames.length">
+                <n-button :loading="isLoadingUploadPicture" type="primary" @click="confirmUpload">Сохранить</n-button>
+            </div>
+        </div>
+        <!-- Модальное окно для подтверждения удаления -->
+        <n-modal v-model:show="showModal" title="Подтверждение удаления">
+            <template #default>
+                <n-card class="!w-[400px]">
+                    <div>
+                        Вы уверены, что хотите удалить это изображение?
+                    </div>
+                    <div class="gap-2 flex mt-4">
+                        <n-button :loading="isLoadingRemovePicture" @click="confirmDelete" type="error">Удалить</n-button>
+                        <n-button @click="cancelDelete">Отмена</n-button>
+                    </div>
+                </n-card>
+            </template>
+            <template #action>
+
+            </template>
+        </n-modal>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -103,12 +135,14 @@ const message = useMessage();
 
 const flicking = ref<Flicking | null>(null);
 const flicking2 = ref<Flicking | null>(null);
-const selectedFileName = ref<string | null>(null);
-const selectedFile = ref<any>(null);
 const isLoadingRemovePicture = ref<boolean>(false);
 const isLoadingUploadPicture = ref<boolean>(false);
 const showModal = ref(false); // Отвечает за отображение модального окна
 const pictureToDelete = ref<number | null>(null);
+const fileInputRef = ref<HTMLInputElement | null>(null);
+const selectedFileNames = ref<string[]>([]);
+const selectedFiles = ref<File[]>([]);
+const previewImages = ref<string[]>([]);
 
 watchEffect(() => {
     if (flicking.value != null && flicking2.value != null) {
@@ -150,22 +184,23 @@ function showDeleteConfirmation(id: number) {
 
 
 // Функция для добавления изображения
-function addPicture(event: Event) {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    selectedFile.value = file;
-    if (file) {
-        selectedFileName.value = file.name;
+function addPictures(event: Event) {
+    const files = (event.target as HTMLInputElement).files;
+    if (!files) return;
+    selectedFiles.value = Array.from(files);
+    selectedFileNames.value = selectedFiles.value.map(file => file.name);
+
+    // Генерируем превью для выбранных файлов
+    previewImages.value = [];
+    selectedFiles.value.forEach(file => {
         const reader = new FileReader();
         reader.onload = (e: ProgressEvent<FileReader>) => {
-            const newId = props.pictures.length > 0 ? props.pictures[props.pictures.length - 1].id + 1 : 1;
-            const newPicture: Picture = {
-                id: newId,
-                image: e.target?.result as string,
-            };
-            props.pictures.push(newPicture);
+            if (e.target?.result) {
+                previewImages.value.push(e.target.result as string);
+            }
         };
         reader.readAsDataURL(file);
-    }
+    });
 }
 
 // Отмена удаления
@@ -201,15 +236,21 @@ function confirmDelete() {
     }
 }
 
+function triggerFileInput() {
+    fileInputRef.value?.click();
+}
+
 const confirmUpload = async () => {
-    if (selectedFile.value == null) {
+    if (!selectedFiles.value.length) {
         message.error('Пожалуйста, выберите файлы для загрузки.')
         return
     }
 
     const formData = new FormData()
-    formData.append('product', props.product_id.toString()) // Добавление идентификатора продукта
-    formData.append('image', selectedFile.value)
+    formData.append('product', props.product_id.toString())
+    selectedFiles.value.forEach(file => {
+        formData.append('image', file)
+    })
 
     try {
         isLoadingUploadPicture.value = true;
@@ -220,12 +261,28 @@ const confirmUpload = async () => {
             }
         })
         message.success('Фотографии успешно загружены!');
-        selectedFile.value = null;
-        selectedFileName.value = null;
+        selectedFiles.value = [];
+        selectedFileNames.value = [];
+        previewImages.value = [];
+        await reloadPictures(); // Подгружаем актуальные фотографии после загрузки
     } catch (error) {
         message.error('Ошибка при загрузке фотографий.')
     } finally {
         isLoadingUploadPicture.value = false;
+    }
+}
+
+// Функция для подгрузки актуальных фотографий после загрузки
+async function reloadPictures() {
+    try {
+        const res = await axiosIns.get(`/api/v2/product/${props.product_id}/`);
+        // product.pictures должен быть реактивным, если pictures — prop, то нужно эмитить событие или использовать v-model
+        // Если pictures — prop, обновляем массив по ссылке:
+        if (Array.isArray(props.pictures)) {
+            props.pictures.splice(0, props.pictures.length, ...res.data.pictures);
+        }
+    } catch (e) {
+        message.error('Ошибка при обновлении фотографий');
     }
 }
 

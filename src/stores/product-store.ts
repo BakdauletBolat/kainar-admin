@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import {getProducts, ProductList, getProduct} from "@/apis/products";
 import {useAuthStore} from "@/stores/auth-store.ts";
 import {useRouter} from "vue-router";
+import axiosIns from "@/apis";
 
 export const useProductStore = defineStore("product-store", {
   state: () => {
@@ -32,6 +33,18 @@ export const useProductStore = defineStore("product-store", {
         .finally(() => {
           this.isLoadingProducts = false;
         });
+    },
+    async bulkDeleteProducts(ids: number[]) {
+      try {
+        axiosIns.delete("/admin/product/v2/product/bulk-delete/", {
+          data: {
+            ids: ids
+          }
+        })
+      }
+      catch (e) {
+        console.error("Error deleting products:", e);
+      }
     },
     async loadProduct(id: string) {
       this.isLoadingProducts = true;

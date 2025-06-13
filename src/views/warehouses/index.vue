@@ -90,7 +90,11 @@ function createColumns(): DataTableColumns<RowData> {
         }
       })
     }
-  }]
+  },
+  {
+    title: "Минимальный уровень",
+    key: "min_stock_level"
+  },]
 }
 
 
