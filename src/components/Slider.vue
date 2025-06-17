@@ -119,7 +119,7 @@
 
 <script setup lang="ts">
 import Flicking from "@egjs/vue3-flicking";
-import PreviewPhotos from './PreviewPhotos.vue'
+import PreviewPhotos from '@/components/PreviewPhotos.vue';
 import { ref, watchEffect, computed } from 'vue';
 import { ChevronLeftIcon, ChevronRightIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import { NModal, NButton, NCard, useMessage } from "naive-ui";

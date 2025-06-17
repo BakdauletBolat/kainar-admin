@@ -38,7 +38,7 @@
         class="w-full h-full"
       >
         <div
-          v-for="(photo, idx) in photos"
+          v-for="(photo, _) in photos"
           :key="photo.src"
           class="flex items-center justify-center w-full h-full"
         >
