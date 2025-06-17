@@ -1,29 +1,37 @@
 <template>
     <div>
+        <preview-photos
+            v-if="showPreview"
+            :photos="allPhotos"
+            :start-index="currentValue"
+            @close="showPreview = false"
+        />
         <div v-if="pictures.length > 0 || previewImages.length > 0" class="w-full flex flex-col gap-3">
             <div class="w-full relative">
                 <Flicking @changed="onChange" class="rounded-sm" ref="flicking" :options="{
                     preventClickOnDrag: true,
                     duration: 100
                 }">
-                    <div :key="picture.id" v-for="picture in pictures"
-                        class="panel relative border-b cursor-pointer w-full h-[300px]">
+                    <div :key="picture.id" v-for="(picture, idx) in pictures"
+                        class="panel relative border-b cursor-pointer w-full h-[300px]"
+                        @click="openPreview(idx)">
                         <img alt="s" loading="lazy" class="w-full pointer-events-none h-full object-cover"
                             :src="picture.image" />
-                        <button @click="showDeleteConfirmation(picture.id)"
+                        <button @click.stop="showDeleteConfirmation(picture.id)"
                             class="absolute top-2 right-2 bg-black text-white p-1 rounded">
                             <TrashIcon class="text-white w-6 h-6"></TrashIcon>
                         </button>
                     </div>
                     <div v-for="(img, idx) in previewImages" :key="'preview-' + idx"
-                        class="panel relative border-b cursor-pointer w-full h-[300px]">
+                        class="panel relative border-b cursor-pointer w-full h-[300px]"
+                        @click="openPreview(pictures.length + idx)">
                         <img alt="preview" loading="lazy" class="w-full pointer-events-none h-full object-cover"
                             :src="img" />
                     </div>
                 </Flicking>
                 <div>
-                    <ChevronLeftIcon @click="prev" class="absolute z-10 top-1/2 cursor-pointer w-7 h-7"></ChevronLeftIcon>
-                    <ChevronRightIcon @click="next" class="absolute z-10 top-1/2 right-0 w-7 h-7 cursor-pointer">
+                    <ChevronLeftIcon @click="prev" class="absolute z-10 -left-6 top-1/2 cursor-pointer w-7 h-7"></ChevronLeftIcon>
+                    <ChevronRightIcon @click="next" class="absolute z-10 top-1/2 -right-6 w-7 h-7 cursor-pointer">
                     </ChevronRightIcon>
                 </div>
             </div>
@@ -111,7 +119,8 @@
 
 <script setup lang="ts">
 import Flicking from "@egjs/vue3-flicking";
-import { ref, watchEffect } from 'vue';
+import PreviewPhotos from './PreviewPhotos.vue'
+import { ref, watchEffect, computed } from 'vue';
 import { ChevronLeftIcon, ChevronRightIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import { NModal, NButton, NCard, useMessage } from "naive-ui";
 import axiosIns from "@/apis";
@@ -143,6 +152,12 @@ const fileInputRef = ref<HTMLInputElement | null>(null);
 const selectedFileNames = ref<string[]>([]);
 const selectedFiles = ref<File[]>([]);
 const previewImages = ref<string[]>([]);
+const showPreview = ref(false)
+const previewStartIndex = ref(0)
+const allPhotos = computed(() => [
+    ...props.pictures.map(p => ({ src: p.image, name: p.image?.split('/').pop() || '' })),
+    ...previewImages.value.map(src => ({ src, name: src.split('/').pop() || 'preview' }))
+])
 
 watchEffect(() => {
     if (flicking.value != null && flicking2.value != null) {
@@ -286,6 +301,11 @@ async function reloadPictures() {
     }
 }
 
+function openPreview(idx: number) {
+    previewStartIndex.value = idx
+    currentValue.value = idx
+    showPreview.value = true
+}
 </script>
 
 <style scoped>
