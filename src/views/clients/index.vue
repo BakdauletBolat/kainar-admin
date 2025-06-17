@@ -7,7 +7,17 @@
       {{ paginationReactive.itemCount }}
     </template>
     <template #extra>
-
+      <div class="flex gap-2 w-full">
+        <n-input
+          v-model:value="searchPhone"
+          placeholder="Поиск по номеру телефона"
+          clearable
+          class="w-72"
+        />
+        <router-link :to="{ name: 'clients-create' }">
+          <n-button  type="primary">Создать клиента</n-button>
+        </router-link>
+      </div>
     </template>
   </n-page-header>
   <main class="grid pb-10">
@@ -18,8 +28,8 @@
   </main>
 </template>
 <script setup lang="ts">
-import { onMounted, h, reactive } from 'vue';
-import { NDataTable, NPageHeader } from 'naive-ui';
+import { ref, watch, onMounted, h, reactive } from 'vue';
+import { NDataTable, NPageHeader, NInput, NButton } from 'naive-ui';
 import { useRoute, RouterLink } from 'vue-router';
 import type { DataTableColumns } from 'naive-ui'
 import { formatDate } from '@/utils/formatDate';
@@ -34,6 +44,22 @@ function createColumns(): DataTableColumns<Client> {
     {
       title: "ID",
       key: "id",
+      render(row) {
+        return h(
+            RouterLink,
+            {
+              to: {
+                name: 'clients-detail',
+                params: {
+                  id: row.id
+                }
+              },
+            },
+            {
+              default: () => `#${row.id}`
+            }
+        )
+      }
     },
     {
       title: 'Навзание',
@@ -108,8 +134,25 @@ const onChangedPage = (page: number) => {
 onMounted(() => {
   const page = route.query.page != null ? parseInt(route.query.page.toString()) : 1
   clientStore.loadClients({page: page, page_size: 25 }).then(_ => {
-    paginationReactive.itemCount =clientStore.clientsCount;
+    paginationReactive.itemCount = clientStore.clientsCount;
   });
+});
+
+const searchPhone = ref('');
+let searchTimeout: ReturnType<typeof setTimeout> | null = null;
+
+watch(searchPhone, (val) => {
+  if (searchTimeout) clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    paginationReactive.page = 1;
+    clientStore.loadClients({
+      page: 1,
+      page_size: paginationReactive.pageSize,
+      phone: val
+    }).then(_ => {
+      paginationReactive.itemCount = clientStore.clientsCount;
+    });
+  }, 500);
 });
 
 </script>

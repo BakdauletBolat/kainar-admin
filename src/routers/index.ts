@@ -13,6 +13,8 @@ import PartsCreate from "@/views/parts/create.vue";
 import PartsEdit from "@/views/parts/edit.vue";
 import PartsDetail from "@/views/parts/detail.vue";
 import ClientsList from "@/views/clients/index.vue";
+import ClientDetail from "@/views/clients/detail.vue";
+import ClientCreate from "@/views/clients/create.vue";
 import FeedbackList from "@/views/feedbacks/index.vue";
 
 import Login from "@/views/auth/login.vue";
@@ -37,8 +39,9 @@ const routes = [
   { path: '/warehouse/create',name: 'warehouses-create', component: WarehouseCreate },
   { path: '/warehouse/:id/edit',name: 'warehouses-edit', component: WarehouseEdit },
   { path: '/warehouse/:id',name: 'warehouses-detail', component: WarehouseDetail },
-  { path: '/clients/list',name: 'clients-list', component: ClientsList },
-  { path: '/clients/:id',name: 'clients-detail', component: ClientsList },
+  { path: '/clients/list', name: 'clients-list', component: ClientsList },
+  { path: '/clients/create', name: 'clients-create', component: ClientCreate },
+  { path: '/clients/:id', name: 'clients-detail', component: ClientDetail },
   { path: '/feedbacks/list', name: 'feedbacks-list', component: FeedbackList},
   { path: '/login', name: 'login', component: Login },
   { path: '/profile', name: 'profile', component: Profile },

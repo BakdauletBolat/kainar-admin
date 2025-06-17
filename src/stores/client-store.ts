@@ -26,7 +26,7 @@ export const useClientStore = defineStore("client-store", {
     },
     actions: {
         async loadClients(options: any) {
-            options.ordering = '-id'
+            options.sort = '-id'
             console.log("Loading clients with options:", options);
             this.isLoadingClients = true;
             const query = generateQuery(options);
@@ -47,6 +47,22 @@ export const useClientStore = defineStore("client-store", {
                 .finally(() => {
                     this.isLoadingClients = false;
                 });
+        },
+        async loadClient(id: number | string) {
+            try {
+                const res = await axiosInstance.get(`/api/users/${id}/`)
+                return res.data
+            } catch (e) {
+                return null
+            }
+        },
+        async patchClient(id: number | string, data: any) {
+            try {
+                const res = await axiosInstance.patch(`/api/users/${id}/`, data);
+                return res.data;
+            } catch (e) {
+                throw e;
+            }
         }
     },
 });
