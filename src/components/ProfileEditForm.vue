@@ -51,7 +51,12 @@
       </n-form-item>
     </div>
     <div class="flex justify-end gap-2 mt-4">
-      <n-button type="primary" @click="emitChanges">Сохранить</n-button>
+      <n-button :disabled="isLoading"
+                :loading="isLoading"
+                type="primary"
+                @click="emitChanges">
+        Сохранить
+      </n-button>
     </div>
   </n-form>
 </template>
@@ -72,6 +77,7 @@ const props = defineProps<{
     status: number,
     roles: any[]
   },
+  isLoading: boolean,
   cityOptions?: { label: string, value: any }[],
   roleOptions?: { label: string, value: any }[],
   statusOptions?: { label: string, value: any }[]

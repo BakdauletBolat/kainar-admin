@@ -36,7 +36,7 @@ export const useProductStore = defineStore("product-store", {
     },
     async bulkDeleteProducts(ids: number[]) {
       try {
-        axiosIns.delete("/admin/product/v2/product/bulk-delete/", {
+        axiosIns.delete("/api/admin/product/v2/product/bulk-delete/", {
           data: {
             ids: ids
           }

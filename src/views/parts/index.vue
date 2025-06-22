@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import PartsFilter from '@/components/Parts/PartsFilter.vue';
 import { onMounted, h, reactive, watch, ref } from 'vue';
-import { NDataTable, NAvatar, NH6, NTag, NPageHeader, NButton, NPopconfirm } from 'naive-ui';
+import { NDataTable, NAvatar, NH6, NTag, NPageHeader, NButton, NPopconfirm, useMessage } from 'naive-ui';
 import { getFirstElementArray } from '@/utils/getFirstElementFromArray.ts';
 import { useRoute, RouterLink, useRouter } from 'vue-router';
 import type { DataTableColumns } from 'naive-ui'
@@ -29,6 +29,8 @@ interface RowData {
 }
 
 const router = useRouter();
+const message = useMessage();
+const statusFilterValues = ref([]);
 
 function createNavigate() {
   router.push({
@@ -125,7 +127,7 @@ function createColumns(): DataTableColumns<RowData> {
         return h(NTag, { type: typeLabel }, { default: () => row.status })
       },
       filter: true,
-      filterOptionValues: [],
+      defaultFilterOptionValues: [],
       filterOptions: [
         {
           label: 'Необработан',
@@ -201,8 +203,10 @@ const handleDeleteSelected = async () => {
     await productStore.bulkDeleteProducts(checkedRowKeys.value);
     checkedRowKeys.value = []
     productStore.loadProducts({ ...filterStore.filterValues, page: paginationReactive.page, page_size: paginationReactive.pageSize })
+    message.success('Продукты успешно удалены');
   } catch (e) {
     // Можно добавить обработку ошибок
+    message.error("Повторите позднее");
   }
 }
 
@@ -212,6 +216,7 @@ const rowKey = (row: RowData) => {
 
 function handleFiltersChange(filters: any) {
   if (filters?.status != undefined) {
+    statusFilterValues.value = filters.status;
     productStore.loadProducts({ ...filterStore.filterValues, status: filters.status })
   }
 }
@@ -252,6 +257,7 @@ onMounted(() => {
     </template>
   </n-page-header>
   <main class="grid pb-10">
+    {{statusFilterValues}}
     <parts-filter></parts-filter>
     <div>
       <div v-if="checkedRowKeys.length" class="mb-4 flex items-center justify-end gap-2">

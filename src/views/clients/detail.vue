@@ -14,6 +14,7 @@
       :city-options="cityOptions"
       :role-options="roleOptions"
       :status-options="statusOptions"
+      :is-loading="isLoadingPathClient"
       @change="onSave"
     />
   </div>
@@ -32,6 +33,8 @@ const router = useRouter()
 const message = useMessage()
 const clientStore = useClientStore()
 
+const isLoadingPathClient = ref(false)
+
 const client = ref<any>(null)
 const editForm = ref<any>({})
 
@@ -46,7 +49,7 @@ async function loadClient() {
   const { id } = route.params
   client.value = await clientStore.loadClient(id.toString())
   editForm.value = {
-    city: client.value.city.id,
+    city: client.value.city?.id,
     email: client.value.email,
     first_name: client.value.first_name,
     last_name: client.value.last_name,
@@ -77,6 +80,7 @@ async function fetchRoles() {
 }
 
 async function onSave(val: any) {
+  isLoadingPathClient.value = true
   try {
     console.log('Saving client data:', val)
     await clientStore.patchClient(client.value.id, val)
@@ -84,6 +88,9 @@ async function onSave(val: any) {
     loadClient()
   } catch (e) {
     message.error('Ошибка при сохранении')
+  }
+  finally {
+    isLoadingPathClient.value = false
   }
 }
 
