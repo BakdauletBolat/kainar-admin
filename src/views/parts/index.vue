@@ -257,7 +257,6 @@ onMounted(() => {
     </template>
   </n-page-header>
   <main class="grid pb-10">
-    {{statusFilterValues}}
     <parts-filter></parts-filter>
     <div>
       <div v-if="checkedRowKeys.length" class="mb-4 flex items-center justify-end gap-2">

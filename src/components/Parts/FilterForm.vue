@@ -17,7 +17,7 @@
     </div>
     <div>
       <n-form-item label="Искать по категории" path="category">
-        <n-tree-select placeholder="Выберите варианты" multiple cascade filterable checkable :check-strategy="'all'"
+        <n-tree-select placeholder="Выберите варианты" multiple cascade filterable checkable :check-strategy="'parent'"
           :options="categoryStore.categoriesTreeOptions" :value="filterStore.filterValues.category != null
             ? filterStore.filterValues
               .category!.split(',')
@@ -102,3 +102,15 @@ function onUpdateManufacturer(value: number) {
 }
 
 </script>
+
+/*
+  check-strategy может быть:
+    - 'all' (по умолчанию): возвращает все выбранные узлы (включая родителей и детей)
+    - 'parent': возвращает только выбранные родительские узлы
+    - 'child': возвращает только выбранные дочерние (leaf) узлы
+
+  Пример:
+    <n-tree-select :check-strategy="'all'" ... />
+    <n-tree-select :check-strategy="'parent'" ... />
+    <n-tree-select :check-strategy="'child'" ... />
+*/
