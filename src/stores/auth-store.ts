@@ -17,6 +17,7 @@ interface AuthUser {
     middle_name: string;
     profile_type: string;
     city: {
+        id: number;
         name: string
     }
     uuid: string;
@@ -37,6 +38,19 @@ export const useAuthStore = defineStore("auth-store", {
             isLoading: false as boolean,
             isAuthenticated: localStorage.getItem("auth-token") !== null,
         };
+    },
+    getters: {
+        hasRole: (state) => (role: string) => {
+            if (role === "all") return true;
+            if (!state.user || !state.user.roles) return false;
+            return state.user.roles.some(r => r.name === role);
+        },
+        hasAnyRole: (state) => (roles: string[]) => {
+            console.log(roles, state.user, state.user?.roles);
+            if (roles.includes("all")) return true;
+            if (!state.user || !state.user.roles) return false;
+            return state.user.roles.some(r => roles.includes(r.name));
+        },
     },
     actions: {
         async authUser(body: AuthPayload) {
@@ -69,6 +83,17 @@ export const useAuthStore = defineStore("auth-store", {
                     name: "login"
                 })
             }
-        }
+        },
+        async updateProfile(data: any) {
+            if (!this.user) return;
+            this.isLoading = true;
+            try {
+                const res = await axiosInstance.patch(`/api/users/${this.user.id}/`, data);
+                this.user = res.data;
+                return res.data;
+            } finally {
+                this.isLoading = false;
+            }
+        },
     },
 });

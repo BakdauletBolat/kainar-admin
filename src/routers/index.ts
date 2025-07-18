@@ -26,26 +26,26 @@ import {useAuthStore} from "@/stores/auth-store.ts";
 
 
 const routes = [
-  { path: '/', name: 'main', component: PartsList },
-  { path: '/order/list',name: 'orders-list', component: OrderList },
-  { path: '/order/create',name: 'orders-create', component: OrderCreate },
-  { path: '/order/:id/edit',name: 'orders-edit', component: OrderEdit },
-  { path: '/order/:id',name: 'orders-detail', component: OrderDetail },
-  { path: '/parts/list',name: 'parts-list', component: PartsList },
-  { path: '/parts/create',name: 'parts-create', component: PartsCreate },
-  { path: '/parts/:id/edit',name: 'parts-edit', component: PartsEdit },
-  { path: '/parts/:id',name: 'parts-detail', component: PartsDetail },
-  { path: '/warehouse/list',name: 'warehouses-list', component: WarehouseList },
-  { path: '/warehouse/create',name: 'warehouses-create', component: WarehouseCreate },
-  { path: '/warehouse/:id/edit',name: 'warehouses-edit', component: WarehouseEdit },
-  { path: '/warehouse/:id',name: 'warehouses-detail', component: WarehouseDetail },
-  { path: '/clients/list', name: 'clients-list', component: ClientsList },
-  { path: '/clients/create', name: 'clients-create', component: ClientCreate },
-  { path: '/clients/:id', name: 'clients-detail', component: ClientDetail },
-  { path: '/feedbacks/list', name: 'feedbacks-list', component: FeedbackList},
+  { path: '/', name: 'main', component: PartsList, meta: { roles: ["all"] } },
+  { path: '/order/list',name: 'orders-list', component: OrderList, meta: { roles: ["all"] } },
+  { path: '/order/create',name: 'orders-create', component: OrderCreate, meta: { roles: ["all"] } },
+  { path: '/order/:id/edit',name: 'orders-edit', component: OrderEdit, meta: { roles: ["all"] } },
+  { path: '/order/:id',name: 'orders-detail', component: OrderDetail, meta: { roles: ["all"] } },
+  { path: '/parts/list',name: 'parts-list', component: PartsList, meta: { roles: ["all"] } },
+  { path: '/parts/create',name: 'parts-create', component: PartsCreate, meta: { roles: ["all"] } },
+  { path: '/parts/:id/edit',name: 'parts-edit', component: PartsEdit, meta: { roles: ["all"] } },
+  { path: '/parts/:id',name: 'parts-detail', component: PartsDetail, meta: { roles: ["all"] } },
+  { path: '/warehouse/list',name: 'warehouses-list', component: WarehouseList, meta: { roles: ["Директор"] } },
+  { path: '/warehouse/create',name: 'warehouses-create', component: WarehouseCreate, meta: { roles: ["Директор"] } },
+  { path: '/warehouse/:id/edit',name: 'warehouses-edit', component: WarehouseEdit, meta: { roles: ["Директор"] } },
+  { path: '/warehouse/:id',name: 'warehouses-detail', component: WarehouseDetail, meta: { roles: ["Директор"] } },
+  { path: '/clients/list', name: 'clients-list', component: ClientsList, meta: { roles: ["Директор"] } },
+  { path: '/clients/create', name: 'clients-create', component: ClientCreate, meta: { roles: ["Директор"] } },
+  { path: '/clients/:id', name: 'clients-detail', component: ClientDetail, meta: { roles: ["Директор"] } },
+  { path: '/feedbacks/list', name: 'feedbacks-list', component: FeedbackList, meta: { roles: ["all"] } },
   { path: '/login', name: 'login', component: Login },
-  { path: '/profile', name: 'profile', component: Profile },
-  { path: '/order/list/in-progress',name: 'orders-list-in-progress', component: OrderList },
+  { path: '/profile', name: 'profile', component: Profile, meta: { roles: ["all"] } },
+  { path: '/order/list/in-progress',name: 'orders-list-in-progress', component: OrderList, meta: { roles: ["all"] } },
 ];
 
 
@@ -63,6 +63,13 @@ router.beforeEach((to, _) => {
   }
   if (authStore.isAuthenticated && to.name == 'login') {
     return {name: 'main'}
+  }
+  // Проверка прав
+  if (to.meta && to.meta.roles) {
+    const hasAccess = authStore.hasAnyRole(to.meta.roles as string[]);
+    if (!hasAccess) {
+      return { name: 'main' };
+    }
   }
 })
 

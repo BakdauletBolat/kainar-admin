@@ -81,7 +81,7 @@
         </n-ellipsis>
       </template>
       <template #subtitle>
-        <div class="flex gap-2">
+        <div class="flex gap-2" v-if="orderStore.order?.created_at">
           <span>{{ orderStore.order?.total }} KZT</span>
           <span>{{ timeAgo(new Date(orderStore.order!.created_at)) }}</span>
         </div>

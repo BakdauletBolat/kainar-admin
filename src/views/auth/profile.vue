@@ -11,58 +11,50 @@
       </div>
     </div>
     <n-divider />
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div>
-        <div class="text-gray-500 text-sm">Телефон</div>
-        <div class="font-medium">{{ authStore.user?.phone || '—' }}</div>
+    <n-form :model="editForm" label-placement="top" class="space-y-4" @submit.prevent="onSave">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <n-form-item label="Имя" path="first_name">
+          <n-input v-model:value="editForm.first_name" />
+        </n-form-item>
+        <n-form-item label="Фамилия" path="last_name">
+          <n-input v-model:value="editForm.last_name" />
+        </n-form-item>
+        <n-form-item label="Отчество" path="middle_name">
+          <n-input v-model:value="editForm.middle_name" />
+        </n-form-item>
+        <n-form-item label="Email" path="email">
+          <n-input v-model:value="editForm.email" />
+        </n-form-item>
+        <n-form-item label="Город" path="city">
+          <n-select v-model:value="editForm.city" :options="cityOptions" placeholder="Выберите город" filterable clearable />
+        </n-form-item>
+        <n-form-item label="Роль" path="roles">
+          <n-select v-model:value="editForm.roles" :options="roleOptions" placeholder="Выберите роль" multiple filterable />
+        </n-form-item>
+        <n-form-item label="Сотрудник" path="is_staff">
+          <n-switch v-model:value="editForm.is_staff" />
+        </n-form-item>
+        <n-form-item label="Активен" path="is_active">
+          <n-switch v-model:value="editForm.is_active" />
+        </n-form-item>
       </div>
-      <div>
-        <div class="text-gray-500 text-sm">Email</div>
-        <div class="font-medium">{{ authStore.user?.email || '—' }}</div>
+      <div class="flex justify-end gap-2 mt-4">
+        <n-button :disabled="authStore.isLoading" :loading="authStore.isLoading" type="primary" @click="onSave">Сохранить</n-button>
+        <n-button @click="logout" type="error">Выйти из аккаунта</n-button>
       </div>
-      <div>
-        <div class="text-gray-500 text-sm">Город</div>
-        <div class="font-medium">{{ authStore.user?.city?.name || '—' }}</div>
-      </div>
-      <div>
-        <div class="text-gray-500 text-sm">UUID</div>
-        <div class="font-mono text-xs break-all">{{ authStore.user?.uuid }}</div>
-      </div>
-      <div>
-        <div class="text-gray-500 text-sm">Дата регистрации</div>
-        <div class="font-medium">{{ formatDate(authStore.user?.date_joined) }}</div>
-      </div>
-      <div>
-        <div class="text-gray-500 text-sm">Последний вход</div>
-        <div class="font-medium">{{ formatDate(authStore.user?.last_login) }}</div>
-      </div>
-      <div>
-        <div class="text-gray-500 text-sm">Статус</div>
-        <n-tag :type="authStore.user?.is_active ? 'success' : 'error'">
-          {{ authStore.user?.is_active ? 'Активен' : 'Неактивен' }}
-        </n-tag>
-      </div>
-      <div>
-        <div class="text-gray-500 text-sm">Права</div>
-        <div class="flex flex-wrap gap-2 mt-1">
-          <n-tag v-if="authStore.user?.is_superuser" type="info" size="small">Суперпользователь</n-tag>
-          <n-tag v-if="authStore.user?.is_staff" type="warning" size="small">Сотрудник</n-tag>
-        </div>
-      </div>
-    </div>
-    <div class="flex justify-end mt-4">
-      <n-button @click="logout" type="error" size="large">Выйти из аккаунта</n-button>
-    </div>
+    </n-form>
   </div>
 </template>
 <script lang="ts" setup>
-import {onMounted, computed} from "vue";
+import {onMounted, computed, ref} from "vue";
 import {useAuthStore} from "@/stores/auth-store.ts";
-import {NButton, NTag, NDivider} from 'naive-ui';
+import {NButton, NDivider, NForm, NFormItem, NInput, NSelect, NSwitch, useMessage} from 'naive-ui';
 import {useRouter} from "vue-router";
+import axiosIns from '@/apis';
 
 const authStore = useAuthStore();
 const router = useRouter();
+const message = useMessage();
 
 const fullName = computed(() => {
   const u = authStore.user;
@@ -75,10 +67,29 @@ const initials = computed(() => {
   return [u.first_name, u.last_name].map(n => n?.[0] || '').join('').toUpperCase();
 });
 
-function formatDate(dateStr?: string) {
-  if (!dateStr) return '—';
-  const date = new Date(dateStr);
-  return date.toLocaleString('ru-RU', { dateStyle: 'medium', timeStyle: 'short' });
+const editForm = ref<any>({});
+const cityOptions = ref<{ label: string, value: any }[]>([]);
+const roleOptions = ref<{ label: string, value: any }[]>([]);
+
+
+async function fetchCities() {
+  const res = await axiosIns.get('/api/admin/handbook/city/');
+  cityOptions.value = res.data.results.map((c: any) => ({ label: c.name, value: c.id }));
+}
+
+async function fetchRoles() {
+  const res = await axiosIns.get('/api/users/roles/');
+  roleOptions.value = res.data.map((r: any) => ({ label: r.name, value: r.id }));
+}
+
+async function onSave() {
+  try {
+    await authStore.updateProfile(editForm.value);
+    message.success('Профиль обновлен');
+    await authStore.userMe();
+  } catch (e) {
+    message.error('Ошибка при сохранении профиля');
+  }
 }
 
 async function logout() {
@@ -86,7 +97,22 @@ async function logout() {
   await router.push("/login");
 }
 
-onMounted(()=>{
-  authStore.userMe();
+onMounted(async ()=>{
+  await authStore.userMe();
+  await fetchCities();
+  await fetchRoles();
+  if (authStore.user) {
+    editForm.value = {
+      status: 1,
+      city: authStore.user.city?.id,
+      email: authStore.user.email,
+      first_name: authStore.user.first_name,
+      last_name: authStore.user.last_name,
+      middle_name: authStore.user.middle_name,
+      is_staff: authStore.user.is_staff,
+      is_active: authStore.user.is_active,
+      roles: authStore.user.roles?.map((r: any) => r.id) || []
+    };
+  }
 })
 </script>

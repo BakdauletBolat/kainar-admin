@@ -9,7 +9,7 @@
                 <XMarkIcon @click="appConfig.isOpenMenu = false" class="w-7 lg:hidden h-7 cursor-pointer"></XMarkIcon>
             </div>
             <div class="mt-5">
-                <div v-for="option in options">
+                <div v-for="option in filteredOptions">
                     <RouterLink :to="option.to" :class="{
                         'bg-orange-100 hover:bg-orange-200': checkRoute(option.to.name)
                     }" class="flex items-center gap-3 p-2 hover:bg-slate-100 font-medium cursor-pointer rounded-sm">
@@ -30,8 +30,9 @@
 import { CogIcon, ShoppingCartIcon, InboxIcon, UsersIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 import Avatar from './Avatar.vue';
 import { useRoute } from 'vue-router';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import appConfig from '@/stores/app';
+import { useAuthStore } from '@/stores/auth-store';
 import {LogoAmazon} from "@vicons/ionicons5";
 
 
@@ -49,34 +50,42 @@ function checkRoute(currentRoute: string) {
 
 }
 
-const options = [
+const options = ref([
     {
         label: "Запчасти",
         to: {
             name: 'parts-list'
         },
-        icon: CogIcon
+        icon: CogIcon,
+        roles: ["admin", "manager", "warehouse"]
     },
     {
         label: "Заказы",
         to: {
             name: 'orders-list'
         },
-        icon: ShoppingCartIcon
+        icon: ShoppingCartIcon,
+        roles: ["admin", "manager"]
     },
     {
         label: "Склады",
         to: {
             name: 'warehouses-list'
         },
-        icon: InboxIcon
+        icon: InboxIcon,
+        roles: ["admin", "warehouse"]
     },
     {
         label: "Клиенты",
         to: {
             name: 'clients-list'
         },
-        icon: UsersIcon
+        icon: UsersIcon,
+        roles: ["all", "manager"]
     }
-]
+])
+
+const authStore = useAuthStore();
+
+const filteredOptions = computed(() => options.value.filter(option => authStore.hasAnyRole(option.roles)));
 </script>

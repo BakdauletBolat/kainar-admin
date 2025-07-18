@@ -11,7 +11,7 @@
               'hidden': collapsed
             }" class="text-2xl">Управление</div>
           </div>
-          <n-menu :collapsed="collapsed" :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions"
+          <n-menu :collapsed="collapsed" :collapsed-width="64" :collapsed-icon-size="22" :options="filteredMenuOptions"
             :expand-icon="expandIcon" />
         </n-layout-sider>
         <n-layout>
@@ -30,8 +30,7 @@
 </template>
 <script setup lang="ts">
 import { NMessageProvider, NConfigProvider, NLayout, NMenu, NLayoutSider, NIcon, NBadge } from 'naive-ui';
-import {Component, h, onMounted, ref} from 'vue'
-import type { MenuOption } from 'naive-ui'
+import {Component, computed, h, onMounted, ref} from 'vue'
 
 //@ts-ignore
 import { CaretDownOutline } from '@vicons/ionicons5';
@@ -43,6 +42,7 @@ import Logo from "@/assets/new-logo.png";
 import Avatar from "@/components/Avatar.vue";
 import BottomAppBar from './components/BottomAppBar.vue';
 import axiosIns from "@/apis";
+import { useAuthStore } from '@/stores/auth-store';
 
 
 interface DashboardInfo {
@@ -59,8 +59,11 @@ const dashboardInfo = ref<DashboardInfo>({
   sale_for_today: 0,
 });
 
+const userStore = useAuthStore();
+
 onMounted(async ()=>{
   const res = await axiosIns.get("/api/admin/dashboard-info/");
+  await userStore.userMe();
   dashboardInfo.value = res.data;
 })
 
@@ -74,6 +77,7 @@ const themeOverrides = {
 }
 
 const collapsed = ref(true);
+const authStore = useAuthStore();
 
 
 function renderIcon(icon: Component) {
@@ -94,7 +98,7 @@ function expandIcon() {
   return h(NIcon, null, { default: () => h(CaretDownOutline) })
 }
 
-const menuOptions: MenuOption[] = [
+const menuOptions = ref([
   {
     label: () =>
       h(
@@ -107,7 +111,8 @@ const menuOptions: MenuOption[] = [
         { default: () => 'Запчасти' }
       ),
     key: 'parts-list',
-    icon: renderIcon(CogIcon)
+    icon: renderIcon(CogIcon),
+    roles: ["all", "Директор"] as string[]
   },
   {
     label: () =>
@@ -121,7 +126,8 @@ const menuOptions: MenuOption[] = [
         { default: () => 'Заказы' }
       ),
     key: 'orders-list',
-    icon: renderIcon(ShoppingCartIcon)
+    icon: renderIcon(ShoppingCartIcon),
+    roles: ["all", "Директор"] as string[]
   },
   {
     label: () =>
@@ -135,7 +141,8 @@ const menuOptions: MenuOption[] = [
         { default: () => 'Заказы в процессе' }
       ),
     key: 'orders-list-in-progress',
-    icon: renderOrdersInProgressIcon(ShoppingBagIcon)
+    icon: renderOrdersInProgressIcon(ShoppingBagIcon),
+    roles: ["all", "Директор"] as string[]
   },
   {
     label: () =>
@@ -149,7 +156,8 @@ const menuOptions: MenuOption[] = [
         { default: () => 'Склады' }
       ),
     key: 'warehouses-list',
-    icon: renderIcon(InboxIcon)
+    icon: renderIcon(InboxIcon),
+    roles: ["Директор"] as string[]
   },
   {
     label: () =>
@@ -163,7 +171,8 @@ const menuOptions: MenuOption[] = [
         { default: () => 'Клиенты' }
       ),
     key: 'clients-list',
-    icon: renderIcon(UsersIcon)
+    icon: renderIcon(UsersIcon),
+    roles: ["Директор"] as string[]
   },
   {
     label: () =>
@@ -177,7 +186,8 @@ const menuOptions: MenuOption[] = [
             { default: () => 'Профиль' }
         ),
     key: 'profile',
-    icon: renderIcon(UserIcon)
+    icon: renderIcon(UserIcon),
+    roles: ["all"] as string[]
   },
   {
     label: () =>
@@ -191,8 +201,11 @@ const menuOptions: MenuOption[] = [
             { default: () => 'Заявки' }
         ),
     key: 'feedbacks-list',
-    icon: renderIcon(QuestionMarkCircleIcon)
+    icon: renderIcon(QuestionMarkCircleIcon),
+    roles: ["all"] as string[]
   },
-]
+]);
+
+const filteredMenuOptions = computed(() => menuOptions.value.filter(option => Array.isArray(option.roles) && authStore.hasAnyRole(option.roles as string[])));
 
 </script>

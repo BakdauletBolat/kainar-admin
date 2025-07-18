@@ -27,11 +27,14 @@
 import { useRouter } from 'vue-router'
 import { CogIcon, ShoppingCartIcon, InboxIcon } from '@heroicons/vue/24/outline';
 import { NIcon, NButton } from 'naive-ui';
+
 const router = useRouter()
 
 const navigateTo = (route: any) => {
     router.push(route)
 }
+
+
 </script>
 
 <style scoped>
