@@ -80,9 +80,10 @@ function handleUpdateValue(
   filterStore.filterValues.category = value.filter((item) => !Number.isNaN(item)).join(",");
 }
 
-watch(filterStore.filterValues, (state) => {
-  productStore.loadProducts(state);
-});
+// Убираем автоматическое применение фильтров при изменении значений
+// watch(filterStore.filterValues, (state) => {
+//   productStore.loadProducts(state);
+// });
 
 onMounted(() => {
   filterStore.loadFilters();

@@ -106,6 +106,9 @@ export const useFilterStore = defineStore("filter-products", {
         vinCode: null,
       };
     },
+    resetFilters() {
+      this.clearValues();
+    },
   },
   getters: {
     filtersForm: (state) => {

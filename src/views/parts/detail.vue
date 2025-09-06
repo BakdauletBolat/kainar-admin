@@ -1,6 +1,7 @@
 <template>
     <main class="w-full">
-        <n-page-header class="mb-4" @back="handleBack">
+        <div class="print:hidden">
+            <n-page-header class="mb-4" @back="handleBack">
             <template #title>
                 {{ product?.name }}
             </template>
@@ -8,13 +9,31 @@
                 {{ product?.warehouse?.name }} /
                 {{ product?.warehouse?.city?.name }}
             </template>
+            <template #extra>
+                    <n-button
+                        type="primary"
+                        @click="printPage"
+                    >
+                        Печать
+                    </n-button>
+                </template>
         </n-page-header>
+        </div>
+
+        <!-- Этот блок будет напечатан -->
+        <div v-if="!isLoading && product" class="w-full">
+            <!-- Передаем данные о продукте в компонент для печати -->
+            <PrintForm :product="product"></PrintForm>
+        </div>
+
+        
         <div v-if="isLoading" class="grid grid-cols-3 gap-2">
             <NSkeleton height="400px" width="100%" :sharp="false"></NSkeleton>
             <NSkeleton height="400px" width="100%" :sharp="false"></NSkeleton>
             <NSkeleton height="400px" width="100%" :sharp="false"></NSkeleton>
         </div>
-        <div v-else class="grid w-full md:grid-cols-2 lg:grid-cols-3 gap-2">
+      
+        <div v-else class="grid w-full md:grid-cols-2 lg:grid-cols-3 gap-2 print:hidden">    
             <n-card>
                 <n-descriptions
                     :column="2"
@@ -107,6 +126,7 @@ import {
     NDescriptions,
     NDescriptionsItem,
     NSkeleton,
+    NButton,
     useMessage,
 } from "naive-ui";
 import axiosIns from "@/apis";
@@ -123,6 +143,7 @@ import {
     VinCodeComponent,
 } from "./ui";
 import { ProductDetail } from "@/apis/products";
+import PrintForm from "@/components/PrintForm.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -134,6 +155,69 @@ const message = useMessage();
 onMounted(() => {
     loadProduct();
 });
+
+const printPage = (): void => {
+  // 1. Находим наш скрытый компонент по ID
+  const printContentEl = document.getElementById('printable-content');
+  if (!printContentEl) {
+    console.error('Элемент для печати (#printable-content) не найден!');
+    return;
+  }
+
+  // 2. Собираем HTML-строку со всеми стилями из <head> текущей страницы.
+  // Это гарантирует, что Tailwind и другие стили будут применены.
+  const styleNodes = document.querySelectorAll('link[rel="stylesheet"], style');
+  let stylesHtml = '';
+  styleNodes.forEach(node => {
+    stylesHtml += node.outerHTML;
+  });
+
+  // 3. Создаем невидимый iframe
+  const iframe = document.createElement('iframe');
+  iframe.style.position = 'absolute';
+  iframe.style.width = '0';
+  iframe.style.height = '0';
+  iframe.style.border = '0';
+  document.body.appendChild(iframe);
+
+  // 4. Получаем доступ к документу iframe
+  const doc = iframe.contentWindow?.document;
+  if (!doc) {
+    console.error('Не удалось получить доступ к документу iframe.');
+    document.body.removeChild(iframe);
+    return;
+  }
+
+  // 5. Записываем в iframe ПОЛНЫЙ HTML-документ, включая head со стилями и body с контентом
+  doc.open();
+  doc.write(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Печать</title>
+        ${stylesHtml}
+      </head>
+      <body>
+        ${printContentEl.innerHTML}
+      </body>
+    </html>
+  `);
+  doc.close();
+
+  // 6. Запускаем печать для iframe и удаляем его
+  // Задержка нужна, чтобы браузер успел обработать стили и отрендерить контент
+  setTimeout(() => {
+    try {
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+    } catch (e) {
+      console.error('Ошибка при вызове печати:', e);
+    } finally {
+      // Удаляем iframe независимо от того, удалась печать или нет
+      document.body.removeChild(iframe);
+    }
+  }, 500); // 500 мс - более безопасная задержка
+};
 
 const carInfoMapper: any = {
     manufacturer: "Производитель", // MERCEDES-BENZ
@@ -296,4 +380,6 @@ function handleBack() {
 </script>
 <style>
 @import url("node_modules/@egjs/vue3-flicking/dist/flicking.css");
+
+
 </style>
