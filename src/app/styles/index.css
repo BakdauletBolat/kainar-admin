@@ -1,0 +1,12 @@
+/**
+ * Global styles
+ * Глобальные стили приложения
+ */
+
+/* Tailwind imports */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Component styles */
+@import '../../styles/table.css';

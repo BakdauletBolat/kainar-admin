@@ -1,16 +1,9 @@
-import { createApp } from 'vue'
-import './style.css'
-import App from './App.vue'
-import router from './routers';
-import {createPinia} from "pinia";
+/**
+ * Main entry point
+ * Основная точка входа приложения
+ */
 
+import { createApplication } from '@app'
 
-const app = createApp(App);
-
-const meta = document.createElement('meta')
-meta.name = 'naive-ui-style'
-document.head.appendChild(meta)
-
-app.use(createPinia())
-app.use(router);
-app.mount('#app');
+const app = createApplication()
+app.mount('#app')
