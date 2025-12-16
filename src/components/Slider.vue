@@ -1,100 +1,161 @@
 <template>
-    <div>
+    <div class="space-y-4 max-w-3xl w-full mx-auto">
         <preview-photos
             v-if="showPreview"
             :photos="allPhotos"
             :start-index="currentValue"
             @close="showPreview = false"
         />
-        <div v-if="pictures.length > 0 || previewImages.length > 0" class="w-full flex flex-col gap-3">
-            <div class="w-full relative">
-                <Flicking @changed="onChange" class="rounded-sm" ref="flicking" :options="{
-                    preventClickOnDrag: true,
-                    duration: 100
-                }">
-                    <div :key="picture.id" v-for="(picture, idx) in pictures"
-                        class="panel relative border-b cursor-pointer w-full h-[300px]"
-                        @click="openPreview(idx)">
-                        <img alt="s" loading="lazy" class="w-full pointer-events-none h-full object-cover"
-                            :src="picture.image" />
-                        <button @click.stop="showDeleteConfirmation(picture.id)"
-                            class="absolute top-2 right-2 bg-black text-white p-1 rounded">
-                            <TrashIcon class="text-white w-6 h-6"></TrashIcon>
+
+        <div v-if="pictures.length > 0 || previewImages.length > 0" class="w-full space-y-3">
+            <div class="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-slate-900">
+                <Flicking
+                    @changed="onChange"
+                    class="rounded-3xl"
+                    ref="flicking"
+                    :options="{
+                        preventClickOnDrag: true,
+                        duration: 120
+                    }"
+                >
+                    <div
+                        :key="picture.id"
+                        v-for="(picture, idx) in pictures"
+                        class="panel relative w-full cursor-pointer bg-slate-900"
+                        @click="openPreview(idx)"
+                    >
+                        <div class="relative mx-auto aspect-[16/9] max-h-[460px] w-full">
+                            <img
+                                alt="Фото детали"
+                                loading="lazy"
+                                class="h-full w-full object-contain bg-slate-900"
+                                :src="picture.image"
+                            />
+                        </div>
+                        <button
+                            @click.stop="showDeleteConfirmation(picture.id)"
+                            class="absolute right-3 top-3 rounded-full bg-black/65 p-2 text-white shadow-lg backdrop-blur hover:bg-black"
+                        >
+                            <TrashIcon class="h-5 w-5" />
                         </button>
                     </div>
-                    <div v-for="(img, idx) in previewImages" :key="'preview-' + idx"
-                        class="panel relative border-b cursor-pointer w-full h-[300px]"
-                        @click="openPreview(pictures.length + idx)">
-                        <img alt="preview" loading="lazy" class="w-full pointer-events-none h-full object-cover"
-                            :src="img" />
-                    </div>
-                </Flicking>
-                <div>
-                    <ChevronLeftIcon @click="prev" class="absolute z-10 -left-6 top-1/2 cursor-pointer w-7 h-7"></ChevronLeftIcon>
-                    <ChevronRightIcon @click="next" class="absolute z-10 top-1/2 -right-6 w-7 h-7 cursor-pointer">
-                    </ChevronRightIcon>
-                </div>
-            </div>
-            <div class="w-full">
-                <Flicking ref="flicking2" :options="{
-                    preventClickOnDrag: true,
-                    panelsPerView: 3,
-                    duration: 100,
-                    bound: true,
-                    align: 'center',
-                }">
-                    <div @click="currentValue = index" :key="product.id" v-for="(product, index) in pictures"
-                        class="mx-1 rounded-sm border-b overflow-hidden cursor-pointer">
-                        <div class="w-full h-[80px] relative">
-                            <img loading="lazy" class="w-full absolute top-0 left-0 pointer-events-none h-full object-cover"
-                                :src="product.image" />
-                            <div v-if="currentValue == index" class="w-full h-full bg-black opacity-10 absolute top-0">
-                            </div>
+                    <div
+                        v-for="(img, idx) in previewImages"
+                        :key="'preview-' + idx"
+                        class="panel relative w-full cursor-pointer bg-slate-900"
+                        @click="openPreview(pictures.length + idx)"
+                    >
+                        <div class="relative mx-auto aspect-[16/9] max-h-[460px] w-full">
+                            <img
+                                alt="Новое фото"
+                                loading="lazy"
+                                class="h-full w-full object-contain bg-slate-900"
+                                :src="img"
+                            />
                         </div>
                     </div>
-                    <div v-for="(img, idx) in previewImages" :key="'preview-thumb-' + idx"
+                </Flicking>
+                <div class="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-slate-900 via-slate-900/60 to-transparent"></div>
+                <div class="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-slate-900 via-slate-900/60 to-transparent"></div>
+                <div>
+                    <ChevronLeftIcon
+                        @click="prev"
+                        class="absolute left-4 top-1/2 z-10 h-9 w-9 -translate-y-1/2 cursor-pointer rounded-full bg-white/90 p-2 text-slate-700 shadow-md backdrop-blur hover:bg-white"
+                    />
+                    <ChevronRightIcon
+                        @click="next"
+                        class="absolute right-4 top-1/2 z-10 h-9 w-9 -translate-y-1/2 cursor-pointer rounded-full bg-white/90 p-2 text-slate-700 shadow-md backdrop-blur hover:bg-white"
+                    />
+                </div>
+            </div>
+
+            <div class="w-full">
+                <Flicking
+                    ref="flicking2"
+                    :options="{
+                        preventClickOnDrag: true,
+                        panelsPerView: 4,
+                        duration: 120,
+                        bound: true,
+                        align: 'center',
+                    }"
+                >
+                    <div
+                        @click="currentValue = index"
+                        :key="product.id"
+                        v-for="(product, index) in pictures"
+                        class="mx-1 cursor-pointer overflow-hidden rounded-xl border border-slate-200/70 bg-white shadow-sm"
+                    >
+                        <div class="relative h-[82px] w-full">
+                            <img
+                                loading="lazy"
+                                class="absolute inset-0 h-full w-full object-cover"
+                                :src="product.image"
+                            />
+                            <div
+                                v-if="currentValue == index"
+                                class="absolute inset-0 ring-2 ring-indigo-500"
+                            />
+                        </div>
+                    </div>
+                    <div
+                        v-for="(img, idx) in previewImages"
+                        :key="'preview-thumb-' + idx"
                         @click="currentValue = pictures.length + idx"
-                        class="mx-1 rounded-sm border-b overflow-hidden cursor-pointer">
-                        <div class="w-full h-[80px] relative">
-                            <img loading="lazy" class="w-full absolute top-0 left-0 pointer-events-none h-full object-cover"
-                                :src="img" />
-                            <div v-if="currentValue == pictures.length + idx" class="w-full h-full bg-black opacity-10 absolute top-0">
-                            </div>
+                        class="mx-1 cursor-pointer overflow-hidden rounded-xl border border-slate-200/70 bg-white shadow-sm"
+                    >
+                        <div class="relative h-[82px] w-full">
+                            <img
+                                loading="lazy"
+                                class="absolute inset-0 h-full w-full object-cover"
+                                :src="img"
+                            />
+                            <div
+                                v-if="currentValue == pictures.length + idx"
+                                class="absolute inset-0 ring-2 ring-indigo-500"
+                            />
                         </div>
                     </div>
                 </Flicking>
             </div>
         </div>
-        <div v-else>
+        <div v-else class="rounded-3xl border border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center text-slate-500">
             Нету фотографий
         </div>
 
-        <div class="w-full mt-4">
-            <n-button
-                v-if="!selectedFileNames.length"
+        <div class="w-full">
+            <div
+                class="relative flex cursor-pointer flex-col items-center justify-center gap-3 rounded-3xl border border-dashed border-slate-300 bg-slate-50 px-5 py-6 text-center text-slate-600 transition hover:border-indigo-300 hover:bg-indigo-50/60"
                 @click="triggerFileInput"
-                type="primary"
-                class="mb-2"
             >
-                Загрузить фотографии
-            </n-button>
-            <input
-                id="file-upload"
-                ref="fileInputRef"
-                type="file"
-                class="hidden"
-                @change="addPictures"
-                accept="image/*"
-                multiple
-            />
-            <div v-if="selectedFileNames.length" class="mt-2 text-gray-600">
-                Выбранные файлы:
-                <ul>
-                    <li v-for="name in selectedFileNames" :key="name">{{ name }}</li>
-                </ul>
+                <p class="text-base font-semibold text-slate-900">Загрузить фотографии</p>
+                <p class="text-sm text-slate-500">Перетащите файлы или кликните, чтобы выбрать</p>
+                <n-button secondary round>Выбрать файлы</n-button>
+                <input
+                    id="file-upload"
+                    ref="fileInputRef"
+                    type="file"
+                    class="hidden"
+                    @change="addPictures"
+                    accept="image/*"
+                    multiple
+                />
             </div>
-            <div class="mt-4" v-if="selectedFileNames.length">
-                <n-button :loading="isLoadingUploadPicture" type="primary" @click="confirmUpload">Сохранить</n-button>
+            <div v-if="selectedFileNames.length" class="mt-3 rounded-2xl border border-slate-200 bg-white p-3 text-slate-700">
+                <p class="mb-2 text-sm font-semibold">Выбранные файлы:</p>
+                <div class="flex flex-wrap gap-2">
+                    <span
+                        v-for="name in selectedFileNames"
+                        :key="name"
+                        class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700"
+                    >
+                        {{ name }}
+                    </span>
+                </div>
+                <div class="mt-3 flex gap-2">
+                    <n-button :loading="isLoadingUploadPicture" type="primary" round @click="confirmUpload">Сохранить</n-button>
+                    <n-button quaternary round @click="clearSelected">Очистить</n-button>
+                </div>
             </div>
         </div>
         <!-- Модальное окно для подтверждения удаления -->
@@ -120,7 +181,7 @@
 <script setup lang="ts">
 import Flicking from "@egjs/vue3-flicking";
 import PreviewPhotos from '@/components/PreviewPhotos.vue';
-import { ref, watchEffect, computed } from 'vue';
+import { ref, watchEffect, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { ChevronLeftIcon, ChevronRightIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import { NModal, NButton, NCard, useMessage } from "naive-ui";
 import axiosIns from "@/apis";
@@ -159,6 +220,13 @@ const allPhotos = computed(() => [
     ...previewImages.value.map(src => ({ src, name: src.split('/').pop() || 'preview' }))
 ])
 
+function resizeFlicking() {
+    nextTick(() => {
+        flicking.value?.resize();
+        flicking2.value?.resize();
+    });
+}
+
 watchEffect(() => {
     if (flicking.value != null && flicking2.value != null) {
         try {
@@ -172,6 +240,14 @@ watchEffect(() => {
     }
 });
 
+onMounted(() => {
+    window.addEventListener('resize', resizeFlicking);
+    resizeFlicking();
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('resize', resizeFlicking);
+});
 
 function onChange(changed: ChangedValue) {
     currentValue.value = changed.index;
@@ -306,8 +382,17 @@ function openPreview(idx: number) {
     currentValue.value = idx
     showPreview.value = true
 }
+
+function clearSelected() {
+    selectedFiles.value = [];
+    selectedFileNames.value = [];
+    previewImages.value = [];
+}
 </script>
 
 <style scoped>
-/* Стили */
+.panel {
+    width: 100%;
+    min-width: 100%;
+}
 </style>

@@ -1,123 +1,162 @@
 <template>
-    <main class="w-full">
-        <div class="print:hidden">
-            <n-page-header class="mb-4" @back="handleBack">
-            <template #title>
-                {{ product?.name }}
-            </template>
-            <template #subtitle>
-                {{ product?.warehouse?.name }} /
-                {{ product?.warehouse?.city?.name }}
-            </template>
-            <template #extra>
-                    <n-button
-                        type="primary"
-                        @click="printPage"
-                    >
-                        Печать
-                    </n-button>
-                </template>
-        </n-page-header>
+  <main class="space-y-5">
+    <div class="print:hidden">
+      <div class="rounded-3xl border border-slate-200/80 bg-white px-6 py-5 shadow-sm">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div class="space-y-3">
+            <div class="flex flex-wrap items-center gap-3">
+              <p class="text-2xl font-semibold text-slate-900">
+                {{ product?.name || 'Запчасть' }}
+              </p>
+              <n-tag
+                v-if="product?.status"
+                round
+                :type="getStatusTone(product.status)"
+                :bordered="false"
+              >
+                {{ product.status }}
+              </n-tag>
+              <span v-if="product?.id" class="text-xs font-semibold text-slate-500">ID {{ product.id }}</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 text-sm text-slate-600">
+              <span v-if="product?.warehouse?.name" class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1">
+                Склад: {{ product.warehouse.name }}
+              </span>
+              <span v-if="product?.warehouse?.city?.name" class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1">
+                {{ product.warehouse.city.name }}
+              </span>
+              <span v-if="product?.created_at" class="text-slate-500">Создано {{ formatDate(product.created_at) }}</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-3 text-sm font-semibold text-slate-900">
+              <span>Цена:</span>
+              <span class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-base font-semibold text-slate-900">
+                {{ formatPrice(product?.price) }}
+              </span>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <n-button quaternary round @click="handleBack">Назад</n-button>
+            <n-button secondary round @click="openEdit">Редактировать</n-button>
+            <n-button type="primary" round @click="printPage">Печать</n-button>
+          </div>
         </div>
+      </div>
+    </div>
 
-        <!-- Этот блок будет напечатан -->
-        <div v-if="!isLoading && product" class="w-full">
-            <!-- Передаем данные о продукте в компонент для печати -->
-            <PrintForm :product="product"></PrintForm>
-        </div>
+    <!-- Этот блок будет напечатан -->
+    <div v-if="!isLoading && product" class="w-full">
+      <!-- Передаем данные о продукте в компонент для печати -->
+      <PrintForm :product="product"></PrintForm>
+    </div>
+
+    <div v-if="isLoading" class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+      <NSkeleton height="420px" width="100%" :sharp="false"></NSkeleton>
+      <NSkeleton height="420px" width="100%" :sharp="false"></NSkeleton>
+      <NSkeleton height="420px" width="100%" :sharp="false"></NSkeleton>
+    </div>
+
+    <div v-else-if="product" class="grid w-full gap-4 print:hidden md:grid-cols-[3fr_2fr]">
+      <div class="space-y-4">
+        <n-card class="w-full" size="large">
+          <slider
+            class="w-full"
+            :product_id="product.id"
+            v-if="product?.pictures"
+            :pictures="product?.pictures"
+          />
+        </n-card>
 
         
-        <div v-if="isLoading" class="grid grid-cols-3 gap-2">
-            <NSkeleton height="400px" width="100%" :sharp="false"></NSkeleton>
-            <NSkeleton height="400px" width="100%" :sharp="false"></NSkeleton>
-            <NSkeleton height="400px" width="100%" :sharp="false"></NSkeleton>
-        </div>
-      
-        <div v-else class="grid w-full md:grid-cols-2 lg:grid-cols-3 gap-2 print:hidden">    
-            <n-card>
-                <n-descriptions
-                    :column="2"
-                    label-placement="top"
-                    title="Параметры детали"
-                >
-                    <n-descriptions-item label="Статус">
-                        <status-component
-                            @onChangedProp="onChangedStatus"
-                            :value="product?.status"
-                        ></status-component>
-                    </n-descriptions-item>
-                    <n-descriptions-item label="ID">
-                        #{{ product?.id }}
-                    </n-descriptions-item>
-                    <n-descriptions-item label="ОЕМ коды">
-                        <vin-code-component
-                            @on-changed-prop="onChangeCode"
-                            :code="product?.code"
-                        ></vin-code-component>
-                    </n-descriptions-item>
-                    <n-descriptions-item label="Цветовой код">
-                        {{ product?.color }}
-                    </n-descriptions-item>
-                    <n-descriptions-item label="Цена">
-                        <price-component
-                            @on-changed-prop="onChangedPrice"
-                            :price="product?.price"
-                        ></price-component>
-                    </n-descriptions-item>
-                    <n-descriptions-item label="Состояние">
-                        {{ product?.defect ? product?.defect : "-" }}
-                    </n-descriptions-item>
-                    <n-descriptions-item label="Место нахождения">
-                        <warehouse-component
-                            @on-changed-prop="onChangeWarehouse"
-                            :view_mode="'named'"
-                            :warehouse="product?.warehouse"
-                        ></warehouse-component>
-                    </n-descriptions-item>
-                    <n-descriptions-item label="Комментарий">
-                        <comment-component
-                            @onChangedProp="onChangedComment"
-                            :value="product?.comment"
-                        ></comment-component>
-                    </n-descriptions-item>
-                    <n-descriptions-item label="Дата загрузки">
-                        {{ formatDate(product?.created_at) }}
-                    </n-descriptions-item>
-                    <n-descriptions-item label="Объем двигателя, л">
-                        {{ product?.eav_attributes?.capacity }} ({{ product?.eav_attributes?.fuelType }})
-                    </n-descriptions-item>
-                </n-descriptions>
-            </n-card>
-            <n-card class="w-full">
-                <slider
-                    class="w-full"
-                    :product_id="product.id"
-                    v-if="product?.pictures"
-                    :pictures="product?.pictures"
-                />
-            </n-card>
-            <n-card>
-                <n-descriptions
-                    :column="2"
-                    label-placement="top"
-                    title="Технические характеристики автомобиля"
-                >
-                    <n-descriptions-item
-                        :key="modelCar.key"
-                        :label="modelCar.key"
-                        v-for="modelCar in modelCarValues"
-                    >
-                        {{ modelCar.value }}
-                    </n-descriptions-item>
-                </n-descriptions>
-            </n-card>
-            <n-card>
-                <part-dimensions-component
-                    :detail="product?.detail"
-                ></part-dimensions-component>
-            </n-card>
-        </div>
-    </main>
+      </div>
+
+      <div class="space-y-4">
+        <n-card size="large">
+          <h3 class="mb-3 text-lg font-semibold text-slate-900">Технические характеристики автомобиля</h3>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <div
+              v-for="modelCar in modelCarValues"
+              :key="modelCar.key"
+              class="rounded-2xl bg-slate-50 px-3 py-2"
+            >
+              <p class="text-xs uppercase tracking-[0.08em] text-slate-500">{{ modelCar.key }}</p>
+              <p class="text-sm font-semibold text-slate-900">{{ modelCar.value }}</p>
+            </div>
+          </div>
+        </n-card>
+
+        <n-card size="large" class="w-full">
+          <div class="mb-4 flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-slate-900">Параметры детали</h3>
+            <span class="text-xs uppercase tracking-[0.08em] text-slate-500">Рабочие поля</span>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="space-y-2">
+              <p class="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Статус</p>
+              <n-tag v-if="product?.status" :type="getStatusTone(product.status)" round :bordered="false">
+                {{ product.status }}
+              </n-tag>
+            </div>
+            <div class="space-y-2">
+              <p class="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">ОЕМ коды</p>
+              <div class="flex flex-wrap gap-2">
+                <span
+                  v-for="code in formattedCodes"
+                  :key="code"
+                  class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700"
+                >{{ code }}</span>
+                <span v-if="!formattedCodes.length" class="text-sm text-slate-500">—</span>
+              </div>
+            </div>
+            <div class="space-y-2">
+              <p class="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Склад / город</p>
+              <p class="rounded-2xl bg-slate-50 px-3 py-2 text-sm text-slate-700">
+                {{ product?.warehouse?.name ?? '—' }}
+                <span v-if="product?.warehouse?.city?.name" class="text-slate-500"> · {{ product.warehouse.city.name }}</span>
+              </p>
+            </div>
+            <div class="space-y-2">
+              <p class="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Цветовой код</p>
+              <p class="rounded-2xl bg-slate-50 px-3 py-2 text-sm text-slate-700">{{ product?.color ?? '—' }}</p>
+            </div>
+            <div class="space-y-2 sm:col-span-2">
+              <p class="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Комментарий</p>
+              <p class="rounded-2xl bg-slate-50 px-3 py-2 text-sm text-slate-700 min-h-[56px]">
+                {{ product?.comment ?? '—' }}
+              </p>
+            </div>
+            <div class="space-y-2">
+              <p class="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Дата загрузки</p>
+              <p class="rounded-2xl bg-slate-50 px-3 py-2 text-sm text-slate-700">{{ formatDate(product?.created_at) }}</p>
+            </div>
+            <div class="space-y-2">
+              <p class="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Состояние</p>
+              <p class="rounded-2xl bg-slate-50 px-3 py-2 text-sm text-slate-700">{{ product?.defect ? product?.defect : '-' }}</p>
+            </div>
+            <div class="space-y-2">
+              <p class="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Объем двигателя, л</p>
+              <p class="rounded-2xl bg-slate-50 px-3 py-2 text-sm text-slate-700">
+                {{ product?.eav_attributes?.capacity }} <span v-if="product?.eav_attributes?.fuelType">({{ product?.eav_attributes?.fuelType }})</span>
+              </p>
+            </div>
+          </div>
+        </n-card>
+
+        <n-card size="large">
+          <part-dimensions-component
+            :detail="product?.detail"
+          ></part-dimensions-component>
+        </n-card>
+      </div>
+    </div>
+
+    <quick-edit-drawer
+      :show="isEditOpen"
+      :product="product"
+      @update:show="(v) => isEditOpen = v"
+      @saved="handleSaved"
+      @move-warehouse="onChangeWarehouse"
+    />
+  </main>
 </template>
 <script setup lang="ts">
 import {
@@ -128,6 +167,7 @@ import {
     NSkeleton,
     NButton,
     useMessage,
+    NTag,
 } from "naive-ui";
 import axiosIns from "@/apis";
 import { useRouter, useRoute } from "vue-router";
@@ -135,15 +175,11 @@ import Slider from "@/components/Slider.vue";
 import { formatDate } from "@/utils/formatDate";
 import { ref, onMounted, computed } from "vue";
 import {
-    PriceComponent,
-    StatusComponent,
-    CommentComponent,
-    WarehouseComponent,
     PartDimensionsComponent,
-    VinCodeComponent,
 } from "./ui";
 import { ProductDetail } from "@/apis/products";
 import PrintForm from "@/components/PrintForm.vue";
+import QuickEditDrawer from "@/views/parts/components/QuickEditDrawer.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -151,6 +187,7 @@ const product = ref<ProductDetail | null>(null);
 
 const isLoading = ref<boolean>(false);
 const message = useMessage();
+const isEditOpen = ref(false);
 
 onMounted(() => {
     loadProduct();
@@ -275,78 +312,10 @@ async function loadProduct() {
         });
 }
 
-async function patchProduct(key: string, value: string, productId: number) {
-    return await axiosIns
-        .patch(`/api/admin/product/v2/product/${productId}/update/`, {
-            [key]: value,
-        })
-        .then((res) => {
-            return res.data;
-        });
-}
-
 async function moveProduct(body: Object) {
     return await axiosIns.post("/api/stock/move/", body).then((res) => {
         console.log("Успешно перемещен", res.data);
     });
-}
-
-function onChangedPrice(key: string, value: string) {
-    patchProduct(key, value, product.value!.id)
-        .then((_) => {
-            message.info("Цена успешно обновлен");
-            if (product.value) {
-                product.value.price = parseInt(value);
-            }
-        })
-        .catch((e) => {
-            message.error("Что то не так " + e.toString());
-        });
-}
-
-function onChangedComment(key: string, value: string) {
-    patchProduct(key, value, product.value!.id)
-        .then((_) => {
-            message.info("Коммент успешно обновлен");
-            if (product.value) {
-                product.value.comment = value;
-            }
-        })
-        .catch((e) => {
-            message.error("Что то не так " + e.toString());
-        });
-}
-
-function onChangeCode(key: string, value: string) {
-    patchProduct(key, value, product.value!.id)
-        .then((res) => {
-            message.info("Vin code успешно обновлен");
-            if (product.value) {
-                product.value = res;
-            }
-        })
-        .catch((e) => {
-            message.error("Что то не так " + e.toString());
-        });
-}
-
-function onChangedStatus(
-    key: string,
-    value: {
-        value: number;
-        label: string;
-    },
-) {
-    patchProduct(key, value.value.toString(), product.value!.id)
-        .then((_) => {
-            message.info("Статус успешно обновлен");
-            if (product.value) {
-                product.value.status = value.label;
-            }
-        })
-        .catch((e) => {
-            message.error("Что то не так " + e.toString());
-        });
 }
 
 function onChangeWarehouse(body: Object) {
@@ -377,6 +346,40 @@ function onChangeWarehouse(body: Object) {
 function handleBack() {
     router.back();
 }
+
+function openEdit() {
+    isEditOpen.value = true;
+}
+
+function handleSaved() {
+    loadProduct();
+}
+
+function getStatusTone(status: string | undefined): "success" | "warning" | "info" | "error" | "default" {
+    switch (status) {
+        case 'В наличии':
+            return 'success'
+        case 'Зарезервирован':
+            return 'warning'
+        case 'Продан':
+            return 'error'
+        case 'Удален':
+            return 'default'
+        default:
+            return 'info'
+    }
+}
+
+function formatPrice(price: number | null | undefined) {
+    if (price == null) return '—'
+    return `${new Intl.NumberFormat('ru-RU').format(price)} ₸`
+}
+
+const formattedCodes = computed(() => {
+    if (!product.value?.code) return [];
+    if (Array.isArray(product.value.code)) return product.value.code.filter(Boolean);
+    return String(product.value.code).split(/[\n,]+/).map((s) => s.trim()).filter(Boolean);
+});
 </script>
 <style>
 @import url("node_modules/@egjs/vue3-flicking/dist/flicking.css");
