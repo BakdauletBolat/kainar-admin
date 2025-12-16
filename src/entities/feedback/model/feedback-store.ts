@@ -75,11 +75,11 @@ export const useFeedbackStore = defineStore('feedback', () => {
   /**
    * Закрыть заявку
    */
-  async function closeFeedback(id: number) {
+  async function closeFeedback(id: number | string) {
     isLoading.value = true
 
     try {
-      const updatedFeedback = await feedbackApi.close(id)
+      const updatedFeedback = await feedbackApi.close(Number(id))
 
       // Обновить в списке
       const index = feedbacks.value.findIndex(fb => fb.id === id)

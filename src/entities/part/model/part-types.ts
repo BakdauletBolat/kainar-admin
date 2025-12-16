@@ -6,6 +6,8 @@
 export interface Part {
   id: number
   name: string
+  article?: string // Артикул
+  description?: string // Описание
   price: number | null
   marketPrice: number | null
   status: PartStatus

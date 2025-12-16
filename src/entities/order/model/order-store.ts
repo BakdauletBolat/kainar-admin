@@ -229,6 +229,13 @@ export const useOrderStore = defineStore('order', () => {
   }
 
   /**
+   * Установить текущий заказ по ID (для features)
+   */
+  function setOrderId(id: number | string) {
+    loadOrder(id)
+  }
+
+  /**
    * Сбросить state
    */
   function resetState() {
@@ -244,6 +251,21 @@ export const useOrderStore = defineStore('order', () => {
     isLoadingCancel.value = false
   }
 
+  // ================ COMPUTED ================
+
+  /**
+   * Общий флаг загрузки
+   */
+  const isLoading = computed(() => {
+    return isLoadingOrders.value ||
+           isLoadingOrdersInProgress.value ||
+           isLoadingCreate.value ||
+           isLoadingRefund.value ||
+           isLoadingConfirmPayment.value ||
+           isLoadingConfirm.value ||
+           isLoadingCancel.value
+  })
+
   // ================ RETURN ================
 
   return {
@@ -251,6 +273,7 @@ export const useOrderStore = defineStore('order', () => {
     orders,
     ordersInProgress,
     order,
+    isLoading,
     isLoadingOrders,
     isLoadingOrdersInProgress,
     isLoadingCreate,
@@ -267,9 +290,11 @@ export const useOrderStore = defineStore('order', () => {
     loadOrders,
     loadOrdersInProgress,
     loadOrder,
+    setOrderId,
     createOrder,
     confirmOrder,
     cancelOrder,
+    confirmPayment: confirmPaymentOrder, // Alias для совместимости
     confirmPaymentOrder,
     refundOrder,
     resetState

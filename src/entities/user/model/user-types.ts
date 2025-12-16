@@ -29,7 +29,8 @@ export interface Role {
 }
 
 export interface LoginCredentials {
-  phone: string
+  email?: string
+  phone?: string
   password: string
 }
 

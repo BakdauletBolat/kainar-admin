@@ -170,6 +170,7 @@ export const useWarehouseStore = defineStore('warehouse', () => {
     // Actions
     loadWarehouses,
     loadWarehouse,
+    loadWarehouseById: loadWarehouse, // Alias для совместимости
     createWarehouse,
     updateWarehouse,
     deleteWarehouse,

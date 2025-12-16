@@ -164,6 +164,7 @@ export const useClientStore = defineStore('client', () => {
     // Actions
     loadClients,
     loadClient,
+    loadClientById: loadClient, // Alias для совместимости
     updateClient,
     createClient,
     deleteClient,

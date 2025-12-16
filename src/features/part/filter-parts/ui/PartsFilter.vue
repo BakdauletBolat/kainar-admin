@@ -6,7 +6,7 @@
           :value="filterStore.filters.search"
           placeholder="Поиск по названию"
           clearable
-          @update:value="(val) => filterStore.setFilter('search', val)"
+          @update:value="(val: any) => filterStore.setFilter('search', val)"
         />
       </n-form-item>
 
@@ -16,17 +16,17 @@
           :options="categoryOptions"
           placeholder="Выберите категорию"
           clearable
-          @update:value="(val) => filterStore.setFilter('category', val)"
+          @update:value="(val: any) => filterStore.setFilter('category', val)"
         />
       </n-form-item>
 
       <n-form-item label="Склад">
         <n-select
-          :value="filterStore.filters.warehouse"
+          :value="filterStore.filters.warehouseId"
           :options="warehouseOptions"
           placeholder="Выберите склад"
           clearable
-          @update:value="(val) => filterStore.setFilter('warehouse', val)"
+          @update:value="(val: any) => filterStore.setFilter('warehouseId', val)"
         />
       </n-form-item>
 
@@ -36,7 +36,7 @@
           :options="statusOptions"
           placeholder="Выберите статус"
           clearable
-          @update:value="(val) => filterStore.setFilter('status', val)"
+          @update:value="(val: any) => filterStore.setFilter('status', val)"
         />
       </n-form-item>
 

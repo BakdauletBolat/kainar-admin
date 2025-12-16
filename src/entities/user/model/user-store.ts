@@ -83,6 +83,7 @@ export const useUserStore = defineStore('user', () => {
     // Actions
     login,
     fetchUser,
+    loadMe: fetchUser, // Alias для совместимости
     updateProfile,
     logout,
   }

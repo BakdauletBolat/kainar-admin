@@ -19,6 +19,8 @@ export interface City {
 export interface Warehouse {
   id: number | string
   name: string
+  address?: string
+  description?: string
   minStockLevel: number
   city: City
   categories: number[]

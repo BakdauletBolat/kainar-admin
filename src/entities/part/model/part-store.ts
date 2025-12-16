@@ -206,9 +206,9 @@ export const usePartStore = defineStore('part', () => {
    * Удалить изображение запчасти
    * TODO: Добавить API метод когда будет готов
    */
-  async function deletePartImage(partId: number | string, imageId: number) {
+  async function deletePartImage(partId: number | string, _imageId: number) {
     try {
-      // await partApi.deleteImage(partId, imageId)
+      // await partApi.deleteImage(partId, _imageId)
       console.warn('deletePartImage not implemented yet')
 
       // Перезагрузить запчасть

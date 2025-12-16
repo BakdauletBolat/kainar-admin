@@ -108,7 +108,7 @@ const columns: DataTableColumns<Order> = [
         }
       }
     }
-    if (col.key === 'payment_status') {
+    if (col.key === 'paymentStatus') {
       return {
         ...col,
         render: (row: Order) => {
@@ -117,7 +117,7 @@ const columns: DataTableColumns<Order> = [
             pending: { label: 'Ожидает оплаты', type: 'warning' },
             refunded: { label: 'Возвращено', type: 'error' }
           }
-          const status = statusMap[row.payment_status] || { label: row.payment_status, type: 'default' }
+          const status = statusMap[row.paymentStatus] || { label: row.paymentStatus, type: 'default' }
           return h(NTag, { type: status.type }, { default: () => status.label })
         }
       }
@@ -148,7 +148,7 @@ const columns: DataTableColumns<Order> = [
                   if (success) await orderStore.loadOrders()
                 }
               }, { default: () => 'Отменить' }),
-              row.status === 'confirmed' && row.payment_status === 'pending' && h(NButton, {
+              row.status === 'confirmed' && row.paymentStatus === 'pending' && h(NButton, {
                 size: 'small',
                 type: 'primary',
                 onClick: async () => {

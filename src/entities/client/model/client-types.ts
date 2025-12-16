@@ -12,9 +12,12 @@ export interface Client {
   firstName?: string
   lastName?: string
   middleName?: string
+  name?: string // Полное имя (для совместимости)
   phone?: string
   profileType: number
   city?: any
+  address?: string
+  comment?: string
   dateJoined: Date
 }
 

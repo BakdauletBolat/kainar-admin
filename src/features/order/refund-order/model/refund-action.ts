@@ -3,9 +3,9 @@
  * Действие возврата заказа
  */
 
-import { ref } from 'vue'
+import { ref, h } from 'vue'
 import { useOrderStore } from '@entities/order'
-import { useDialog, useMessage } from 'naive-ui'
+import { useDialog, useMessage, NInput } from 'naive-ui'
 
 export function useRefundOrder() {
   const orderStore = useOrderStore()

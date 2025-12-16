@@ -10,6 +10,7 @@ export interface Feedback {
   id: number
   name: string
   phone: string
+  isClosed: boolean
   createdAt: Date
   updatedAt: Date
   completedAt: Date | null

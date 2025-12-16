@@ -31,11 +31,14 @@ export interface OrderGood {
 export interface Order {
   id: number
   uuid: string
+  orderNumber?: string // Номер заказа
   goods: OrderGood[]
   total: string
+  totalAmount?: number // Общая сумма (для совместимости)
   deliveryType: string
   paymentType: string
   paymentStatus: string
+  payment_status?: string // snake_case для совместимости
   status: string
   warehouse: {
     id: number
@@ -49,7 +52,11 @@ export interface Order {
   updatedAt: string
   comment: string
   discount: number
-  client: string
+  client: string | {
+    firstName?: string
+    lastName?: string
+    name?: string
+  }
   firstName: string
   lastName?: string | null
   phoneNumber: string
