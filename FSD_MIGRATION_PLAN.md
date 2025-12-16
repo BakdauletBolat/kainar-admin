@@ -3,7 +3,7 @@
 
 **Дата создания:** 2025-12-16
 **Статус:** В процессе
-**Текущая фаза:** Фаза 3 завершена ✅ → Готовы к Фазе 4
+**Текущая фаза:** Фаза 4 завершена ✅ → Готовы к Фазе 5
 
 ---
 
@@ -234,7 +234,7 @@ entities → entities (другой entity)
 | 1 | Shared слой | ✅ Готово | Средняя | - |
 | 2 | Entity User | ✅ Готово | Средняя | - |
 | 3 | Entity Part | ✅ Готово | Высокая | - |
-| 4 | Entities (базовые) | ⏳ Ожидает | Средняя | - |
+| 4 | Entities (базовые) | ✅ Готово | Средняя | - |
 | 5 | Entities (зависимые) | ⏳ Ожидает | Средняя | - |
 | 6 | Features (CRUD) | ⏳ Ожидает | Высокая | - |
 | 7 | Features (бизнес) | ⏳ Ожидает | Высокая | - |
@@ -659,20 +659,20 @@ await partStore.loadParts({ status: 'available' })
 
 ---
 
-## ФАЗА 4: Entities (базовые) ⏳
+## ФАЗА 4: Entities (базовые) ✅
 
-**Статус:** Готова к старту
+**Статус:** Завершена (100%)
 **Зависимости:** Фаза 3 ✅
 
 **Цель:** Мигрировать простые entities без сложных зависимостей
 
 ### Задачи
 
-- [ ] Entity: Category
-- [ ] Entity: Warehouse
-- [ ] Entity: Color
-- [ ] Entity: Feedback
-- [ ] Entity: Client
+- [x] Entity: Category
+- [x] Entity: Warehouse
+- [x] Entity: Color
+- [x] Entity: Feedback
+- [x] Entity: Client
 
 ### 4.1. Entity: Category
 
@@ -1931,13 +1931,13 @@ npx unimported
 ┌─────────────────────────────────────────────────────────────┐
 │ ПРОГРЕСС МИГРАЦИИ НА FSD                                    │
 ├─────────────────────────────────────────────────────────────┤
-│ ███████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  25%   │
+│ ██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  32%   │
 ├─────────────────────────────────────────────────────────────┤
 │ ✅ Фаза 0: Подготовка                               [100%] │
 │ ✅ Фаза 1: Shared слой                              [100%] │
 │ ✅ Фаза 2: Entity User                              [100%] │
 │ ✅ Фаза 3: Entity Part                              [100%] │
-│ ⏳ Фаза 4: Entities (базовые)                       [  0%] │
+│ ✅ Фаза 4: Entities (базовые)                       [100%] │
 │ ⏳ Фаза 5: Entities (зависимые)                     [  0%] │
 │ ⏳ Фаза 6: Features (CRUD)                          [  0%] │
 │ ⏳ Фаза 7: Features (бизнес)                        [  0%] │
@@ -1960,12 +1960,15 @@ npx unimported
 - ✅ lib/utils
 - ✅ lib/hooks
 
-#### Entities (18% - 2 из 11)
+#### Entities (64% - 7 из 11)
 - ✅ user
 - ✅ part
+- ✅ category
+- ✅ warehouse
+- ✅ color
+- ✅ feedback
+- ✅ client
 - ⏳ order
-- ⏳ warehouse
-- ⏳ category
 - ⏳ manufacturer
 - ⏳ model-car
 - ⏳ modification
@@ -2160,6 +2163,7 @@ npm run dev
 | 2025-12-16 | 3 | Начата миграция Entity Part (types) |
 | 2025-12-16 | - | Создан план полной миграции |
 | 2025-12-16 | 3 | Завершена миграция Entity Part (api + store + index) |
+| 2025-12-16 | 4 | Завершена миграция Base Entities (Category, Warehouse, Color, Feedback, Client) |
 
 ---
 
@@ -2214,8 +2218,8 @@ src/
 ---
 
 **Последнее обновление:** 2025-12-16
-**Текущая фаза:** 3 завершена ✅ (Part Entity - 100%)
-**Следующий шаг:** Фаза 4 - Base Entities (Category, Warehouse, Color, Feedback, Client)
+**Текущая фаза:** 4 завершена ✅ (Base Entities - 100%)
+**Следующий шаг:** Фаза 5 - Dependent Entities (Manufacturer, ModelCar, Modification, Order)
 
 ---
 
