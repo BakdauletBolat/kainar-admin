@@ -18,7 +18,11 @@
           <div class="flex">
             <div class="w-[64px] h-full"></div>
             <div class="container mx-auto px-4 mb-[120px] mt-4">
-              <router-view></router-view>
+              <router-view v-slot="{ Component, route }">
+                <keep-alive>
+                  <component :is="Component" :key="getRouteKey(route)" />
+                </keep-alive>
+              </router-view>
             </div>
           </div>
 
@@ -30,7 +34,8 @@
 </template>
 <script setup lang="ts">
 import { NMessageProvider, NConfigProvider, NLayout, NMenu, NLayoutSider, NIcon, NBadge } from 'naive-ui';
-import {Component, computed, h, onMounted, ref} from 'vue'
+import { computed, h, onMounted, ref } from 'vue'
+import type { Component } from 'vue'
 
 //@ts-ignore
 import { CaretDownOutline } from '@vicons/ionicons5';
@@ -207,5 +212,15 @@ const menuOptions = ref([
 ]);
 
 const filteredMenuOptions = computed(() => menuOptions.value.filter(option => Array.isArray(option.roles) && authStore.hasAnyRole(option.roles as string[])));
+
+// Функция для генерации ключа компонента
+// Для detail страниц (с параметром id) добавляем id в ключ, чтобы компонент перезагружался
+// Для остальных страниц используем только имя роута для кэширования
+function getRouteKey(route: any) {
+  if (route.params.id) {
+    return `${route.name}-${route.params.id}`;
+  }
+  return route.name || route.path;
+}
 
 </script>

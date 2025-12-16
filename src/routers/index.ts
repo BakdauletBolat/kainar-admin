@@ -5,6 +5,7 @@ import WarehouseCreate from "@/views/warehouses/create.vue";
 import WarehouseEdit from "@/views/warehouses/edit.vue";
 import WarehouseDetail from "@/views/warehouses/detail.vue";
 import OrderList from "@/views/orders/index.vue";
+import OrderListInProgress from "@/views/orders/in-progress.vue";
 import OrderCreate from "@/views/orders/create.vue";
 import OrderEdit from "@/views/orders/edit.vue";
 import OrderDetail from "@/views/orders/detail.vue";
@@ -45,7 +46,7 @@ const routes = [
   { path: '/feedbacks/list', name: 'feedbacks-list', component: FeedbackList, meta: { roles: ["all"] } },
   { path: '/login', name: 'login', component: Login },
   { path: '/profile', name: 'profile', component: Profile, meta: { roles: ["all"] } },
-  { path: '/order/list/in-progress',name: 'orders-list-in-progress', component: OrderList, meta: { roles: ["all"] } },
+  { path: '/order/list/in-progress',name: 'orders-list-in-progress', component: OrderListInProgress, meta: { roles: ["all"] } },
 ];
 
 

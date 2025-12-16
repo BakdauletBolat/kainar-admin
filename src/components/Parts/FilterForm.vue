@@ -48,7 +48,7 @@
 </template>
 <script setup lang="ts">
 import { useFilterStore } from "@/stores/filter-store.ts";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref } from "vue";
 import type { TreeSelectOption } from "naive-ui";
 import {
   NSelect,
@@ -60,13 +60,11 @@ import {
 } from "naive-ui";
 import { useCategoryStore } from "@/stores/category-storage";
 import { useManufacturerStore } from "@/stores/manufacturer-store";
-import { useProductStore } from '@/stores/product-store'
 import { useWarehouseStore } from "@/stores/warehouses-store";
 const filterStore = useFilterStore();
 const categoryStore = useCategoryStore();
 const manufacturerStore = useManufacturerStore();
 const warehouseStore = useWarehouseStore();
-const productStore = useProductStore();
 const formRef = ref();
 
 type FilterKeys = keyof typeof filterStore.filterValues;

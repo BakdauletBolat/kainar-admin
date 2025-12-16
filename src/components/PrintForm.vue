@@ -36,7 +36,6 @@
               >
                 <p class="font-semibold">Параметры ТР:</p>
                 <p>
-                  {{ product.eav_attributes.modelCar.manufacturer?.name }}
                   {{ product.eav_attributes.modelCar.name }}
                 </p>
                 <p>
@@ -46,7 +45,7 @@
                 <p>
                   {{ product.eav_attributes.capacity }}л,
                   {{ product.eav_attributes.fuelType }},
-                  {{ product.eav_attributes.modelCar.gearboxType }}
+                  {{ product.eav_attributes.gearType }}
                 </p>
               </div>
             </div>

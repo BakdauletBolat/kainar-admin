@@ -30,8 +30,10 @@ export const useOrderStore = defineStore("order-store", {
     state: () => {
         return {
             orders: [] as Order[],
+            ordersInProgress: [] as Order[],
             order: null as Order | null,
             isLoadingOrders: false,
+            isLoadingOrdersInProgress: false,
             isLoadingCreate: false,
             isLoadingRefundOrder: false,
             isLoadingConfirmPaymentOrder: false,
@@ -61,6 +63,24 @@ export const useOrderStore = defineStore("order-store", {
                 })
                 .finally(() => {
                 this.isLoadingOrders = false;
+            })
+        },
+        async loadOrdersInProgress(options: object) {
+            this.isLoadingOrdersInProgress = true;
+            return getOrders(options).then(res => {
+                //@ts-ignore
+                this.ordersInProgress = res.data.results;
+                return res.data;
+            })
+                .catch(e=>{
+                    if (e.response.status === 401) {
+                        const authStore = useAuthStore();
+                        const router = useRouter();
+                        authStore.logout(router);
+                    }
+                })
+                .finally(() => {
+                this.isLoadingOrdersInProgress = false;
             })
         },
         async loadOrder(pk: string) {

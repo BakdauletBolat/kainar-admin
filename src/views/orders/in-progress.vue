@@ -1,5 +1,5 @@
 <template>
-  <OrdersTable title="Заказы" />
+  <OrdersTable title="Заказы в процессе" :status-filter="1" />
 </template>
 
 <script setup lang="ts">
