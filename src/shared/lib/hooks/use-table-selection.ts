@@ -6,7 +6,7 @@
 import { ref, computed, type Ref } from 'vue'
 
 export function useTableSelection<T extends { id: number | string }>(items: Ref<T[]>) {
-  const selectedIds = ref<Set<T['id']>>(new Set())
+  const selectedIds = ref<Set<number | string>>(new Set())
 
   const selectedItems = computed(() =>
     items.value.filter(item => selectedIds.value.has(item.id))
@@ -20,7 +20,7 @@ export function useTableSelection<T extends { id: number | string }>(items: Ref<
     selectedIds.value.size > 0 && selectedIds.value.size < items.value.length
   )
 
-  function toggleItem(id: T['id']) {
+  function toggleItem(id: number | string) {
     if (selectedIds.value.has(id)) {
       selectedIds.value.delete(id)
     } else {
@@ -43,7 +43,7 @@ export function useTableSelection<T extends { id: number | string }>(items: Ref<
     selectedIds.value = new Set()
   }
 
-  function isSelected(id: T['id']): boolean {
+  function isSelected(id: number | string): boolean {
     return selectedIds.value.has(id)
   }
 
