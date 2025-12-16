@@ -17,6 +17,7 @@ import ClientsList from "@/views/clients/index.vue";
 import ClientDetail from "@/views/clients/detail.vue";
 import ClientCreate from "@/views/clients/create.vue";
 import FeedbackList from "@/views/feedbacks/index.vue";
+import Home from "@/views/Home.vue";
 
 import Login from "@/views/auth/login.vue";
 import Profile from "@/views/auth/profile.vue";
@@ -27,7 +28,7 @@ import {useAuthStore} from "@/stores/auth-store.ts";
 
 
 const routes = [
-  { path: '/', name: 'main', component: PartsList, meta: { roles: ["all"] } },
+  { path: '/', name: 'main', component: Home, meta: { roles: ["all"] } },
   { path: '/order/list',name: 'orders-list', component: OrderList, meta: { roles: ["all"] } },
   { path: '/order/create',name: 'orders-create', component: OrderCreate, meta: { roles: ["all"] } },
   { path: '/order/:id/edit',name: 'orders-edit', component: OrderEdit, meta: { roles: ["all"] } },

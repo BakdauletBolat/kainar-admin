@@ -1,6 +1,6 @@
 <template>
-<div class="w-full z-10 p-3 border-b bg-white">
-    <div class="flex max-w-5xl mx-auto justify-between">
+<div class="w-full z-10 p-3 border-b border-white/60 bg-white/80 backdrop-blur-xl shadow-sm">
+    <div class="flex max-w-6xl mx-auto justify-between">
         <div class="flex items-center gap-3">
         <Bars3Icon @click="appConfig.isOpenMenu = true;" class="w-7 lg:hidden h-7 cursor-pointer"></Bars3Icon>
         <RouterLink v-if="backRoute" :to="backRoute">
