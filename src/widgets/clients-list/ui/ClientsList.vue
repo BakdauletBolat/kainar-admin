@@ -12,7 +12,7 @@
         :columns="columns"
         :data="clientStore.clients"
         :loading="clientStore.isLoading"
-        :row-key="(row) => row.id"
+        :row-key="(row: Client) => row.id"
         :pagination="paginationReactive"
         :bordered="false"
       />

@@ -20,7 +20,7 @@
         :columns="columns"
         :data="partStore.parts"
         :loading="partStore.isLoading"
-        :row-key="(row) => row.id"
+        :row-key="(row: PartListItem) => row.id"
         :pagination="paginationReactive"
         :bordered="false"
         @update:checked-row-keys="handleCheck"
@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { h, reactive } from 'vue'
+import { h, reactive, toRef } from 'vue'
 import { NSpace, NButton, NDataTable, NTag } from 'naive-ui'
 import { usePartStore } from '@entities/part'
 import { useDeletePart } from '@features/part/delete-part'
@@ -46,7 +46,8 @@ const emit = defineEmits<{
 
 const partStore = usePartStore()
 const { deletePart, bulkDeleteParts } = useDeletePart()
-const { selectedIds, toggleItem, clearSelection } = useTableSelection<PartListItem>()
+const partsRef = toRef(partStore, 'parts')
+const { selectedIds, toggleItem, clearSelection } = useTableSelection<PartListItem>(partsRef)
 
 const paginationReactive = reactive({
   page: 1,

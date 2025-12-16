@@ -12,7 +12,7 @@
         :columns="columns"
         :data="warehouseStore.warehouses"
         :loading="warehouseStore.isLoading"
-        :row-key="(row) => row.id"
+        :row-key="(row: Warehouse) => row.id"
         :pagination="paginationReactive"
         :bordered="false"
       />
@@ -30,7 +30,7 @@ import type { Warehouse } from '@entities/warehouse'
 
 const emit = defineEmits<{
   create: []
-  edit: [id: number]
+  edit: [id: number | string]
 }>()
 
 const warehouseStore = useWarehouseStore()

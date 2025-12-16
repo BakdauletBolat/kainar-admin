@@ -8,7 +8,7 @@
 import { httpClient } from '@shared/api/base/http-client'
 import { ENDPOINTS } from '@shared/api/base/api-config'
 import { buildQueryString } from '@shared/api/lib/query-builder'
-import type { Part, PartFilters, PartListItem } from '../model/part-types'
+import type { Part, PartFilters, PartListItem, CreatePartDto, UpdatePartDto } from '../model/part-types'
 import type { PaginatedResponse } from '@shared/api/base/api-types'
 
 /**
@@ -47,7 +47,7 @@ export const partApi = {
    * Создать запчасть
    * TODO: Добавить эндпоинт в ENDPOINTS когда потребуется
    */
-  async create(part: Partial<Part>): Promise<Part> {
+  async create(part: CreatePartDto): Promise<Part> {
     const { data } = await httpClient.post<Part>(ENDPOINTS.PARTS.LIST, part)
     return data
   },
@@ -56,7 +56,7 @@ export const partApi = {
    * Обновить запчасть
    * TODO: Добавить эндпоинт в ENDPOINTS когда потребуется
    */
-  async update(id: number, part: Partial<Part>): Promise<Part> {
+  async update(id: number | string, part: UpdatePartDto): Promise<Part> {
     const { data } = await httpClient.patch<Part>(
       ENDPOINTS.PARTS.DETAIL(id),
       part

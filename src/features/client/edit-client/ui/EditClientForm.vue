@@ -85,6 +85,9 @@ onMounted(async () => {
 
 async function loadClient() {
   const client = await clientStore.loadClientById(props.clientId)
+  if (!client) {
+    return
+  }
   form.value = {
     name: client.name,
     phone: client.phone,

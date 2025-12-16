@@ -39,7 +39,7 @@
         :columns="columns"
         :data="filteredOrders"
         :loading="orderStore.isLoadingOrders"
-        :row-key="(row) => row.id"
+        :row-key="(row: Order) => row.id"
         :pagination="paginationReactive"
         :bordered="false"
       />
@@ -108,7 +108,7 @@ const columns: DataTableColumns<Order> = [
         }
       }
     }
-    if (col.key === 'paymentStatus') {
+    if (col.key === 'payment_status') {
       return {
         ...col,
         render: (row: Order) => {
@@ -117,7 +117,8 @@ const columns: DataTableColumns<Order> = [
             pending: { label: 'Ожидает оплаты', type: 'warning' },
             refunded: { label: 'Возвращено', type: 'error' }
           }
-          const status = statusMap[row.paymentStatus] || { label: row.paymentStatus, type: 'default' }
+          const paymentStatus = row.paymentStatus || row.payment_status || 'pending'
+          const status = statusMap[paymentStatus] || { label: paymentStatus, type: 'default' }
           return h(NTag, { type: status.type }, { default: () => status.label })
         }
       }
@@ -164,13 +165,16 @@ const columns: DataTableColumns<Order> = [
     if (col.key === 'client.name') {
       return {
         ...col,
-        render: (row: Order) => row.client?.name || '-'
+        render: (row: Order) => {
+          if (typeof row.client === 'string') return row.client
+          return row.client?.name || '-'
+        }
       }
     }
     if (col.key === 'total_price') {
       return {
         ...col,
-        render: (row: Order) => `${row.total_price} ₸`
+        render: (row: Order) => `${row.totalAmount ?? row.total} ₸`
       }
     }
     return col

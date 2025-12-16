@@ -1,6 +1,7 @@
 <template>
   <n-config-provider :theme-overrides="themeOverrides">
     <n-message-provider>
+      <n-dialog-provider>
       <n-layout has-sider>
         <n-layout-sider bordered class="!hidden md:!block h-screen !z-[99] !fixed" collapse-mode="width"
           :collapsed-width="64" :width="240" :collapsed="collapsed" show-trigger @collapse="collapsed = true"
@@ -29,12 +30,13 @@
           <BottomAppBar class="md:hidden"></BottomAppBar>
         </n-layout>
       </n-layout>
+      </n-dialog-provider>
     </n-message-provider>
   </n-config-provider>
 </template>
 <script setup lang="ts">
 import { NMessageProvider, NConfigProvider, NLayout, NMenu, NLayoutSider, NIcon, NBadge } from 'naive-ui';
-import { computed, h, onMounted, ref } from 'vue'
+import { computed, defineComponent, h, onMounted, ref } from 'vue'
 import type { Component } from 'vue'
 
 //@ts-ignore
@@ -89,15 +91,16 @@ function renderIcon(icon: Component) {
   return () => h(NIcon, null, { default: () => h(icon) })
 }
 
-function renderOrdersInProgressIcon(icon: Component) {
-  return () => h(
-      NBadge, {
-        value: dashboardInfo.value.orders_inprogress_count
-      }, {
-        default: () => h(NIcon, null, { default: () => h(icon) })
-      }
-  )
-}
+const OrdersInProgressIcon = defineComponent({
+  name: 'OrdersInProgressIcon',
+  setup() {
+    return () => h(
+      NBadge,
+      { value: dashboardInfo.value.orders_inprogress_count },
+      { default: () => h(NIcon, null, { default: () => h(ShoppingBagIcon) }) }
+    )
+  }
+})
 
 function expandIcon() {
   return h(NIcon, null, { default: () => h(CaretDownOutline) })
@@ -146,7 +149,7 @@ const menuOptions = ref([
         { default: () => 'Заказы в процессе' }
       ),
     key: 'orders-list-in-progress',
-    icon: renderOrdersInProgressIcon(ShoppingBagIcon),
+    icon: () => h(OrdersInProgressIcon),
     roles: ["all", "Директор"] as string[]
   },
   {

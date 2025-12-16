@@ -8,7 +8,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { partApi } from '../api/part-api'
-import type { Part, PartFilters, PartListItem } from './part-types'
+import type { Part, PartFilters, PartListItem, CreatePartDto, UpdatePartDto } from './part-types'
 
 export const usePartStore = defineStore('part', () => {
   // ================ STATE ================
@@ -107,7 +107,7 @@ export const usePartStore = defineStore('part', () => {
   /**
    * Создать новую запчасть
    */
-  async function createPart(data: Partial<Part>) {
+  async function createPart(data: CreatePartDto) {
     try {
       const newPart = await partApi.create(data)
       // Перезагрузить список после создания
@@ -122,7 +122,7 @@ export const usePartStore = defineStore('part', () => {
   /**
    * Обновить запчасть
    */
-  async function updatePart(id: number, data: Partial<Part>) {
+  async function updatePart(id: number | string, data: UpdatePartDto) {
     try {
       const updatedPart = await partApi.update(id, data)
 

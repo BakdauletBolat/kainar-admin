@@ -122,7 +122,7 @@ async function loadPart() {
   form.value = {
     name: part.name,
     article: part.article,
-    price: part.price,
+    price: part.price ?? 0,
     category: part.category.id,
     warehouse: part.warehouse.id,
     description: part.description || ''

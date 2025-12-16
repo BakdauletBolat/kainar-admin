@@ -111,7 +111,6 @@ const orderId = computed(() => Number(route.params.id))
 
 onMounted(() => {
   orderStore.setOrderId(orderId.value)
-  orderStore.loadOrder()
 })
 
 function getStatusType(status: string): 'success' | 'warning' | 'error' | 'info' {
@@ -136,21 +135,21 @@ function getPaymentStatusType(status: string): 'success' | 'warning' | 'error' {
 async function handleConfirm() {
   const success = await confirmOrder(orderId.value)
   if (success) {
-    await orderStore.loadOrder()
+    await orderStore.loadOrder(orderId.value)
   }
 }
 
 async function handleCancel() {
   const success = await cancelOrder(orderId.value)
   if (success) {
-    await orderStore.loadOrder()
+    await orderStore.loadOrder(orderId.value)
   }
 }
 
 async function handleConfirmPayment() {
   const success = await confirmPayment(orderId.value)
   if (success) {
-    await orderStore.loadOrder()
+    await orderStore.loadOrder(orderId.value)
   }
 }
 </script>

@@ -25,7 +25,7 @@
               {{ orderStore.order.status }}
             </n-descriptions-item>
             <n-descriptions-item label="Клиент">
-              {{ orderStore.order.client?.firstName }} {{ orderStore.order.client?.lastName }}
+              {{ clientName }}
             </n-descriptions-item>
             <n-descriptions-item label="Сумма">
               {{ orderStore.order.totalAmount }} ₸
@@ -64,6 +64,13 @@ const router = useRouter()
 const orderStore = useOrderStore()
 
 const orderId = computed(() => Number(route.params.id))
+const clientName = computed(() => {
+  const client = orderStore.order?.client
+  if (!client) return '-'
+  if (typeof client === 'string') return client
+  const fullName = [client.firstName, client.lastName].filter(Boolean).join(' ')
+  return fullName || client.name || '-'
+})
 
 onMounted(() => {
   orderStore.loadOrder(orderId.value)

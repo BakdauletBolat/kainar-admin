@@ -379,7 +379,5 @@ function handleBack() {
 }
 </script>
 <style>
-@import url("node_modules/@egjs/vue3-flicking/dist/flicking.css");
-
-
+@import '@egjs/vue3-flicking/dist/flicking.css';
 </style>
