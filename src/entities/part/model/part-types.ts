@@ -154,3 +154,33 @@ export interface PartListItem {
   createdAt: Date
   updatedAt: Date
 }
+
+/**
+ * DTO для создания запчасти
+ */
+export interface CreatePartDto {
+  name: string
+  article: string
+  price: number
+  category: number | null
+  warehouse: number | null
+  description?: string
+  modelCar?: number | null
+  color?: string | null
+  status?: PartStatus
+}
+
+/**
+ * DTO для обновления запчасти
+ */
+export interface UpdatePartDto {
+  name?: string
+  article?: string
+  price?: number
+  category?: number | null
+  warehouse?: number | null
+  description?: string
+  modelCar?: number | null
+  color?: string | null
+  status?: PartStatus
+}

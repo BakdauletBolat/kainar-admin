@@ -15,5 +15,7 @@ export type {
   WarehouseListItem,
   WarehouseOption,
   WarehouseFilters,
-  City
+  City,
+  CreateWarehouseDto,
+  UpdateWarehouseDto
 } from './model/warehouse-types'

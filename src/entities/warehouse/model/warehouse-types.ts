@@ -62,3 +62,21 @@ export interface WarehouseFilters {
   page?: number
   pageSize?: number
 }
+
+/**
+ * DTO для создания склада (упрощенный)
+ */
+export interface CreateWarehouseDto {
+  name: string
+  address: string
+  description?: string
+}
+
+/**
+ * DTO для обновления склада (упрощенный)
+ */
+export interface UpdateWarehouseDto {
+  name?: string
+  address?: string
+  description?: string
+}

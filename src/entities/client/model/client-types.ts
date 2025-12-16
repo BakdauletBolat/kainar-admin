@@ -30,3 +30,25 @@ export interface ClientFilters {
   pageSize?: number
   sort?: string
 }
+
+/**
+ * DTO для создания клиента (упрощенный)
+ */
+export interface CreateClientDto {
+  name: string
+  phone: string
+  email?: string
+  address?: string
+  comment?: string
+}
+
+/**
+ * DTO для обновления клиента (упрощенный)
+ */
+export interface UpdateClientDto {
+  name?: string
+  phone?: string
+  email?: string
+  address?: string
+  comment?: string
+}

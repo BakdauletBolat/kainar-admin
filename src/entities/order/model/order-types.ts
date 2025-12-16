@@ -102,3 +102,13 @@ export interface OrderFilters {
   page?: number
   pageSize?: number
 }
+
+/**
+ * DTO для создания заказа (упрощенный)
+ */
+export interface CreateOrderDto {
+  client: number | null
+  parts: number[]
+  payment_method: string | null
+  comment?: string
+}

@@ -12,5 +12,7 @@ export { clientApi } from './api/client-api'
 // Types
 export type {
   Client,
-  ClientFilters
+  ClientFilters,
+  CreateClientDto,
+  UpdateClientDto
 } from './model/client-types'

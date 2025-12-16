@@ -147,6 +147,21 @@ export const usePartStore = defineStore('part', () => {
   }
 
   /**
+   * Удалить одну запчасть
+   */
+  async function deletePart(id: number | string) {
+    try {
+      await partApi.bulkDelete([Number(id)])
+
+      // Обновить список после удаления
+      await loadParts()
+    } catch (error) {
+      console.error('Failed to delete part:', error)
+      throw error
+    }
+  }
+
+  /**
    * Массовое удаление запчастей
    */
   async function bulkDelete(ids: number[]) {
@@ -157,6 +172,49 @@ export const usePartStore = defineStore('part', () => {
       await loadParts()
     } catch (error) {
       console.error('Failed to delete parts:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Alias для bulkDelete для совместимости
+   */
+  const bulkDeleteParts = bulkDelete
+
+  /**
+   * Alias для loadPart для совместимости
+   */
+  const loadPartById = loadPart
+
+  /**
+   * Загрузить изображение для запчасти
+   */
+  async function uploadPartImage(id: number | string, formData: FormData) {
+    try {
+      const files = formData.getAll('image') as File[]
+      await partApi.uploadImages(Number(id), files)
+
+      // Перезагрузить запчасть чтобы получить обновленные изображения
+      await loadPart(id)
+    } catch (error) {
+      console.error('Failed to upload part image:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Удалить изображение запчасти
+   * TODO: Добавить API метод когда будет готов
+   */
+  async function deletePartImage(partId: number | string, imageId: number) {
+    try {
+      // await partApi.deleteImage(partId, imageId)
+      console.warn('deletePartImage not implemented yet')
+
+      // Перезагрузить запчасть
+      await loadPart(partId)
+    } catch (error) {
+      console.error('Failed to delete part image:', error)
       throw error
     }
   }
@@ -208,9 +266,14 @@ export const usePartStore = defineStore('part', () => {
     // Actions
     loadParts,
     loadPart,
+    loadPartById,
     createPart,
     updatePart,
+    deletePart,
     bulkDelete,
+    bulkDeleteParts,
+    uploadPartImage,
+    deletePartImage,
     clearFilters,
     setFilter,
     resetState

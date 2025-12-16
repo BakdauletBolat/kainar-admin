@@ -21,5 +21,7 @@ export type {
   PartDetail,
   ModelCar,
   Manufacturer,
-  EavAttributes
+  EavAttributes,
+  CreatePartDto,
+  UpdatePartDto
 } from './model/part-types'

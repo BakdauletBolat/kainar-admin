@@ -15,5 +15,6 @@ export type {
   OrderGood,
   OrderFilters,
   CreateOrderData,
-  RefundOrderData
+  RefundOrderData,
+  CreateOrderDto
 } from './model/order-types'
