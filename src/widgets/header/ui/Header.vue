@@ -11,7 +11,7 @@
       </n-space>
 
       <n-space align="center">
-        <n-text>{{ userStore.user?.name }}</n-text>
+        <n-text>{{ userStore.user?.firstName }} {{ userStore.user?.lastName }}</n-text>
         <n-dropdown :options="userMenuOptions" @select="handleUserMenuSelect">
           <n-button circle>
             <n-icon>

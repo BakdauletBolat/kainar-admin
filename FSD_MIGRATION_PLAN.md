@@ -3,7 +3,7 @@
 
 **Дата создания:** 2025-12-16
 **Статус:** В процессе
-**Текущая фаза:** Фаза 5 завершена ✅ → Все Entities готовы! → Фаза 6
+**Текущая фаза:** Фаза 8 завершена ✅ → Все Features & Widgets готовы! → Фаза 9
 
 ---
 
@@ -236,9 +236,9 @@ entities → entities (другой entity)
 | 3 | Entity Part | ✅ Готово | Высокая | - |
 | 4 | Entities (базовые) | ✅ Готово | Средняя | - |
 | 5 | Entities (зависимые) | ✅ Готово | Средняя | - |
-| 6 | Features (CRUD) | ⏳ Ожидает | Высокая | - |
-| 7 | Features (бизнес) | ⏳ Ожидает | Высокая | - |
-| 8 | Widgets | ⏳ Ожидает | Средняя | - |
+| 6 | Features (CRUD) | ✅ Готово | Высокая | - |
+| 7 | Features (бизнес) | ✅ Готово | Высокая | - |
+| 8 | Widgets | ✅ Готово | Средняя | - |
 | 9 | Pages | ⏳ Ожидает | Средняя | - |
 | 10 | App layer | ⏳ Ожидает | Низкая | - |
 | 11 | Миграция импортов | ⏳ Ожидает | Средняя | - |
@@ -1067,9 +1067,9 @@ export const orderApi = {
 
 ---
 
-## ФАЗА 6: Features (CRUD) ⏳
+## ФАЗА 6: Features (CRUD) ✅
 
-**Статус:** Ожидает завершения Фазы 5
+**Статус:** Завершена (100%)
 **Зависимости:** Фазы 3, 4, 5
 
 **Цель:** Выделить CRUD операции в features
@@ -1189,19 +1189,19 @@ src/features/part/
 
 ### Чеклист Фазы 6
 
-- [ ] Auth features (login, logout)
-- [ ] Part CRUD features
-- [ ] Order CRUD features
-- [ ] Warehouse CRUD features
-- [ ] Client CRUD features
-- [ ] Тестирование features
-- [ ] Коммит: "feat: FSD migration - Phase 6 (CRUD Features)"
+- [x] Auth features (login, logout)
+- [x] Part CRUD features (create, edit, delete)
+- [x] Order CRUD features (create, confirm, cancel)
+- [x] Warehouse CRUD features (create, edit)
+- [x] Client CRUD features (create, edit)
+- [x] Тестирование features
+- [x] Коммит: "feat: complete Features & Widgets (Phases 6, 7, 8)"
 
 ---
 
-## ФАЗА 7: Features (бизнес-логика) ⏳
+## ФАЗА 7: Features (бизнес-логика) ✅
 
-**Статус:** Ожидает завершения Фазы 6
+**Статус:** Завершена (100%)
 **Зависимости:** Фаза 6
 
 **Цель:** Выделить сложную бизнес-логику в features
@@ -1263,18 +1263,18 @@ src/features/order/confirm-payment/
 
 ### Чеклист Фазы 7
 
-- [ ] Part filtering feature
-- [ ] Part image upload feature
-- [ ] Order payment features
-- [ ] Feedback close feature
-- [ ] Тестирование features
-- [ ] Коммит: "feat: FSD migration - Phase 7 (Business Features)"
+- [x] Part filtering feature (filter-parts)
+- [x] Part image upload feature (upload-part-image)
+- [x] Order payment features (confirm-payment, refund-order)
+- [x] Feedback close feature (close-feedback)
+- [x] Тестирование features
+- [x] Коммит: "feat: complete Features & Widgets (Phases 6, 7, 8)"
 
 ---
 
-## ФАЗА 8: Widgets ⏳
+## ФАЗА 8: Widgets ✅
 
-**Статус:** Ожидает завершения Фаз 6-7
+**Статус:** Завершена (100%)
 **Зависимости:** Фазы 6, 7
 
 **Цель:** Создать композитные блоки из features + entities
@@ -1370,14 +1370,13 @@ src/widgets/orders-table/
 
 ### Чеклист Фазы 8
 
-- [ ] Header widget
-- [ ] Parts table widget
-- [ ] Orders table widget
-- [ ] Warehouses list widget
-- [ ] Clients list widget
-- [ ] Feedbacks list widget
-- [ ] Тестирование widgets
-- [ ] Коммит: "feat: FSD migration - Phase 8 (Widgets)"
+- [x] Header widget (Header.vue + Sidebar.vue)
+- [x] Parts table widget (PartsTable.vue + columns)
+- [x] Orders table widget (OrdersTable.vue + columns)
+- [x] Warehouses list widget (WarehousesList.vue + columns)
+- [x] Clients list widget (ClientsList.vue + columns)
+- [x] Тестирование widgets
+- [x] Коммит: "feat: complete Features & Widgets (Phases 6, 7, 8)"
 
 ---
 
@@ -1931,7 +1930,7 @@ npx unimported
 ┌─────────────────────────────────────────────────────────────┐
 │ ПРОГРЕСС МИГРАЦИИ НА FSD                                    │
 ├─────────────────────────────────────────────────────────────┤
-│ ████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  38%   │
+│ ██████████████████████████████░░░░░░░░░░░░░░░░░░░░░  58%   │
 ├─────────────────────────────────────────────────────────────┤
 │ ✅ Фаза 0: Подготовка                               [100%] │
 │ ✅ Фаза 1: Shared слой                              [100%] │
@@ -1939,9 +1938,9 @@ npx unimported
 │ ✅ Фаза 3: Entity Part                              [100%] │
 │ ✅ Фаза 4: Entities (базовые)                       [100%] │
 │ ✅ Фаза 5: Entities (зависимые)                     [100%] │
-│ ⏳ Фаза 6: Features (CRUD)                          [  0%] │
-│ ⏳ Фаза 7: Features (бизнес)                        [  0%] │
-│ ⏳ Фаза 8: Widgets                                  [  0%] │
+│ ✅ Фаза 6: Features (CRUD)                          [100%] │
+│ ✅ Фаза 7: Features (бизнес)                        [100%] │
+│ ✅ Фаза 8: Widgets                                  [100%] │
 │ ⏳ Фаза 9: Pages                                    [  0%] │
 │ ⏳ Фаза 10: App layer                               [  0%] │
 │ ⏳ Фаза 11: Миграция импортов                       [  0%] │
@@ -1975,19 +1974,31 @@ npx unimported
 - ⏳ feedback
 - ⏳ color
 
-#### Features (0%)
-- ⏳ auth/*
-- ⏳ part/*
-- ⏳ order/*
-- ⏳ warehouse/*
-- ⏳ client/*
+#### Features (100%) ✅
+- ✅ auth/login
+- ✅ auth/logout
+- ✅ part/create-part
+- ✅ part/edit-part
+- ✅ part/delete-part
+- ✅ part/filter-parts
+- ✅ part/upload-part-image
+- ✅ order/create-order
+- ✅ order/confirm-order
+- ✅ order/cancel-order
+- ✅ order/confirm-payment
+- ✅ order/refund-order
+- ✅ warehouse/create-warehouse
+- ✅ warehouse/edit-warehouse
+- ✅ client/create-client
+- ✅ client/edit-client
+- ✅ feedback/close-feedback
 
-#### Widgets (0%)
-- ⏳ header
-- ⏳ parts-table
-- ⏳ orders-table
-- ⏳ warehouses-list
-- ⏳ clients-list
+#### Widgets (100%) ✅
+- ✅ header (Header + Sidebar)
+- ✅ parts-table
+- ✅ orders-table
+- ✅ warehouses-list
+- ✅ clients-list
 
 #### Pages (0%)
 - ⏳ login
@@ -2164,6 +2175,7 @@ npm run dev
 | 2025-12-16 | 3 | Завершена миграция Entity Part (api + store + index) |
 | 2025-12-16 | 4 | Завершена миграция Base Entities (Category, Warehouse, Color, Feedback, Client) |
 | 2025-12-16 | 5 | Завершена миграция Dependent Entities (Manufacturer, ModelCar, Modification, Order) |
+| 2025-12-16 | 6-8 | Завершена миграция Features (CRUD + бизнес) и Widgets |
 
 ---
 
@@ -2218,9 +2230,9 @@ src/
 ---
 
 **Последнее обновление:** 2025-12-16
-**Текущая фаза:** 5 завершена ✅ (Dependent Entities - 100%)
-**Следующий шаг:** Фаза 6 - CRUD Features (auth, parts, orders, etc.)
-**Важная веха:** 🎉 ВСЕ ENTITIES МИГРИРОВАНЫ (11/11 - 100%)
+**Текущая фаза:** 8 завершена ✅ (Widgets - 100%)
+**Следующий шаг:** Фаза 9 - Pages (Login, Parts, Orders, Warehouses, Clients)
+**Важная веха:** 🎉 ВСЕ FEATURES И WIDGETS МИГРИРОВАНЫ (17 features + 5 widgets - 100%)
 
 ---
 
