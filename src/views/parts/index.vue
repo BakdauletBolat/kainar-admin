@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import PartsFilter from '@/components/Parts/PartsFilter.vue';
 import { onMounted, h, reactive, watch, ref } from 'vue';
-import { NDataTable, NAvatar, NH6, NTag, NPageHeader, NButton, NPopconfirm, useMessage, NIcon } from 'naive-ui';
+import { NDataTable, NAvatar, NH6, NTag, NPageHeader, NButton, NPopconfirm, useMessage, NIcon, NBreadcrumb, NBreadcrumbItem } from 'naive-ui';
 import { getFirstElementArray } from '@/utils/getFirstElementFromArray.ts';
 import { useRoute, RouterLink, useRouter } from 'vue-router';
 import type { DataTableColumns } from 'naive-ui'
@@ -10,6 +10,7 @@ import { useFilterStore } from "@/stores/filter-store.ts";
 import { formatDate } from '@/utils/formatDate';
 import { ImageOutline, ArchiveOutline } from '@vicons/ionicons5';
 import axiosIns from '@/apis';
+import { getStatusType } from '@/styles/design-tokens';
 
 interface RowData {
   id: number
@@ -40,7 +41,6 @@ interface RowData {
 
 const router = useRouter();
 const message = useMessage();
-const statusFilterValues = ref([]);
 
 const apiBase = (axiosIns.defaults.baseURL || '').replace(/\/$/, '');
 
@@ -61,7 +61,7 @@ const renderTableEmpty = () =>
     ]
   );
 
-const rowClassName = () => 'hover:bg-slate-50';
+const rowClassName = () => 'hover:bg-slate-50 transition-colors duration-150';
 
 function createNavigate() {
   router.push({
@@ -75,18 +75,7 @@ function formatPrice(price: number | undefined) {
 }
 
 function getStatusTone(status: string): "success" | "warning" | "info" | "error" | "default" {
-  switch (status) {
-    case 'В наличии':
-      return 'success'
-    case 'Зарезервирован':
-      return 'warning'
-    case 'Продан':
-      return 'error'
-    case 'Удален':
-      return 'default'
-    default:
-      return 'info'
-  }
+  return getStatusType(status)
 }
 
 function createColumns(): DataTableColumns<RowData> {
@@ -111,7 +100,7 @@ function createColumns(): DataTableColumns<RowData> {
         return h(
             RouterLink,
             {
-              class: "flex gap-4 items-center py-2",
+              class: "flex gap-3 items-center py-1.5",
               to: {
                 name: 'parts-detail',
                 params: {
@@ -124,44 +113,44 @@ function createColumns(): DataTableColumns<RowData> {
                 h(
                   'div',
                   {
-                    class: 'overflow-hidden rounded-xl bg-slate-100 ring-1 ring-slate-200',
+                    class: 'overflow-hidden rounded-lg bg-slate-50 ring-1 ring-slate-200/60',
                     style: {
-                      width: '50px',
-                      height: '50px',
-                      minWidth: '50px',
-                      minHeight: '50px'
+                      width: '48px',
+                      height: '48px',
+                      minWidth: '48px',
+                      minHeight: '48px'
                     }
                   },
                   imageUrl
                     ? h('img', {
                       src: imageUrl,
                       class: 'h-full w-full object-cover',
-                      style: { width: '50px', height: '50px' },
+                      style: { width: '48px', height: '48px' },
                       onError: (e: any) => { e.target.src = '/car.png' }
                     })
                     : h(
                       'div',
                       {
-                        class: 'flex h-full w-full items-center justify-center text-slate-400',
-                        style: { width: '50px', height: '50px' }
+                        class: 'flex h-full w-full items-center justify-center text-slate-300',
+                        style: { width: '48px', height: '48px' }
                       },
-                      [h(NIcon, { size: 20, component: ImageOutline })]
+                      [h(NIcon, { size: 18, component: ImageOutline })]
                     )
                 ),
-            h('div', { class: 'flex flex-col gap-1 min-w-0' }, [
-              h(NH6, { class: 'text-base font-semibold text-slate-900 mb-0' }, {
+            h('div', { class: 'flex flex-col gap-1.5 min-w-0 py-0.5' }, [
+              h('div', { class: 'text-sm font-semibold text-slate-900 leading-tight' }, {
                 default: () => row.name
               }),
-              h('div', { class: 'text-sm text-slate-600 truncate' }, { default: () => `${row.modelCar?.manufacturer?.name ?? '—'} · ${row.modelCar?.name ?? ''} · ${row.modelCar?.startDate ?? ''}` }),
-              h('div', { class: 'flex flex-wrap gap-2 text-xs text-slate-500' }, {
+              h('div', { class: 'text-xs text-slate-600 truncate leading-tight' }, { default: () => `${row.modelCar?.manufacturer?.name ?? '—'} · ${row.modelCar?.name ?? ''} · ${row.modelCar?.startDate ?? ''}` }),
+              h('div', { class: 'flex flex-wrap gap-1.5 text-xs text-slate-500 mt-0.5' }, {
                 default: () => [
-                  h('span', { class: 'inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1' }, `ID ${row.id}`),
+                  h('span', { class: 'inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 font-medium' }, `ID ${row.id}`),
                   row?.warehouse?.name
-                    ? h('span', { class: 'inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-1 text-indigo-700' }, row.warehouse.name)
+                    ? h('span', { class: 'inline-flex items-center rounded-md bg-indigo-50 px-2 py-0.5 text-indigo-700 font-medium' }, row.warehouse.name)
                     : null
                   ,
                   row?.eav_attributes?.capacity
-                    ? h('span', { class: 'inline-flex items-center rounded-full bg-amber-50 px-2.5 py-1 text-amber-700' }, `Объём ${row.eav_attributes.capacity}`)
+                    ? h('span', { class: 'inline-flex items-center rounded-md bg-amber-50 px-2 py-0.5 text-amber-700 font-medium' }, `Объём ${row.eav_attributes.capacity}`)
                     : null
                 ]
               })
@@ -177,13 +166,14 @@ function createColumns(): DataTableColumns<RowData> {
       width: 150,
       sorter: true,
       render(row) {
-        return h('div', { class: 'text-sm text-slate-700' }, { default: () => formatDate(row.created_at) })
+        return h('div', { class: 'text-sm text-slate-600 font-medium' }, { default: () => formatDate(row.created_at) })
       }
     },
     {
       title: "Цена",
       key: "price",
-      width: 120,
+      width: 130,
+      align: 'right',
       render(row) {
         return h(
           'div',
@@ -192,7 +182,7 @@ function createColumns(): DataTableColumns<RowData> {
             h(
               'span',
               {
-                class: 'inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-900'
+                class: 'inline-flex items-center rounded-lg bg-slate-900 px-3 py-1.5 text-sm font-semibold text-white'
               },
               formatPrice(row.price)
             )
@@ -208,51 +198,28 @@ function createColumns(): DataTableColumns<RowData> {
         tooltip: true
       },
       render(row) {
-        return h('div', { class: 'text-sm text-slate-600 max-w-[320px] line-clamp-2' }, { default: () => row.comment || '—' })
+        return h('div', { class: 'text-sm text-slate-500 max-w-[320px] line-clamp-2 leading-relaxed' }, { default: () => row.comment || '—' })
       }
     },
     {
       title: "Статус",
       key: "status",
-      width: 140,
+      width: 150,
+      align: 'center',
       render(row) {
         const tone = getStatusTone(row.status)
         return h(
           'div',
-          { class: 'flex justify-end' },
+          { class: 'flex justify-center' },
           [
             h(
               NTag,
-              { round: true, type: tone, bordered: false, class: 'px-3 py-1 text-sm' },
+              { round: true, type: tone, bordered: false, class: 'px-3 py-1 text-xs font-semibold' },
               { default: () => row.status }
             )
           ]
         )
-      },
-      filter: true,
-      defaultFilterOptionValues: [],
-      filterOptions: [
-        {
-          label: 'Необработан',
-          value: 1
-        },
-        {
-          label: 'В наличии',
-          value: 2
-        },
-        {
-          label: 'Зарезервирован',
-          value: 3
-        },
-        {
-          label: 'Удален',
-          value: 4
-        },
-        {
-          label: 'Продан',
-          value: 5
-        }
-      ]
+      }
     }
   ]
 }
@@ -274,9 +241,10 @@ const paginationReactive = reactive({
   pageSize: 10,
   showSizePicker: true,
   itemCount: 0,
-  pageSizes: [5, 10, 25, 50, 100],
+  pageSizes: [10, 25, 50, 100],
+  showQuickJumper: true,
   prefix({ itemCount }: any) {
-    return `Всего ${itemCount} запчастей`
+    return `${itemCount.toLocaleString('ru-RU')} записей`
   },
   onChange: (page: number) => {
     paginationReactive.page = page
@@ -317,14 +285,6 @@ const rowKey = (row: RowData) => {
   return row.id
 }
 
-function handleFiltersChange(filters: any) {
-  if (filters?.status != undefined) {
-    statusFilterValues.value = filters.status;
-    productStore.loadProducts({ ...filterStore.filterValues, status: filters.status })
-  }
-}
-
-
 const onChangedPage = (page: number) => {
   productStore.loadProducts({...filterStore.filterValues, page: page,
     page_size: paginationReactive.pageSize })
@@ -346,18 +306,30 @@ onMounted(() => {
 
 </script>
 <template>
-  <section class="space-y-5 pb-10">
-    <div class="rounded-3xl border border-slate-200/70 bg-white px-6 py-5 shadow-none">
+  <section class="space-y-4 pb-10">
+    <!-- Breadcrumbs -->
+    <n-breadcrumb class="mb-2">
+      <n-breadcrumb-item>
+        <router-link to="/" class="text-slate-600 hover:text-slate-900 transition-colors">
+          Главная
+        </router-link>
+      </n-breadcrumb-item>
+      <n-breadcrumb-item>
+        <span class="text-slate-900 font-medium">Запчасти</span>
+      </n-breadcrumb-item>
+    </n-breadcrumb>
+
+    <div class="rounded-3xl border border-slate-200/80 bg-white px-6 py-5 shadow-sm">
       <n-page-header class="px-0">
         <template #title>
-          Запчасти
+          <span class="text-2xl font-semibold text-slate-900">Запчасти</span>
         </template>
         <template #subtitle>
-          Управление складом и карточками запчастей
+          <span class="text-sm text-slate-600">Управление складом и карточками запчастей</span>
         </template>
         <template #extra>
           <div class="flex items-center gap-2">
-            <n-button @click="createNavigate" type="primary" round size="large">Создать</n-button>
+            <n-button @click="createNavigate" type="primary" round size="large" class="font-medium">Создать</n-button>
           </div>
         </template>
       </n-page-header>
@@ -367,11 +339,11 @@ onMounted(() => {
         <parts-filter />
       </div>
       <section class="space-y-3">
-        <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-white px-4 py-3 border border-slate-200/60">
-          <div class="space-y-1">
-            <p class="text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500">Всего</p>
-            <p class="text-xl font-semibold text-slate-900">{{ paginationReactive.itemCount }} запчастей</p>
-            <p v-if="checkedRowKeys.length" class="text-sm text-slate-500">Выбрано {{ checkedRowKeys.length }} для массовых действий</p>
+        <div class="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-white px-5 py-4 border border-slate-200/80 shadow-sm">
+          <div class="space-y-1.5">
+            <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Всего</p>
+            <p class="text-2xl font-bold text-slate-900">{{ paginationReactive.itemCount.toLocaleString('ru-RU') }}</p>
+            <p v-if="checkedRowKeys.length" class="text-sm font-medium text-slate-600">Выбрано {{ checkedRowKeys.length }}</p>
           </div>
           <div class="flex flex-wrap items-center gap-2">
             <n-popconfirm
@@ -381,18 +353,18 @@ onMounted(() => {
               :positive-text="'Удалить'"
             >
               <template #trigger>
-                <n-button type="error" secondary round size="medium">
+                <n-button type="error" secondary round size="medium" class="font-medium">
                   Удалить ({{ checkedRowKeys.length }})
                 </n-button>
               </template>
               Вы уверены, что хотите удалить выбранные запчасти?
             </n-popconfirm>
-            <n-button quaternary round size="medium" @click="productStore.loadProducts({ ...filterStore.filterValues, page: paginationReactive.page, page_size: paginationReactive.pageSize })">
+            <n-button quaternary round size="medium" @click="productStore.loadProducts({ ...filterStore.filterValues, page: paginationReactive.page, page_size: paginationReactive.pageSize })" class="font-medium">
               Обновить
             </n-button>
           </div>
         </div>
-        <div class="rounded-3xl border border-slate-200/80 bg-white p-2 shadow-none">
+        <div class="rounded-3xl border border-slate-200/80 bg-white overflow-hidden shadow-sm">
           <n-data-table
             remote
             size="large"
@@ -403,11 +375,10 @@ onMounted(() => {
             :pagination="paginationReactive"
             :row-key="rowKey"
             :checked-row-keys="checkedRowKeys"
-            :striped="true"
+            :striped="false"
             :row-class-name="rowClassName"
             :render-empty="renderTableEmpty"
             :bordered="false"
-            @update:filters="handleFiltersChange"
             @update:checked-row-keys="handleCheck"
             @update:sorter="handleSorterChange"
           />

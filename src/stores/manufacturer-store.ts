@@ -10,6 +10,7 @@ export const useManufacturerStore = defineStore("manufacturer-store", {
       manufacturer: null as IDefaultAPI | null,
       modelCars: [] as any[],
       searchModelCars: [] as any[],
+      isLoading: false as boolean,
       isLoadingModelCarList: false as boolean,
     };
   },
@@ -52,17 +53,27 @@ export const useManufacturerStore = defineStore("manufacturer-store", {
   },
   actions: {
     async loadManufacturers() {
-      return axiosInstance.get("/api/admin/car/manufacturers/").then((res) => {
-        this.manufacturers = res.data.results;
-        return res.data.results;
-      });
+      this.isLoading = true;
+      return axiosInstance
+        .get("/api/admin/car/manufacturers/?page_size=1000")
+        .then((res) => {
+          this.manufacturers = res.data.results;
+          return res.data.results;
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
     },
     async loadModelCars(manufacturerId: number) {
+      this.isLoading = true;
       return axiosInstance
         .get(`/api/admin/car/models/?manufacturer=${manufacturerId}&page_size=1000`)
         .then((res) => {
           this.modelCars = res.data.results;
           return res.data.results;
+        })
+        .finally(() => {
+          this.isLoading = false;
         });
     },
     loadManufacturerById(id: number) {

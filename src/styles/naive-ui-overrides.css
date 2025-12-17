@@ -1,0 +1,239 @@
+/**
+ * Кастомные стили для Naive UI компонентов
+ * Приводим их в соответствие с дизайн-системой
+ */
+
+/* ==================== DATA TABLE ==================== */
+
+/* Заголовки таблицы */
+.n-data-table .n-data-table-th {
+  @apply font-semibold text-xs uppercase tracking-wider text-slate-600;
+  background-color: rgb(248 250 252) !important; /* slate-50 */
+  border-bottom: 1px solid rgb(226 232 240) !important; /* slate-200 */
+}
+
+/* Ячейки таблицы */
+.n-data-table .n-data-table-td {
+  border-bottom: 1px solid rgb(241 245 249) !important; /* slate-100 */
+}
+
+/* Убираем лишние borders */
+.n-data-table-wrapper {
+  border: none !important;
+}
+
+/* ==================== PAGINATION ==================== */
+
+/* Контейнер пагинации */
+.n-pagination {
+  @apply gap-2;
+  padding: 16px 20px !important;
+  background: rgb(248 250 252) !important; /* slate-50 */
+  border-top: 1px solid rgb(226 232 240) !important; /* slate-200 */
+}
+
+/* Кнопки пагинации */
+.n-pagination-item {
+  @apply rounded-lg font-medium text-sm;
+  min-width: 36px !important;
+  height: 36px !important;
+  border: 1px solid rgb(226 232 240) !important; /* slate-200 */
+  background: white !important;
+  color: rgb(71 85 105) !important; /* slate-600 */
+  transition: all 150ms ease-in-out !important;
+}
+
+.n-pagination-item:hover:not(.n-pagination-item--disabled):not(.n-pagination-item--active) {
+  border-color: rgb(148 163 184) !important; /* slate-400 */
+  background: rgb(248 250 252) !important; /* slate-50 */
+  color: rgb(15 23 42) !important; /* slate-900 */
+}
+
+/* Активная страница */
+.n-pagination-item--active {
+  @apply font-semibold;
+  border-color: rgb(15 23 42) !important; /* slate-900 */
+  background: rgb(15 23 42) !important; /* slate-900 */
+  color: white !important;
+}
+
+/* Disabled state */
+.n-pagination-item--disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  border-color: rgb(226 232 240) !important; /* slate-200 */
+  background: rgb(248 250 252) !important; /* slate-50 */
+}
+
+/* Кнопки prev/next */
+.n-pagination-item--button {
+  @apply rounded-lg;
+}
+
+/* Select для размера страницы */
+.n-pagination-size-picker {
+  @apply rounded-lg;
+}
+
+.n-pagination .n-base-selection {
+  @apply rounded-lg font-medium text-sm;
+  border-color: rgb(226 232 240) !important; /* slate-200 */
+  height: 36px !important;
+}
+
+.n-pagination .n-base-selection:hover {
+  border-color: rgb(148 163 184) !important; /* slate-400 */
+}
+
+/* Quick jumper */
+.n-pagination-quick-jumper {
+  @apply gap-2;
+}
+
+.n-pagination-quick-jumper .n-input {
+  @apply rounded-lg;
+  width: 60px !important;
+}
+
+.n-pagination-quick-jumper .n-input__input {
+  @apply text-sm font-medium;
+}
+
+/* Префикс (текст "X записей") */
+.n-pagination-prefix {
+  @apply text-sm font-medium text-slate-600;
+  margin-right: 12px !important;
+}
+
+/* ==================== BUTTONS ==================== */
+
+/* Primary кнопки (желтые) */
+.n-button--primary-type {
+  @apply font-semibold;
+  background: rgb(234 179 8) !important; /* yellow-500 */
+  border-color: rgb(234 179 8) !important;
+}
+
+.n-button--primary-type:hover:not(.n-button--disabled) {
+  background: rgb(202 138 4) !important; /* yellow-600 */
+  border-color: rgb(202 138 4) !important;
+}
+
+.n-button--primary-type:active:not(.n-button--disabled) {
+  background: rgb(161 98 7) !important; /* yellow-700 */
+  border-color: rgb(161 98 7) !important;
+}
+
+/* Secondary кнопки */
+.n-button--secondary-type {
+  @apply font-medium;
+  border-color: rgb(226 232 240) !important; /* slate-200 */
+  background: white !important;
+  color: rgb(71 85 105) !important; /* slate-600 */
+}
+
+.n-button--secondary-type:hover:not(.n-button--disabled) {
+  background: rgb(248 250 252) !important; /* slate-50 */
+  border-color: rgb(148 163 184) !important; /* slate-400 */
+}
+
+/* Quaternary кнопки */
+.n-button--quaternary-type {
+  @apply font-medium;
+  color: rgb(71 85 105) !important; /* slate-600 */
+}
+
+.n-button--quaternary-type:hover:not(.n-button--disabled) {
+  background: rgb(248 250 252) !important; /* slate-50 */
+  color: rgb(15 23 42) !important; /* slate-900 */
+}
+
+/* ==================== TAGS ==================== */
+
+/* Теги статусов */
+.n-tag {
+  @apply font-semibold;
+}
+
+.n-tag--success-type {
+  background: rgb(220 252 231) !important; /* green-100 */
+  color: rgb(21 128 61) !important; /* green-700 */
+}
+
+.n-tag--warning-type {
+  background: rgb(254 243 199) !important; /* yellow-100 */
+  color: rgb(180 83 9) !important; /* yellow-700 */
+}
+
+.n-tag--error-type {
+  background: rgb(254 226 226) !important; /* red-100 */
+  color: rgb(185 28 28) !important; /* red-700 */
+}
+
+.n-tag--info-type {
+  background: rgb(219 234 254) !important; /* blue-100 */
+  color: rgb(29 78 216) !important; /* blue-700 */
+}
+
+.n-tag--default-type {
+  background: rgb(241 245 249) !important; /* slate-100 */
+  color: rgb(71 85 105) !important; /* slate-600 */
+}
+
+/* ==================== PAGE HEADER ==================== */
+
+.n-page-header__title {
+  @apply text-2xl font-semibold text-slate-900;
+}
+
+.n-page-header__subtitle {
+  @apply text-sm text-slate-600;
+}
+
+/* ==================== CARD ==================== */
+
+.n-card {
+  border-radius: 24px !important;
+  border-color: rgb(226 232 240 / 0.8) !important;
+}
+
+.n-card__content {
+  @apply text-slate-700;
+}
+
+/* ==================== POPCONFIRM ==================== */
+
+.n-popconfirm .n-button--primary-type {
+  @apply font-medium;
+}
+
+.n-popconfirm .n-button--default-type {
+  @apply font-medium;
+}
+
+/* ==================== LOADING ==================== */
+
+.n-data-table .n-data-table-loading {
+  background: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* ==================== EMPTY STATE ==================== */
+
+.n-data-table-empty {
+  padding: 48px 24px !important;
+}
+
+/* ==================== BREADCRUMB ==================== */
+
+.n-breadcrumb {
+  @apply text-sm;
+}
+
+.n-breadcrumb-item__link {
+  @apply font-medium transition-colors;
+}
+
+.n-breadcrumb-item__separator {
+  color: rgb(203 213 225) !important; /* slate-300 */
+  margin: 0 8px !important;
+}

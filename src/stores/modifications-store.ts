@@ -41,24 +41,33 @@ export const useModificationsStore = defineStore("modifications-store", {
       modifications: [] as IModification[],
       modification: null as unknown as IModification,
       searchManufacturers: [] as IDefaultAPI[],
+      isLoading: false as boolean,
       isLoadingModelCarList: false as boolean,
     };
   },
   actions: {
     async loadModifications(modelCar: number) {
+      this.isLoading = true;
       return axiosInstance
-        .get(`/api/admin/car/modifications/?modelCar=${modelCar}`)
+        .get(`/api/admin/car/modifications/?modelCar=${modelCar}&page_size=1000`)
         .then((res) => {
           this.modifications = res.data.results;
           return res.data.results;
+        })
+        .finally(() => {
+          this.isLoading = false;
         });
     },
     async loadModification(modificationId: number) {
+      this.isLoading = true;
       return axiosInstance
           .get(`/api/admin/car/modifications/${modificationId}/`)
           .then((res) => {
             this.modification = res.data;
             return res.data;
+          })
+          .finally(() => {
+            this.isLoading = false;
           });
     },
   },
