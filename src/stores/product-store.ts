@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
-import {getProducts, ProductList, getProduct} from "@/apis/products";
-import {useAuthStore} from "@/stores/auth-store.ts";
-import {useRouter} from "vue-router";
-import axiosIns from "@/apis";
+import { getProducts, ProductList, getProduct } from "@/apis/products";
+import { useAuthStore } from "@/stores/auth-store.ts";
+import { useRouter } from "vue-router";
+import axiosIns from "@/shared/api/axios";
 
 export const useProductStore = defineStore("product-store", {
   state: () => {

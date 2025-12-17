@@ -122,12 +122,12 @@
 
 <script setup lang="ts">
 import Flicking from "@egjs/vue3-flicking";
-import PreviewPhotos from '@/components/PreviewPhotos.vue';
+import PreviewPhotos from '@/shared/ui/PreviewPhotos.vue';
 import { ref, watchEffect, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { ChevronLeftIcon, ChevronRightIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import { NModal, NCard, NIcon, NButton, useMessage } from "naive-ui";
 import { ImageOutline } from '@vicons/ionicons5';
-import axiosIns from "@/apis";
+import axiosIns from "@/shared/api/axios";
 
 const props = defineProps<{
   pictures: Picture[],

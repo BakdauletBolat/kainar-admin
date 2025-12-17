@@ -82,7 +82,7 @@ import { ref, watch, onMounted, h, reactive } from 'vue';
 import { NDataTable, NPageHeader, NInput, NButton, NBreadcrumb, NBreadcrumbItem, NIcon } from 'naive-ui';
 import { useRoute, RouterLink } from 'vue-router';
 import type { DataTableColumns } from 'naive-ui'
-import { formatDate } from '@/utils/formatDate';
+import { formatDate } from '@/shared/lib/formatDate';
 import { useClientStore, Client } from "@/stores/client-store.ts";
 import { ArchiveOutline, PersonOutline } from '@vicons/ionicons5';
 

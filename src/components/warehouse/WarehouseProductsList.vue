@@ -104,7 +104,7 @@ import { CubeOutline, ImageOutline } from '@vicons/ionicons5'
 import { useProductStore } from '@/stores/product-store'
 import { useWarehouseStore } from '@/stores/warehouses-store'
 import WarehouseComponent from '@/views/parts/ui/warehouse-component.vue'
-import axiosIns from '@/apis'
+import axiosIns from '@/shared/api/axios'
 
 const props = defineProps<{ warehouseId: number | string }>()
 

@@ -1,9 +1,9 @@
-import {defineStore} from "pinia";
-import {getOrders} from "@/apis/orders.ts";
-import {Order} from '@/apis/domain';
-import axiosIns from "@/apis";
-import {useAuthStore} from "@/stores/auth-store.ts";
-import {useRouter} from "vue-router";
+import { defineStore } from "pinia";
+import { getOrders } from "@/modules/orders/api/orders.api";
+import type { Order } from '@/modules/orders/types';
+import axiosIns from "@/shared/api/axios";
+import { useAuthStore } from "@/stores/auth-store.ts";
+import { useRouter } from "vue-router";
 
 
 interface Goods {

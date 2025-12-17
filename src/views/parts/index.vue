@@ -2,14 +2,14 @@
 import PartsFilter from '@/components/Parts/PartsFilter.vue';
 import { onMounted, h, reactive, watch, ref } from 'vue';
 import { NDataTable, NAvatar, NH6, NTag, NPageHeader, NButton, NPopconfirm, useMessage, NIcon, NBreadcrumb, NBreadcrumbItem } from 'naive-ui';
-import { getFirstElementArray } from '@/utils/getFirstElementFromArray.ts';
+import { getFirstElementArray } from '@/shared/lib/getFirstElementFromArray';
 import { useRoute, RouterLink, useRouter } from 'vue-router';
 import type { DataTableColumns } from 'naive-ui'
 import { useProductStore } from "@/stores/product-store.ts";
 import { useFilterStore } from "@/stores/filter-store.ts";
-import { formatDate } from '@/utils/formatDate';
+import { formatDate } from '@/shared/lib/formatDate';
 import { ImageOutline, ArchiveOutline } from '@vicons/ionicons5';
-import axiosIns from '@/apis';
+import axiosIns from '@/shared/api/axios';
 import { getStatusType } from '@/styles/design-tokens';
 
 interface RowData {

@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
-import axiosInstance from "@/apis";
-import generateQuery from "@/utils/generateQuery.ts";
+import axiosInstance from "@/shared/api/axios";
+import generateQuery from "@/shared/lib/generateQuery";
 
 export interface IFeedback {
     id: number;

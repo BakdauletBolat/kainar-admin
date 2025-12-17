@@ -188,10 +188,10 @@ import {
     NBreadcrumb,
     NBreadcrumbItem,
 } from "naive-ui";
-import axiosIns from "@/apis";
+import axiosIns from "@/shared/api/axios";
 import { useRouter, useRoute } from "vue-router";
-import Slider from "@/components/Slider.vue";
-import { formatDate } from "@/utils/formatDate";
+import Slider from "@/shared/ui/Slider.vue";
+import { formatDate } from "@/shared/lib/formatDate";
 import { ref, onMounted, computed } from "vue";
 import {
     PartDimensionsComponent,

@@ -15,10 +15,10 @@
     </main>
 </template>
 <script setup lang="ts">
-import TopHeader from '@/components/TopHeader.vue';
+import TopHeader from '@/shared/ui/TopHeader.vue';
 import { onMounted, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import axiosIns from '@/apis';
+import axiosIns from '@/shared/api/axios';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 

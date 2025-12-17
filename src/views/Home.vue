@@ -274,7 +274,7 @@ import {
   InformationCircleOutline,
   HelpCircleOutline
 } from '@vicons/ionicons5';
-import axiosIns from '@/apis';
+import axiosIns from '@/shared/api/axios';
 import { useAuthStore } from '@/stores/auth-store';
 
 interface DashboardInfo {

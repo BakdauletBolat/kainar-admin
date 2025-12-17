@@ -58,9 +58,9 @@ import {HomeIcon, CogIcon, ShoppingCartIcon, InboxIcon, UsersIcon, UserIcon,
   ShoppingBagIcon, QuestionMarkCircleIcon} from '@heroicons/vue/24/outline';
 import { RouterLink, useRoute, useRouter } from "vue-router";
 import Logo from "@/assets/new-logo.png";
-import Avatar from "@/components/Avatar.vue";
-import BottomAppBar from './components/BottomAppBar.vue';
-import axiosIns from "@/apis";
+import Avatar from "@/shared/ui/Avatar.vue";
+import BottomAppBar from '@/shared/ui/BottomAppBar.vue';
+import axiosIns from "@/shared/api/axios";
 import { useAuthStore } from '@/stores/auth-store';
 
 const route = useRoute();

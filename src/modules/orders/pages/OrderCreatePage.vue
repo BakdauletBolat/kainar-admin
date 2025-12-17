@@ -184,11 +184,11 @@ import {
   NIcon
 } from 'naive-ui';
 import { CartOutline, ImageOutline } from '@vicons/ionicons5';
-import SelectProduct from './ui/SelectProduct.vue';
+import SelectProduct from '@/modules/orders/components/SelectProduct.vue';
 import { useWarehouseStore } from '@/stores/warehouses-store';
-import { useOrderStore } from '@/stores/order-store.ts';
-import { ProductList } from '@/apis/orders.ts';
-import TengeAmount from '@/components/TengeAmount.vue';
+import { useOrderStore } from '@/modules/orders/stores/order.store';
+import { ProductList } from '@/modules/orders/api/orders.api';
+import TengeAmount from '@/shared/ui/TengeAmount.vue';
 
 const router = useRouter();
 const warehouseStore = useWarehouseStore();

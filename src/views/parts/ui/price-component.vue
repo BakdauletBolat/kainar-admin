@@ -19,7 +19,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import { NInput, NSpace, NCard, NPopover, NButton } from 'naive-ui';
-import TengeAmount from '@/components/TengeAmount.vue';
+import TengeAmount from '@/shared/ui/TengeAmount.vue';
 
 const props = defineProps(['price'])
 const emit = defineEmits(['onChangedProp'])

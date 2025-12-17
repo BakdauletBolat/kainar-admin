@@ -138,7 +138,7 @@ import { onMounted, computed, ref } from "vue";
 import { useAuthStore } from "@/stores/auth-store.ts";
 import { NButton, NCard, NInput, NSelect, NBreadcrumb, NBreadcrumbItem, useMessage } from 'naive-ui';
 import { useRouter } from "vue-router";
-import axiosIns from '@/apis';
+import axiosIns from '@/shared/api/axios';
 
 const authStore = useAuthStore();
 const router = useRouter();

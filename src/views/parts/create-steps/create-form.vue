@@ -236,7 +236,7 @@
 </template>
 
 <script lang="ts" setup>
-import axiosIns from '@/apis'
+import axiosIns from '@/shared/api/axios'
 import { useCategoryStore } from '@/stores/category-storage'
 import {
   useMessage,

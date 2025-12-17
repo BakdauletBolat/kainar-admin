@@ -158,8 +158,8 @@ import {
 import { BusinessOutline } from '@vicons/ionicons5'
 import { useWarehouseStore } from '@/stores/warehouses-store'
 import { useCategoryStore } from '@/stores/category-storage.ts'
-import axiosIns from '@/apis'
-import { formatDate } from '@/utils/formatDate'
+import axiosIns from '@/shared/api/axios'
+import { formatDate } from '@/shared/lib/formatDate'
 import WarehouseProductsList from '@/components/warehouse/WarehouseProductsList.vue'
 
 const route = useRoute()

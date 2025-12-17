@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import axiosInstance from "@/apis";
+import axiosInstance from "@/shared/api/axios";
 import type { IDefaultAPI } from "@/apis/interfaces";
 
 interface Manufacturer {

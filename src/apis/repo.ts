@@ -1,5 +1,5 @@
 import { ICarFiltersData, ICarModelType, IManufacturerType } from "@/stores/models";
-import axiosIns from "."
+import axiosIns from "@/shared/api/axios";
 
 export const getCarFilters = () => {
     return axiosIns.get<ICarFiltersData>('/api/car/filters/');

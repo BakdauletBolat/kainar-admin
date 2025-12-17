@@ -17,5 +17,5 @@
 
 <script setup lang="ts">
 import { NBreadcrumb, NBreadcrumbItem } from 'naive-ui';
-import OrdersTable from '@/components/Orders/OrdersTable.vue';
+import OrdersTable from '@/modules/orders/components/OrdersTable.vue';
 </script>

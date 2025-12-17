@@ -75,11 +75,11 @@ import { computed, h, onMounted, reactive, ref, watch } from 'vue';
 import { NButton, NDataTable, NIcon, NPageHeader, NTag, type DataTableColumns } from 'naive-ui';
 import { ArchiveOutline, ImageOutline } from '@vicons/ionicons5';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
-import axiosIns from '@/apis';
-import { getFirstElementArray } from '@/utils/getFirstElementFromArray.ts';
-import { formatDate } from '@/utils/formatDate';
-import { useOrderStore } from '@/stores/order-store.ts';
-import type { Order } from '@/apis/domain';
+import axiosIns from '@/shared/api/axios';
+import { getFirstElementArray } from '@/shared/lib/getFirstElementFromArray';
+import { formatDate } from '@/shared/lib/formatDate';
+import { useOrderStore } from '@/modules/orders/stores/order.store';
+import type { Order } from '@/modules/orders/types';
 
 interface Props {
   title: string;

@@ -113,9 +113,9 @@
 import { onMounted, ref } from 'vue';
 import { NButton, NModal, NInput, NSpin, NCard, NIcon, NTag } from 'naive-ui';
 import { useProductStore } from '@/stores/product-store';
-import { ProductList } from '@/apis/orders.ts';
+import { ProductList } from '@/modules/orders/api/orders.api';
 import { useDebounceFn } from '@vueuse/core';
-import TengeAmount from '@/components/TengeAmount.vue';
+import TengeAmount from '@/shared/ui/TengeAmount.vue';
 import { ImageOutline } from '@vicons/ionicons5';
 
 const productStore = useProductStore();

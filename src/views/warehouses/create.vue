@@ -137,7 +137,7 @@ import {
 } from 'naive-ui'
 import { BusinessOutline } from '@vicons/ionicons5'
 import { useCategoryStore } from '@/stores/category-storage.ts'
-import axiosIns from '@/apis'
+import axiosIns from '@/shared/api/axios'
 
 const formRef = ref<FormInst | null>(null)
 const isLoading = ref(false)

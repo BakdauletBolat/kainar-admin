@@ -408,11 +408,11 @@ import {
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { ImageOutline } from '@vicons/ionicons5';
-import axiosIns from '@/apis';
-import { useOrderStore } from '@/stores/order-store.ts';
-import TengeAmount from '@/components/TengeAmount.vue';
-import { formatDate } from '@/utils/formatDate.ts';
-import { getFirstElementArray } from '@/utils/getFirstElementFromArray.ts';
+import axiosIns from '@/shared/api/axios';
+import { useOrderStore } from '@/modules/orders/stores/order.store';
+import TengeAmount from '@/shared/ui/TengeAmount.vue';
+import { formatDate } from '@/shared/lib/formatDate';
+import { getFirstElementArray } from '@/shared/lib/getFirstElementFromArray';
 
 const router = useRouter();
 const route = useRoute();

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
-import axiosInstance from "@/apis";
-import generateQuery from "@/utils/generateQuery.ts";
+import axiosInstance from "@/shared/api/axios";
+import generateQuery from "@/shared/lib/generateQuery";
 import {useAuthStore} from "@/stores/auth-store.ts";
 import {useRouter} from "vue-router";
 

@@ -187,8 +187,8 @@ import {
   useMessage
 } from 'naive-ui'
 import { useClientStore } from '@/stores/client-store.ts'
-import axiosIns from '@/apis'
-import { formatDate } from '@/utils/formatDate'
+import axiosIns from '@/shared/api/axios'
+import { formatDate } from '@/shared/lib/formatDate'
 
 const route = useRoute()
 const router = useRouter()

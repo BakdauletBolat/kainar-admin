@@ -193,7 +193,7 @@ import {
   AddOutline,
   ImagesOutline
 } from '@vicons/ionicons5';
-import axiosIns from '@/apis';
+import axiosIns from '@/shared/api/axios';
 import type { ProductDetail } from '@/apis/products';
 import WarehouseComponent from '@/views/parts/ui/warehouse-component.vue';
 

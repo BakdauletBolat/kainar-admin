@@ -19,7 +19,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { NPageHeader, useMessage } from 'naive-ui'
 import ClientCreateForm from '@/components/ClientCreateForm.vue'
-import axiosIns from '@/apis'
+import axiosIns from '@/shared/api/axios'
 
 const router = useRouter()
 const message = useMessage()

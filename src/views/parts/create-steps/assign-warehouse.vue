@@ -94,7 +94,7 @@ import {
   CheckmarkCircleOutline
 } from '@vicons/ionicons5'
 import { useWarehouseStore } from '@/stores/warehouses-store.ts'
-import axiosIns from '@/apis'
+import axiosIns from '@/shared/api/axios'
 
 const productStore = useProductStore()
 const warehouseStore = useWarehouseStore()
