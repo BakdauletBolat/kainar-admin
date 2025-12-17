@@ -54,7 +54,7 @@ import type { Component } from 'vue'
 //@ts-ignore
 import { CaretDownOutline } from '@vicons/ionicons5';
 
-import {CogIcon, ShoppingCartIcon, InboxIcon, UsersIcon, UserIcon,
+import {HomeIcon, CogIcon, ShoppingCartIcon, InboxIcon, UsersIcon, UserIcon,
   ShoppingBagIcon, QuestionMarkCircleIcon} from '@heroicons/vue/24/outline';
 import { RouterLink, useRoute, useRouter } from "vue-router";
 import Logo from "@/assets/new-logo.png";
@@ -154,6 +154,12 @@ function handleMenuUpdate(key: string) {
 }
 
 const menuOptions = ref([
+  {
+    label: 'Главная',
+    key: 'main',
+    icon: renderIcon(HomeIcon),
+    roles: ["all", "Директор"] as string[]
+  },
   {
     label: 'Запчасти',
     key: 'parts-list',

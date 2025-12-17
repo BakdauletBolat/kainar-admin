@@ -1,234 +1,268 @@
 <template>
   <div class="space-y-6">
     <!-- Заголовок -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-slate-900">Панель управления</h1>
-      <p class="text-slate-500 mt-2">Обзор основных показателей и быстрый доступ</p>
+    <div class="rounded-3xl border border-slate-200/80 bg-white px-6 py-5 shadow-sm">
+      <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p class="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Главный экран</p>
+          <h1 class="text-3xl font-bold text-slate-900">Панель управления</h1>
+          <p class="text-slate-600 mt-1">Обзор ключевых показателей и быстрый доступ к разделам</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="flex items-center gap-3 rounded-2xl bg-slate-50 px-4 py-3 ring-1 ring-slate-200/70">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 ring-1 ring-amber-100">
+              <n-icon :component="TimeOutline" :size="22" class="text-amber-600" />
+            </div>
+            <div>
+              <p class="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">В процессе</p>
+              <p class="text-lg font-semibold text-slate-900">{{ dashboardInfo.orders_inprogress_count }}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 rounded-2xl bg-slate-50 px-4 py-3 ring-1 ring-slate-200/70">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 ring-1 ring-blue-100">
+              <n-icon :component="CartOutline" :size="22" class="text-blue-600" />
+            </div>
+            <div>
+              <p class="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Всего заказов</p>
+              <p class="text-lg font-semibold text-slate-900">{{ dashboardInfo.orders_count }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Статистические карточки -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
       <!-- Карточка: Всего заказов -->
-      <router-link :to="{ name: 'orders-list' }">
-        <n-card
-          hoverable
-          class="cursor-pointer transition-all duration-200 hover:shadow-lg border-2 border-transparent hover:border-primary-500"
-        >
-          <div class="flex items-start justify-between">
+      <router-link :to="{ name: 'orders-list' }" class="block">
+        <div class="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+          <div class="flex items-start justify-between gap-3">
             <div class="flex-1">
-              <p class="text-sm font-medium text-slate-600 mb-1">Всего заказов</p>
-              <p class="text-3xl font-bold text-slate-900">{{ dashboardInfo.orders_count }}</p>
+              <p class="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-500 mb-2">Всего заказов</p>
+              <p class="text-3xl font-bold text-slate-900 leading-tight">{{ dashboardInfo.orders_count }}</p>
+              <div class="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-blue-700">
+                <span>Перейти к заказам</span>
+                <n-icon :component="ArrowForwardOutline" :size="16" />
+              </div>
             </div>
-            <div class="rounded-full bg-blue-100 p-3">
-              <n-icon :component="ShoppingCartOutline" :size="28" class="text-blue-600" />
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 ring-1 ring-blue-100">
+              <n-icon :component="CartOutline" :size="26" class="text-blue-600" />
             </div>
           </div>
-          <div class="mt-4 flex items-center text-sm text-blue-600">
-            <span>Перейти к заказам</span>
-            <n-icon :component="ArrowForwardOutline" :size="16" class="ml-1" />
-          </div>
-        </n-card>
+        </div>
       </router-link>
 
       <!-- Карточка: Заказы в процессе -->
-      <router-link :to="{ name: 'orders-list-in-progress' }">
-        <n-card
-          hoverable
-          class="cursor-pointer transition-all duration-200 hover:shadow-lg border-2 border-transparent hover:border-primary-500"
-        >
-          <div class="flex items-start justify-between">
+      <router-link :to="{ name: 'orders-list-in-progress' }" class="block">
+        <div class="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+          <div class="flex items-start justify-between gap-3">
             <div class="flex-1">
-              <p class="text-sm font-medium text-slate-600 mb-1">В процессе</p>
-              <p class="text-3xl font-bold text-slate-900">{{ dashboardInfo.orders_inprogress_count }}</p>
+              <p class="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-500 mb-2">Заказы в процессе</p>
+              <p class="text-3xl font-bold text-slate-900 leading-tight">{{ dashboardInfo.orders_inprogress_count }}</p>
+              <div class="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-amber-700">
+                <span>Активные заказы</span>
+                <n-icon :component="ArrowForwardOutline" :size="16" />
+              </div>
             </div>
-            <div class="rounded-full bg-amber-100 p-3">
-              <n-icon :component="TimeOutline" :size="28" class="text-amber-600" />
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 ring-1 ring-amber-100">
+              <n-icon :component="TimeOutline" :size="26" class="text-amber-600" />
             </div>
           </div>
-          <div class="mt-4 flex items-center text-sm text-amber-600">
-            <span>Активные заказы</span>
-            <n-icon :component="ArrowForwardOutline" :size="16" class="ml-1" />
-          </div>
-        </n-card>
+        </div>
       </router-link>
 
       <!-- Карточка: Запчасти -->
-      <router-link :to="{ name: 'parts-list' }">
-        <n-card
-          hoverable
-          class="cursor-pointer transition-all duration-200 hover:shadow-lg border-2 border-transparent hover:border-primary-500"
-        >
-          <div class="flex items-start justify-between">
+      <router-link :to="{ name: 'parts-list' }" class="block">
+        <div class="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+          <div class="flex items-start justify-between gap-3">
             <div class="flex-1">
-              <p class="text-sm font-medium text-slate-600 mb-1">Запчасти</p>
-              <p class="text-3xl font-bold text-slate-900">{{ dashboardInfo.parts_count }}</p>
+              <p class="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-500 mb-2">Запчасти</p>
+              <p class="text-3xl font-bold text-slate-900 leading-tight">{{ dashboardInfo.parts_count }}</p>
+              <div class="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-purple-700">
+                <span>Каталог запчастей</span>
+                <n-icon :component="ArrowForwardOutline" :size="16" />
+              </div>
             </div>
-            <div class="rounded-full bg-purple-100 p-3">
-              <n-icon :component="ConstructOutline" :size="28" class="text-purple-600" />
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50 ring-1 ring-purple-100">
+              <n-icon :component="ConstructOutline" :size="26" class="text-purple-600" />
             </div>
           </div>
-          <div class="mt-4 flex items-center text-sm text-purple-600">
-            <span>Каталог запчастей</span>
-            <n-icon :component="ArrowForwardOutline" :size="16" class="ml-1" />
-          </div>
-        </n-card>
+        </div>
       </router-link>
 
       <!-- Карточка: Продажи за сегодня -->
-      <n-card class="border-2 border-slate-200">
-        <div class="flex items-start justify-between">
+      <div class="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+        <div class="flex items-start justify-between gap-3">
           <div class="flex-1">
-            <p class="text-sm font-medium text-slate-600 mb-1">Продажи за сегодня</p>
-            <p class="text-3xl font-bold text-slate-900">{{ formatCurrency(dashboardInfo.sale_for_today) }}</p>
+            <p class="text-[12px] font-semibold uppercase tracking-[0.14em] text-slate-500 mb-2">Продажи за сегодня</p>
+            <p class="text-3xl font-bold text-slate-900 leading-tight">{{ formatCurrency(dashboardInfo.sale_for_today) }}</p>
+            <p class="mt-3 text-sm font-medium text-slate-600">Обновлено только что</p>
           </div>
-          <div class="rounded-full bg-green-100 p-3">
-            <n-icon :component="TrendingUpOutline" :size="28" class="text-green-600" />
+          <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-50 ring-1 ring-green-100">
+            <n-icon :component="TrendingUpOutline" :size="26" class="text-green-600" />
           </div>
         </div>
-        <div class="mt-4 text-sm text-slate-500">
-          <span>Обновлено только что</span>
-        </div>
-      </n-card>
+      </div>
     </div>
 
     <!-- Быстрые действия -->
-    <div class="mt-8">
-      <h2 class="text-xl font-semibold text-slate-900 mb-4">Быстрые действия</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="rounded-3xl border border-slate-200/80 bg-white px-6 py-5 shadow-sm">
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <h2 class="text-2xl font-semibold text-slate-900">Быстрые действия</h2>
+        <p class="text-sm text-slate-500">Частые операции в один клик</p>
+      </div>
+      <div class="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
         <router-link :to="{ name: 'parts-create' }">
           <n-button
             type="primary"
+            round
             size="large"
             block
-            class="!h-16"
+            class="font-semibold !h-[52px]"
           >
             <template #icon>
-              <n-icon :component="AddCircleOutline" :size="24" />
+              <n-icon :component="AddCircleOutline" :size="22" />
             </template>
-            <span class="text-base">Добавить запчасть</span>
+            Добавить запчасть
           </n-button>
         </router-link>
 
         <router-link :to="{ name: 'orders-create' }">
           <n-button
-            secondary
-            type="primary"
+            tertiary
+            round
             size="large"
             block
-            class="!h-16"
+            class="font-semibold !h-[52px] !text-slate-800 !border-slate-200"
           >
             <template #icon>
-              <n-icon :component="CartOutline" :size="24" />
+              <n-icon :component="CartOutline" :size="22" />
             </template>
-            <span class="text-base">Создать заказ</span>
+            Создать заказ
           </n-button>
         </router-link>
 
         <router-link :to="{ name: 'clients-list' }" v-if="authStore.hasAnyRole(['Директор'])">
           <n-button
-            secondary
-            type="info"
+            tertiary
+            round
             size="large"
             block
-            class="!h-16"
+            class="font-semibold !h-[52px] !text-slate-800 !border-slate-200"
           >
             <template #icon>
-              <n-icon :component="PeopleOutline" :size="24" />
+              <n-icon :component="PeopleOutline" :size="22" />
             </template>
-            <span class="text-base">Клиенты</span>
+            Клиенты
           </n-button>
         </router-link>
 
         <router-link :to="{ name: 'warehouses-list' }" v-if="authStore.hasAnyRole(['Директор'])">
           <n-button
-            secondary
-            type="warning"
+            tertiary
+            round
             size="large"
             block
-            class="!h-16"
+            class="font-semibold !h-[52px] !text-slate-800 !border-slate-200"
           >
             <template #icon>
-              <n-icon :component="CubeOutline" :size="24" />
+              <n-icon :component="CubeOutline" :size="22" />
             </template>
-            <span class="text-base">Склады</span>
+            Склады
           </n-button>
         </router-link>
       </div>
     </div>
 
     <!-- Дополнительные секции -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
       <!-- Быстрый доступ к разделам -->
-      <n-card title="Основные разделы" :bordered="true">
+      <div class="rounded-3xl border border-slate-200/80 bg-white px-5 py-4 shadow-sm">
+        <div class="flex items-center justify-between pb-3">
+          <h3 class="text-xl font-semibold text-slate-900">Основные разделы</h3>
+          <span class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Навигация</span>
+        </div>
         <div class="space-y-2">
           <router-link :to="{ name: 'parts-list' }">
-            <div class="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors">
+            <div class="flex items-center justify-between rounded-2xl px-4 py-3 transition-colors hover:bg-slate-50">
               <div class="flex items-center gap-3">
-                <n-icon :component="ConstructOutline" :size="20" class="text-slate-600" />
-                <span class="font-medium text-slate-900">Запчасти</span>
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 ring-1 ring-purple-100">
+                  <n-icon :component="ConstructOutline" :size="20" class="text-purple-700" />
+                </div>
+                <span class="font-semibold text-slate-900">Запчасти</span>
               </div>
               <n-icon :component="ChevronForwardOutline" :size="20" class="text-slate-400" />
             </div>
           </router-link>
 
           <router-link :to="{ name: 'orders-list' }">
-            <div class="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors">
+            <div class="flex items-center justify-between rounded-2xl px-4 py-3 transition-colors hover:bg-slate-50">
               <div class="flex items-center gap-3">
-                <n-icon :component="ShoppingCartOutline" :size="20" class="text-slate-600" />
-                <span class="font-medium text-slate-900">Заказы</span>
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 ring-1 ring-blue-100">
+                  <n-icon :component="CartOutline" :size="20" class="text-blue-700" />
+                </div>
+                <span class="font-semibold text-slate-900">Заказы</span>
               </div>
               <n-icon :component="ChevronForwardOutline" :size="20" class="text-slate-400" />
             </div>
           </router-link>
 
           <router-link :to="{ name: 'orders-list-in-progress' }">
-            <div class="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors">
+            <div class="flex items-center justify-between rounded-2xl px-4 py-3 transition-colors hover:bg-slate-50">
               <div class="flex items-center gap-3">
-                <n-icon :component="TimeOutline" :size="20" class="text-slate-600" />
-                <span class="font-medium text-slate-900">Заказы в процессе</span>
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 ring-1 ring-amber-100">
+                  <n-icon :component="TimeOutline" :size="20" class="text-amber-700" />
+                </div>
+                <span class="font-semibold text-slate-900">Заказы в процессе</span>
               </div>
-              <span class="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-semibold rounded-full">
+              <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-semibold">
                 {{ dashboardInfo.orders_inprogress_count }}
               </span>
             </div>
           </router-link>
 
           <router-link :to="{ name: 'feedbacks-list' }">
-            <div class="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors">
+            <div class="flex items-center justify-between rounded-2xl px-4 py-3 transition-colors hover:bg-slate-50">
               <div class="flex items-center gap-3">
-                <n-icon :component="ChatbubbleOutline" :size="20" class="text-slate-600" />
-                <span class="font-medium text-slate-900">Заявки</span>
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 ring-1 ring-slate-200/80">
+                  <n-icon :component="ChatbubbleOutline" :size="20" class="text-slate-700" />
+                </div>
+                <span class="font-semibold text-slate-900">Заявки</span>
               </div>
               <n-icon :component="ChevronForwardOutline" :size="20" class="text-slate-400" />
             </div>
           </router-link>
         </div>
-      </n-card>
+      </div>
 
       <!-- Справочная информация -->
-      <n-card title="Полезная информация" :bordered="true">
-        <div class="space-y-4">
-          <div class="p-4 bg-blue-50 rounded-lg">
-            <div class="flex items-start gap-3">
-              <n-icon :component="InformationCircleOutline" :size="24" class="text-blue-600 mt-0.5" />
-              <div>
-                <h4 class="font-semibold text-blue-900 mb-1">Система управления</h4>
-                <p class="text-sm text-blue-700">Управляйте запчастями, заказами и складами в одном месте</p>
-              </div>
+      <div class="rounded-3xl border border-slate-200/80 bg-white px-5 py-4 shadow-sm">
+        <div class="flex items-center justify-between pb-3">
+          <h3 class="text-xl font-semibold text-slate-900">Полезная информация</h3>
+          <span class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Подсказки</span>
+        </div>
+        <div class="space-y-3">
+          <div class="flex gap-3 rounded-2xl bg-blue-50 px-4 py-3 ring-1 ring-blue-100">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/60">
+              <n-icon :component="InformationCircleOutline" :size="22" class="text-blue-700" />
+            </div>
+            <div class="space-y-1">
+              <h4 class="font-semibold text-blue-900">Система управления</h4>
+              <p class="text-sm text-blue-800">Управляйте запчастями, заказами и складами в одном месте</p>
             </div>
           </div>
 
-          <div class="p-4 bg-slate-50 rounded-lg">
-            <div class="flex items-start gap-3">
-              <n-icon :component="HelpCircleOutline" :size="24" class="text-slate-600 mt-0.5" />
-              <div>
-                <h4 class="font-semibold text-slate-900 mb-1">Нужна помощь?</h4>
-                <p class="text-sm text-slate-600">Обратитесь к администратору системы</p>
-              </div>
+          <div class="flex gap-3 rounded-2xl bg-slate-50 px-4 py-3 ring-1 ring-slate-200/80">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/70">
+              <n-icon :component="HelpCircleOutline" :size="22" class="text-slate-700" />
+            </div>
+            <div class="space-y-1">
+              <h4 class="font-semibold text-slate-900">Нужна помощь?</h4>
+              <p class="text-sm text-slate-600">Обратитесь к администратору системы</p>
             </div>
           </div>
         </div>
-      </n-card>
+      </div>
     </div>
   </div>
 </template>
@@ -237,7 +271,6 @@
 import { ref, onMounted } from 'vue';
 import { NCard, NButton, NIcon } from 'naive-ui';
 import {
-  ShoppingCartOutline,
   TimeOutline,
   ConstructOutline,
   TrendingUpOutline,
