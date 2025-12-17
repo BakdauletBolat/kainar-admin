@@ -90,6 +90,7 @@ function createColumns(): DataTableColumns<RowData> {
       key: 'name',
       ellipsis: true,
       width: 420,
+      minWidth: 360,
       render(row) {
         const image = getFirstElementArray(row.pictures);
         const rawImage =
@@ -164,6 +165,7 @@ function createColumns(): DataTableColumns<RowData> {
       title: "Дата создание",
       key: "created_at",
       width: 150,
+      minWidth: 130,
       sorter: true,
       render(row) {
         return h('div', { class: 'text-sm text-slate-600 font-medium' }, { default: () => formatDate(row.created_at) })
@@ -173,6 +175,7 @@ function createColumns(): DataTableColumns<RowData> {
       title: "Цена",
       key: "price",
       width: 130,
+      minWidth: 120,
       align: 'right',
       render(row) {
         return h(
@@ -194,6 +197,7 @@ function createColumns(): DataTableColumns<RowData> {
       title: "Комментарий",
       key: "comment",
       width: 240,
+      minWidth: 200,
       ellipsis: {
         tooltip: true
       },
@@ -205,6 +209,7 @@ function createColumns(): DataTableColumns<RowData> {
       title: "Статус",
       key: "status",
       width: 150,
+      minWidth: 130,
       align: 'center',
       render(row) {
         const tone = getStatusTone(row.status)
@@ -364,24 +369,28 @@ onMounted(() => {
             </n-button>
           </div>
         </div>
-        <div class="rounded-3xl border border-slate-200/80 bg-white overflow-hidden shadow-sm">
-          <n-data-table
-            remote
-            size="large"
-            ref="table"
-            :loading="productStore.isLoadingProducts"
-            :columns="columns"
-            :data="productStore.products"
-            :pagination="paginationReactive"
-            :row-key="rowKey"
-            :checked-row-keys="checkedRowKeys"
-            :striped="false"
-            :row-class-name="rowClassName"
-            :render-empty="renderTableEmpty"
-            :bordered="false"
-            @update:checked-row-keys="handleCheck"
-            @update:sorter="handleSorterChange"
-          />
+        <div class="rounded-3xl border border-slate-200/80 bg-white shadow-sm">
+          <div class="overflow-x-auto">
+            <n-data-table
+              remote
+              size="large"
+              ref="table"
+              style="min-width: 1100px"
+              :loading="productStore.isLoadingProducts"
+              :columns="columns"
+              :data="productStore.products"
+              :pagination="paginationReactive"
+              :row-key="rowKey"
+              :checked-row-keys="checkedRowKeys"
+              :striped="false"
+              :row-class-name="rowClassName"
+              :render-empty="renderTableEmpty"
+              :bordered="false"
+              :scroll-x="1200"
+              @update:checked-row-keys="handleCheck"
+              @update:sorter="handleSorterChange"
+            />
+          </div>
         </div>
       </section>
     </main>

@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-4 max-w-3xl w-full mx-auto">
+  <div class="max-w-3xl w-full mx-auto">
     <preview-photos
       v-if="showPreview"
       :photos="allPhotos"

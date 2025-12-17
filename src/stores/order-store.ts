@@ -179,11 +179,15 @@ export const useOrderStore = defineStore("order-store", {
                 return res.data;
             })
                 .catch(e => {
-                    if (e.response.status === 401) {
+                    if (e?.response?.status === 401) {
                         const authStore = useAuthStore();
                         const router = useRouter();
                         authStore.logout(router);
                     }
+                    throw e;
+                })
+                .finally(() => {
+                    this.isLoadingCreate = false;
                 })
         }
     }
