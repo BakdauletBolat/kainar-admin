@@ -1,7 +1,0 @@
-<template>
-  <OrdersTable title="Заказы" />
-</template>
-
-<script setup lang="ts">
-import OrdersTable from '@/components/Orders/OrdersTable.vue';
-</script>

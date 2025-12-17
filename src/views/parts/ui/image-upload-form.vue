@@ -23,7 +23,7 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import { useMessage, NForm, NFormItem, NButton, NCard } from 'naive-ui'
-import axiosIns from '@/apis';
+import axiosIns from '@/shared/api/axios';
 
 const selectedFiles = ref([])
 const imagePreviews = ref([])

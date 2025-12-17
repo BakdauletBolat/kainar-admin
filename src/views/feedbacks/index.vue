@@ -32,7 +32,7 @@ import {NButton, NDataTable, NPageHeader, NTag, NModal, useMessage} from 'naive-
 import { useRoute } from 'vue-router';
 import type { DataTableColumns } from 'naive-ui'
 import {IFeedback, useFeedbackStore} from "@/stores/feedback-store.ts";
-import {timeAgo} from "@/utils/formatDate.ts";
+import { timeAgo } from "@/shared/lib/formatDate";
 
 const activeFeedback = ref<number | null>(null);
 

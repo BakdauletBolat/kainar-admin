@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import axiosInstance from "@/apis";
+import axiosInstance from "@/shared/api/axios";
 
 
 export const useColorStore = defineStore("color-store", {

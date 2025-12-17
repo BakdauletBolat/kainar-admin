@@ -4,11 +4,11 @@ import WarehouseList from "@/views/warehouses/index.vue";
 import WarehouseCreate from "@/views/warehouses/create.vue";
 import WarehouseEdit from "@/views/warehouses/edit.vue";
 import WarehouseDetail from "@/views/warehouses/detail.vue";
-import OrderList from "@/views/orders/index.vue";
-import OrderListInProgress from "@/views/orders/in-progress.vue";
-import OrderCreate from "@/views/orders/create.vue";
-import OrderEdit from "@/views/orders/edit.vue";
-import OrderDetail from "@/views/orders/detail.vue";
+import OrderList from "@/modules/orders/pages/OrdersListPage.vue";
+import OrderListInProgress from "@/modules/orders/pages/OrdersInProgressPage.vue";
+import OrderCreate from "@/modules/orders/pages/OrderCreatePage.vue";
+import OrderEdit from "@/modules/orders/pages/OrderEditPage.vue";
+import OrderDetail from "@/modules/orders/pages/OrderDetailPage.vue";
 import PartsList from "@/views/parts/index.vue";
 import PartsCreate from "@/views/parts/create.vue";
 import PartsEdit from "@/views/parts/edit.vue";
@@ -17,6 +17,7 @@ import ClientsList from "@/views/clients/index.vue";
 import ClientDetail from "@/views/clients/detail.vue";
 import ClientCreate from "@/views/clients/create.vue";
 import FeedbackList from "@/views/feedbacks/index.vue";
+import Home from "@/views/Home.vue";
 
 import Login from "@/views/auth/login.vue";
 import Profile from "@/views/auth/profile.vue";
@@ -27,7 +28,7 @@ import {useAuthStore} from "@/stores/auth-store.ts";
 
 
 const routes = [
-  { path: '/', name: 'main', component: PartsList, meta: { roles: ["all"] } },
+  { path: '/', name: 'main', component: Home, meta: { roles: ["all"] } },
   { path: '/order/list',name: 'orders-list', component: OrderList, meta: { roles: ["all"] } },
   { path: '/order/create',name: 'orders-create', component: OrderCreate, meta: { roles: ["all"] } },
   { path: '/order/:id/edit',name: 'orders-edit', component: OrderEdit, meta: { roles: ["all"] } },
@@ -53,6 +54,10 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  scrollBehavior(_to, _from, savedPosition) {
+    if (savedPosition) return savedPosition;
+    return { left: 0, top: 0 };
+  }
 })
 
 router.beforeEach((to, _) => {

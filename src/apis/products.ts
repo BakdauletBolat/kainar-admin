@@ -1,5 +1,5 @@
-import generateQuery from "@/utils/generateQuery";
-import axios from "./index";
+import generateQuery from "@/shared/lib/generateQuery";
+import axios from "@/shared/api/axios";
 interface Category {
   id: number;
   created_at: string;

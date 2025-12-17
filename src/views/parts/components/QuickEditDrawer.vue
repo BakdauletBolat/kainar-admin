@@ -1,5 +1,5 @@
 <template>
-  <n-drawer :show="show" width="520" placement="right" @update:show="emit('update:show', $event)">
+  <n-drawer :show="show" width="600" placement="right" @update:show="emit('update:show', $event)">
     <n-drawer-content closable body-content-class="pb-24">
       <template #header>
         <div class="space-y-1">
@@ -44,15 +44,47 @@
           </n-form-item>
         </div>
 
-        <n-form-item label="ОЕМ / артикулы (через запятую или строками)">
-          <n-input
-            type="textarea"
-            v-model:value="form.code"
-            @update:value="markDirty('code')"
-            :autosize="{ minRows: 2, maxRows: 4 }"
-            placeholder="Например: 123456, ABC-789"
-          />
-        </n-form-item>
+        <!-- OEM коды - улучшенный интерфейс -->
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-slate-700">ОЕМ / артикулы</label>
+          <div class="space-y-2">
+            <div
+              v-for="(code, index) in codesList"
+              :key="index"
+              class="flex items-center gap-2"
+            >
+              <n-input
+                v-model:value="codesList[index]"
+                placeholder="Введите код"
+                @update:value="markDirty('code')"
+              >
+                <template #prefix>
+                  <n-icon :component="BarcodeOutline" class="text-slate-400" />
+                </template>
+              </n-input>
+              <n-button
+                quaternary
+                circle
+                type="error"
+                @click="removeCode(index)"
+              >
+                <template #icon>
+                  <n-icon :component="CloseOutline" />
+                </template>
+              </n-button>
+            </div>
+            <n-button
+              dashed
+              block
+              @click="addCode"
+            >
+              <template #icon>
+                <n-icon :component="AddOutline" />
+              </template>
+              Добавить код
+            </n-button>
+          </div>
+        </div>
 
         <n-form-item label="Комментарий">
           <n-input
@@ -81,18 +113,44 @@
           </div>
         </n-form-item>
 
-        <div class="space-y-2 rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-4">
+        <!-- Загрузка фото с preview -->
+        <div class="space-y-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
           <div class="flex items-center justify-between">
             <p class="text-sm font-semibold text-slate-900">Новые фото</p>
-            <n-button tertiary size="small" round @click="clearFiles" v-if="selectedFileNames.length">Очистить</n-button>
+            <n-button tertiary size="small" round @click="clearFiles" v-if="selectedFileNames.length">
+              Очистить
+            </n-button>
           </div>
+
+          <!-- Preview загруженных фото -->
+          <div v-if="previewImages.length > 0" class="grid grid-cols-2 gap-2">
+            <div
+              v-for="(preview, idx) in previewImages"
+              :key="idx"
+              class="group relative aspect-square overflow-hidden rounded-lg border border-slate-200 bg-white"
+            >
+              <img :src="preview" class="h-full w-full object-cover" />
+              <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors"></div>
+              <button
+                @click="removeFile(idx)"
+                class="absolute right-2 top-2 rounded-full bg-red-500 p-1.5 text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 hover:bg-red-600"
+              >
+                <n-icon :component="CloseOutline" :size="16" />
+              </button>
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                <p class="text-xs text-white truncate">{{ selectedFileNames[idx] }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Кнопка загрузки -->
           <div
-            class="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white px-4 py-4 text-center text-slate-600 transition hover:border-indigo-300 hover:bg-indigo-50/60"
+            class="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-300 bg-white px-4 py-6 text-center text-slate-600 transition hover:border-primary-400 hover:bg-primary-50/30"
             @click="triggerFileInput"
           >
-            <p class="text-sm font-semibold">Добавить файлы</p>
-            <p class="text-xs text-slate-500">Перетащите или кликните для выбора</p>
-            <n-button secondary round size="small">Выбрать</n-button>
+            <n-icon :component="ImagesOutline" :size="32" class="text-slate-400" />
+            <p class="text-sm font-semibold text-slate-900">Добавить фотографии</p>
+            <p class="text-xs text-slate-500">Кликните для выбора файлов</p>
             <input
               ref="fileInputRef"
               type="file"
@@ -101,15 +159,6 @@
               accept="image/*"
               multiple
             />
-          </div>
-          <div v-if="selectedFileNames.length" class="flex flex-wrap gap-2">
-            <span
-              v-for="name in selectedFileNames"
-              :key="name"
-              class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700"
-            >
-              {{ name }}
-            </span>
           </div>
         </div>
 
@@ -135,9 +184,16 @@ import {
   NInputNumber,
   NSelect,
   NButton,
+  NIcon,
   useMessage
 } from 'naive-ui';
-import axiosIns from '@/apis';
+import {
+  BarcodeOutline,
+  CloseOutline,
+  AddOutline,
+  ImagesOutline
+} from '@vicons/ionicons5';
+import axiosIns from '@/shared/api/axios';
 import type { ProductDetail } from '@/apis/products';
 import WarehouseComponent from '@/views/parts/ui/warehouse-component.vue';
 
@@ -171,29 +227,22 @@ const statusValueFromLabel = (label?: string) => {
   return map[label || ''] || 1;
 };
 
-const formatCodesToString = (codes: any): string => {
-  if (!codes) return '';
-  if (Array.isArray(codes)) {
-    return codes.filter(Boolean).join(', ');
-  }
-  return String(codes);
-};
-
 const form = reactive({
   name: '',
   price: null as number | null,
   statusValue: 1,
   color: '',
   defect: '',
-  code: '',
   comment: ''
 });
 
+const codesList = ref<string[]>(['']);
 const dirtyFields = ref<Set<string>>(new Set());
 const isSaving = ref(false);
 const fileInputRef = ref<HTMLInputElement | null>(null);
 const selectedFiles = ref<File[]>([]);
 const selectedFileNames = ref<string[]>([]);
+const previewImages = ref<string[]>([]);
 const message = useMessage();
 
 const productId = computed(() => props.product?.id);
@@ -207,8 +256,23 @@ watch(
     form.statusValue = statusValueFromLabel(val.status);
     form.color = val.color || '';
     form.defect = (val as any).defect || '';
-    form.code = formatCodesToString(val.code);
     form.comment = val.comment || '';
+
+    // Парсим коды в массив
+    if (val.code) {
+      if (Array.isArray(val.code)) {
+        codesList.value = val.code.filter(Boolean);
+      } else {
+        codesList.value = String(val.code).split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
+      }
+    } else {
+      codesList.value = [''];
+    }
+
+    if (codesList.value.length === 0) {
+      codesList.value = [''];
+    }
+
     dirtyFields.value.clear();
     clearFiles();
   },
@@ -219,6 +283,18 @@ function markDirty(key: string) {
   dirtyFields.value.add(key);
 }
 
+function addCode() {
+  codesList.value.push('');
+  markDirty('code');
+}
+
+function removeCode(index: number) {
+  if (codesList.value.length > 1) {
+    codesList.value.splice(index, 1);
+    markDirty('code');
+  }
+}
+
 function triggerFileInput() {
   fileInputRef.value?.click();
 }
@@ -226,13 +302,38 @@ function triggerFileInput() {
 function onFilesSelected(event: Event) {
   const files = (event.target as HTMLInputElement).files;
   if (!files) return;
+
   selectedFiles.value = Array.from(files);
   selectedFileNames.value = selectedFiles.value.map((f) => f.name);
+
+  // Создаём preview для каждого файла
+  previewImages.value = [];
+  selectedFiles.value.forEach((file) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target?.result) {
+        previewImages.value.push(e.target.result as string);
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function removeFile(index: number) {
+  selectedFiles.value.splice(index, 1);
+  selectedFileNames.value.splice(index, 1);
+  previewImages.value.splice(index, 1);
+
+  // Очищаем input если удалили все файлы
+  if (selectedFiles.value.length === 0 && fileInputRef.value) {
+    fileInputRef.value.value = '';
+  }
 }
 
 function clearFiles() {
   selectedFiles.value = [];
   selectedFileNames.value = [];
+  previewImages.value = [];
   if (fileInputRef.value) {
     fileInputRef.value.value = '';
   }
@@ -241,6 +342,7 @@ function clearFiles() {
 async function saveChanges() {
   if (!productId.value) return;
   const payload: Record<string, any> = {};
+
   dirtyFields.value.forEach((key) => {
     switch (key) {
       case 'name':
@@ -259,10 +361,7 @@ async function saveChanges() {
         payload.defect = form.defect;
         break;
       case 'code':
-        payload.code = form.code
-          .split(/[\n,]+/)
-          .map((item) => item.trim())
-          .filter(Boolean);
+        payload.code = codesList.value.filter(c => c.trim() !== '');
         break;
       case 'comment':
         payload.comment = form.comment;

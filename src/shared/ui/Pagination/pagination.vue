@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import PaginationItem from '@/components/Pagination/pagination-item.vue';
+import PaginationItem from '@/shared/ui/Pagination/pagination-item.vue';
 import {ref, computed} from 'vue';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline';
 

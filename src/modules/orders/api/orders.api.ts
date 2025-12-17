@@ -1,4 +1,5 @@
-import axios from "./index";
+import axiosIns from '@/shared/api/axios';
+import generateQuery from '@/shared/lib/generateQuery';
 
 interface Category {
   id: number;
@@ -126,25 +127,13 @@ export interface ProductList {
   mileageType: null;
 }
 
-function generateQuery(queries: object) {
-  let query = "?";
-  Object.keys(queries).forEach(function (key, _) {
-    // @ts-ignore
-    const ne: any = queries[key];
-    if (ne != null) {
-      query += `${key}=${ne}&`;
-    }
-  });
-  return query;
-}
-
 export async function getOrders(options: object = {}) {
   const query = generateQuery(options);
-  return await axios.get<{
+  return await axiosIns.get<{
     results: ProductList[];
   }>(`/api/admin/orders/${query}`);
 }
 
 export async function getOrder(id: string) {
-  return await axios.get(`/api/admin/orders/${id}`);
+  return await axiosIns.get(`/api/admin/orders/${id}`);
 }

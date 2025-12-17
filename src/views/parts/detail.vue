@@ -1,5 +1,22 @@
 <template>
   <main class="space-y-5">
+    <!-- Breadcrumbs -->
+    <n-breadcrumb class="mb-2 print:hidden">
+      <n-breadcrumb-item>
+        <router-link to="/" class="text-slate-600 hover:text-slate-900 transition-colors">
+          Главная
+        </router-link>
+      </n-breadcrumb-item>
+      <n-breadcrumb-item>
+        <router-link :to="{ name: 'parts-list' }" class="text-slate-600 hover:text-slate-900 transition-colors">
+          Запчасти
+        </router-link>
+      </n-breadcrumb-item>
+      <n-breadcrumb-item>
+        <span class="text-slate-900 font-medium">{{ product?.name || 'Детали' }}</span>
+      </n-breadcrumb-item>
+    </n-breadcrumb>
+
     <div class="print:hidden">
       <div class="rounded-3xl border border-slate-200/80 bg-white px-6 py-5 shadow-sm">
         <div class="flex flex-wrap items-start justify-between gap-4">
@@ -66,7 +83,7 @@
           />
         </n-card>
 
-        
+
       </div>
 
       <div class="space-y-4">
@@ -168,11 +185,13 @@ import {
     NButton,
     useMessage,
     NTag,
+    NBreadcrumb,
+    NBreadcrumbItem,
 } from "naive-ui";
-import axiosIns from "@/apis";
+import axiosIns from "@/shared/api/axios";
 import { useRouter, useRoute } from "vue-router";
-import Slider from "@/components/Slider.vue";
-import { formatDate } from "@/utils/formatDate";
+import Slider from "@/shared/ui/Slider.vue";
+import { formatDate } from "@/shared/lib/formatDate";
 import { ref, onMounted, computed } from "vue";
 import {
     PartDimensionsComponent,
