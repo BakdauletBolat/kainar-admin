@@ -177,10 +177,7 @@
 </template>
 <script setup lang="ts">
 import {
-    NPageHeader,
     NCard,
-    NDescriptions,
-    NDescriptionsItem,
     NSkeleton,
     NButton,
     useMessage,

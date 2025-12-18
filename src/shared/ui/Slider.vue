@@ -170,7 +170,7 @@ watchEffect(() => {
     try {
       flicking.value!.moveTo(currentValue.value);
       flicking2.value!.moveTo(currentValue.value);
-    } catch (e) {
+    } catch {
       // Игнорируем ошибки при переключении
     }
   }
@@ -231,7 +231,7 @@ function confirmDelete() {
             currentValue.value = Math.max(0, props.pictures.length - 1);
           }
         })
-        .catch(e => {
+        .catch(() => {
           message.error('Ошибка при удалении');
         })
         .finally(() => {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import PartsFilter from '@/components/Parts/PartsFilter.vue';
 import { onMounted, h, reactive, watch, ref } from 'vue';
-import { NDataTable, NAvatar, NH6, NTag, NPageHeader, NButton, NPopconfirm, useMessage, NIcon, NBreadcrumb, NBreadcrumbItem } from 'naive-ui';
+import { NDataTable, NTag, NPageHeader, NButton, NPopconfirm, useMessage, NIcon, NBreadcrumb, NBreadcrumbItem } from 'naive-ui';
 import { getFirstElementArray } from '@/shared/lib/getFirstElementFromArray';
 import { useRoute, RouterLink, useRouter } from 'vue-router';
 import type { DataTableColumns } from 'naive-ui'

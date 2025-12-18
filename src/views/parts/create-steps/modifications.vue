@@ -13,7 +13,7 @@
           v-for="(item, index) in modificationStore.modifications"
           :key="index"
           :title="item.modelCar.name"
-          :subtitle="`${item.bodyType} • ${item.modelCar.startDate}`"
+          :subtitle="item.bodyType"
           :specs="getSpecs(item)"
           :logo="item.image"
           :id="item.id"

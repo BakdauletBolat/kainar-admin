@@ -270,12 +270,6 @@
                   <span class="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 font-medium">
                     ID {{ good.product.id }}
                   </span>
-                  <span
-                    v-if="good.product.modification?.modelCar?.name"
-                    class="inline-flex items-center rounded-md bg-indigo-50 px-2 py-0.5 text-indigo-700 font-medium"
-                  >
-                    {{ good.product.modification.modelCar.name }}
-                  </span>
                 </div>
               </div>
 

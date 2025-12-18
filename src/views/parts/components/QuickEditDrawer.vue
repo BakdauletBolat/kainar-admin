@@ -49,7 +49,7 @@
           <label class="text-sm font-medium text-slate-700">ОЕМ / артикулы</label>
           <div class="space-y-2">
             <div
-              v-for="(code, index) in codesList"
+              v-for="(_code, index) in codesList"
               :key="index"
               class="flex items-center gap-2"
             >
@@ -261,7 +261,7 @@ watch(
     // Парсим коды в массив
     if (val.code) {
       if (Array.isArray(val.code)) {
-        codesList.value = val.code.filter(Boolean);
+        codesList.value = val.code.filter(Boolean).map(c => String(c));
       } else {
         codesList.value = String(val.code).split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
       }

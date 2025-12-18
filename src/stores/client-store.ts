@@ -5,7 +5,9 @@ import {useAuthStore} from "@/stores/auth-store.ts";
 import {useRouter} from "vue-router";
 
 export interface Client {
-    city: undefined;
+    city?: {
+        name: string;
+    };
     date_joined: Date;
     email: string | undefined;
     first_name: string | undefined;
@@ -14,6 +16,9 @@ export interface Client {
     middle_name: string | undefined;
     phone: string | undefined;
     profile_type: number;
+    roles?: Array<{
+        name: string;
+    }>;
 }
 
 export const useClientStore = defineStore("client-store", {
