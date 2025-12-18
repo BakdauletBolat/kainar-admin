@@ -28,7 +28,7 @@
 </template>
 <script setup lang="ts">
 import { CogIcon, ShoppingCartIcon, InboxIcon, UsersIcon, XMarkIcon } from '@heroicons/vue/24/outline';
-import Avatar from './Avatar.vue';
+import Avatar from '@/shared/ui/Avatar.vue';
 import { useRoute } from 'vue-router';
 import { computed, ref, watch } from 'vue';
 import appConfig from '@/stores/app';

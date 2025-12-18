@@ -79,7 +79,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref, h } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
-import { type DataTableColumns, NButton, NDataTable, NEllipsis, NPageHeader, NInput, NBreadcrumb, NBreadcrumbItem, NIcon } from "naive-ui";
+import { type DataTableColumns, NButton, NDataTable, NPageHeader, NInput, NBreadcrumb, NBreadcrumbItem, NIcon } from "naive-ui";
 import { useWarehouseStore } from '@/stores/warehouses-store';
 import { ArchiveOutline, BusinessOutline } from '@vicons/ionicons5';
 

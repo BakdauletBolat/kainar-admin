@@ -98,7 +98,7 @@
           <div class="flex flex-wrap gap-2 mt-2">
             <span
               v-for="role in authStore.user?.roles"
-              :key="role.id"
+              :key="role.name"
               class="inline-flex items-center rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700"
             >
               {{ role.name }}

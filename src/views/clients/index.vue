@@ -84,7 +84,7 @@ import { useRoute, RouterLink } from 'vue-router';
 import type { DataTableColumns } from 'naive-ui'
 import { formatDate } from '@/shared/lib/formatDate';
 import { useClientStore, Client } from "@/stores/client-store.ts";
-import { ArchiveOutline, PersonOutline } from '@vicons/ionicons5';
+import { ArchiveOutline } from '@vicons/ionicons5';
 
 const renderTableEmpty = () =>
   h('div', {

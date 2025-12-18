@@ -259,7 +259,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { NCard, NButton, NIcon } from 'naive-ui';
+import { NButton, NIcon } from 'naive-ui';
 import {
   TimeOutline,
   ConstructOutline,
