@@ -16,7 +16,7 @@
 </template>
 <script lang="ts" setup>
 import { ChevronLeftIcon, Bars3Icon } from '@heroicons/vue/24/outline';
-import appConfig from '@/stores/app.ts'; 
+import appConfig from '@app/config/app'; 
 defineProps<{
     title: string,
     backRoute?: {

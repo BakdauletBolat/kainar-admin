@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {useAuthStore} from "@/stores/auth-store.ts";
+import {useUserStore as useAuthStore} from "@entities/user";
 import {useRouter} from "vue-router";
 
 

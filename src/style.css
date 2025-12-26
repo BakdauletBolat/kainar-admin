@@ -1,5 +1,5 @@
-@import './styles/table.css';
-@import './styles/naive-ui-overrides.css';
+@import './app/styles/table.css';
+@import './app/styles/naive-ui-overrides.css';
 
 @tailwind base;
 @tailwind components;

@@ -61,7 +61,7 @@ import Logo from "@/assets/new-logo.png";
 import Avatar from "@/shared/ui/Avatar.vue";
 import BottomAppBar from '@/shared/ui/BottomAppBar.vue';
 import axiosIns from "@/shared/api/axios";
-import { useAuthStore } from '@/stores/auth-store';
+import { useUserStore } from '@entities/user';
 
 const route = useRoute();
 const router = useRouter();
@@ -81,11 +81,14 @@ const dashboardInfo = ref<DashboardInfo>({
   sale_for_today: 0,
 });
 
-const userStore = useAuthStore();
+const userStore = useUserStore();
 
 onMounted(async ()=>{
+  // Загружаем профиль пользователя при входе в приложение
+  if (userStore.isAuthenticated) {
+    await userStore.userMe();
+  }
   const res = await axiosIns.get("/api/admin/dashboard-info/");
-  await userStore.userMe();
   dashboardInfo.value = res.data;
 })
 
@@ -113,7 +116,7 @@ const themeOverrides = {
   }
 }
 
-const authStore = useAuthStore();
+const authStore = userStore;
 
 // Вычисляем активный ключ меню на основе текущего роута
 const activeKey = computed(() => {
