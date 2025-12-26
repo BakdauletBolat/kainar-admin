@@ -23,4 +23,22 @@ export default defineConfig({
       '@shared': path.resolve(__dirname, 'src/shared'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Разделяем Vue и связанные библиотеки
+          'vue-vendor': ['vue', 'vue-router', 'pinia'],
+          // Разделяем Naive UI - большая библиотека компонентов
+          'naive-ui': ['naive-ui'],
+          // Разделяем иконки
+          'icons': ['@vicons/ionicons5', '@heroicons/vue'],
+          // Разделяем вспомогательные библиотеки
+          'utils': ['axios', '@vueuse/core'],
+        },
+      },
+    },
+    // Увеличиваем лимит предупреждения для оставшихся чанков
+    chunkSizeWarningLimit: 700,
+  },
 })
