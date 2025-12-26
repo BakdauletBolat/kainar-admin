@@ -31,7 +31,7 @@ import {computed, h, onMounted, reactive, ref} from 'vue';
 import {NButton, NDataTable, NPageHeader, NTag, NModal, useMessage} from 'naive-ui';
 import { useRoute } from 'vue-router';
 import type { DataTableColumns } from 'naive-ui'
-import {Feedback, useFeedbackStore} from "@entities/feedback";
+import {Feedback, useFeedbackStore, ProductStatusEnum} from "@entities/feedback";
 import { timeAgo } from "@/shared/lib/formatDate";
 
 const activeFeedback = ref<number | null>(null);
@@ -86,6 +86,28 @@ function getTagData(c_t: Date | null ) {
   return {text: "Обработан", type: 'success'};
 }
 
+function getProductStatusText(status: number): string {
+  switch(status) {
+    case ProductStatusEnum.RAW: return 'Черновик';
+    case ProductStatusEnum.IN_STOCK: return 'В наличии';
+    case ProductStatusEnum.RESERVED: return 'Зарезервирован';
+    case ProductStatusEnum.DELETED: return 'Удален';
+    case ProductStatusEnum.SOLD: return 'Продан';
+    default: return 'Неизвестно';
+  }
+}
+
+function getProductStatusType(status: number): 'default' | 'success' | 'warning' | 'error' | 'info' {
+  switch(status) {
+    case ProductStatusEnum.RAW: return 'default';
+    case ProductStatusEnum.IN_STOCK: return 'success';
+    case ProductStatusEnum.RESERVED: return 'warning';
+    case ProductStatusEnum.DELETED: return 'error';
+    case ProductStatusEnum.SOLD: return 'info';
+    default: return 'default';
+  }
+}
+
 function onClickCloseFeedback(feedbackId: number) {
   activeFeedback.value = feedbackId;
 }
@@ -98,25 +120,65 @@ function createColumns(): DataTableColumns<Feedback> {
     {
       title: "ID",
       key: "id",
+      width: 60,
     },
     {
       title: "Номер телефона",
-      key: "phone"
+      key: "phone",
+      width: 130,
     },
     {
       title: "Имя клиента",
-      key: "name"
+      key: "name",
+      width: 150,
     },
     {
-      title: "Дата обновление",
+      title: "Продукт",
+      key: "product",
+      width: 200,
+      render(row) {
+        if (!row.product) {
+          return h('div', {style: 'color: #999;'}, {default: () => 'Нет продукта'})
+        }
+        return h('div', {}, {default: () => row.product!.name})
+      }
+    },
+    {
+      title: "Цена",
+      key: "product.market_price",
+      width: 100,
+      render(row) {
+        if (!row.product || !row.product.market_price) {
+          return h('div', {style: 'color: #999;'}, {default: () => '-'})
+        }
+        return h('div', {}, {default: () => `${row.product!.market_price!.toLocaleString()} ₸`})
+      }
+    },
+    {
+      title: "Статус продукта",
+      key: "product.status",
+      width: 130,
+      render(row) {
+        if (!row.product) {
+          return h('div', {}, {})
+        }
+        return h(NTag, {
+          type: getProductStatusType(row.product!.status)
+        }, {default: () => getProductStatusText(row.product!.status)})
+      }
+    },
+    {
+      title: "Дата обновления",
       key: "updated_at",
+      width: 140,
       render(row) {
         return h('div', {}, {default: () => `${timeAgo(new Date(row.updated_at))}`})
       }
     },
     {
-      title: "Статус",
+      title: "Статус заявки",
       key: "completed_at",
+      width: 130,
       render(row) {
         return h(NTag, {
           type: getTagData(row.completed_at).type
@@ -126,6 +188,7 @@ function createColumns(): DataTableColumns<Feedback> {
     {
       title: "Действие",
       key: "actions",
+      width: 120,
       render(row) {
         if (row.completed_at != null) {
           return h('div', {}, {});
