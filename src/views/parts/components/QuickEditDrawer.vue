@@ -50,6 +50,7 @@
           <div class="space-y-2">
             <div
               v-for="(_code, index) in codesList"
+              v-for="(_code, index) in codesList"
               :key="index"
               class="flex items-center gap-2"
             >

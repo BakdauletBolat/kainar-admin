@@ -97,8 +97,8 @@
           <p class="text-xs uppercase tracking-[0.08em] text-slate-500">Роли</p>
           <div class="flex flex-wrap gap-2 mt-2">
             <span
-              v-for="role in authStore.user?.roles"
-              :key="role.name"
+              v-for="(role, index) in authStore.user?.roles"
+              :key="index"
               class="inline-flex items-center rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700"
             >
               {{ role.name }}

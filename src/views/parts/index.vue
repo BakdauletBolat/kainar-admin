@@ -340,9 +340,7 @@ onMounted(() => {
       </n-page-header>
     </div>
     <main class="space-y-3">
-      <div class="rounded-3xl bg-white px-5 py-4 shadow-none border border-slate-200/70">
-        <parts-filter />
-      </div>
+      <parts-filter />
       <section class="space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-white px-5 py-4 border border-slate-200/80 shadow-sm">
           <div class="space-y-1.5">

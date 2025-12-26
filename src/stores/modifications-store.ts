@@ -12,6 +12,7 @@ interface ModelCar {
     id: number;
     manufacturer: Manufacturer;
     name: string;
+    startDate?: string;
 }
 
 export interface IModification {

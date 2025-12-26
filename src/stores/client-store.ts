@@ -16,9 +16,9 @@ export interface Client {
     middle_name: string | undefined;
     phone: string | undefined;
     profile_type: number;
-    roles?: Array<{
+    roles?: {
         name: string;
-    }>;
+    }[];
 }
 
 export const useClientStore = defineStore("client-store", {
