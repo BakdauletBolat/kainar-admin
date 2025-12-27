@@ -6,8 +6,9 @@ import type { Category } from './types';
 function recursiveCategory(children: any, options: TreeSelectOption[]) {
   for (let i = 0; i < children.length; i++) {
     const category = children[i];
+    const count = category.products_count != null ? ` (${category.products_count})` : '';
     let option: TreeSelectOption = {
-      label: category.name,
+      label: `${category.name}${count}`,
       key: category.id,
     };
     if (category.children.length > 0) {
@@ -30,7 +31,8 @@ export const useCategoryStore = defineStore('category', {
   getters: {
     categoriesOptions: (state) => {
       return state.categories.map<any>((item: any) => {
-        return { label: item.name, value: item.id };
+        const count = item.products_count != null ? ` (${item.products_count})` : '';
+        return { label: `${item.name}${count}`, value: item.id };
       });
     },
     categoriesTreeOptions: (state) => {
