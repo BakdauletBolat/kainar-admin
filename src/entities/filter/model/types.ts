@@ -62,4 +62,5 @@ export interface FilterValues {
   steeringType: number | null;
   vinCode: number | null;
   warehouse_id: number | null;
+  status: number | null;
 }

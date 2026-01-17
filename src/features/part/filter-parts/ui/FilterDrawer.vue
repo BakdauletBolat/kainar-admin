@@ -178,6 +178,19 @@ const activeFiltersList = computed(() => {
     }
   }
 
+  if (values.status !== null && values.status !== undefined) {
+    // Маппинг числовых значений статусов на текстовые названия
+    const statusLabels: Record<number, string> = {
+      1: 'Необработан',
+      2: 'В наличии',
+      3: 'Зарезервирован',
+      4: 'Удален',
+      5: 'Продан'
+    };
+    const statusName = statusLabels[values.status] || values.status;
+    filters.push({ key: 'status', label: `Статус: ${statusName}` });
+  }
+
   // Добавляем динамические фильтры
   filterStore.filtersForm.forEach((field: any) => {
     const value = values[field.key as keyof typeof values];

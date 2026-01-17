@@ -24,6 +24,7 @@ export const useFilterStore = defineStore('filter', {
         steeringType: null,
         vinCode: null,
         warehouse_id: null,
+        status: null,
       } as FilterValues,
       filterData: {} as CarFilterData,
     };
@@ -54,6 +55,7 @@ export const useFilterStore = defineStore('filter', {
         steeringType: null,
         warehouse_id: null,
         vinCode: null,
+        status: null,
       };
     },
     resetFilters() {

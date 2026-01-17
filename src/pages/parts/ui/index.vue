@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PartsFilter } from '@widgets/parts-filter';
-import { onMounted, h, reactive, watch, ref } from 'vue';
+import { onMounted, h, reactive, watch, ref, computed } from 'vue';
 import { NDataTable, NTag, NPageHeader, NButton, NPopconfirm, useMessage, NIcon, NBreadcrumb, NBreadcrumbItem } from 'naive-ui';
 import { getFirstElementArray } from '@/shared/lib/getFirstElementFromArray';
 import { useRoute, RouterLink, useRouter } from 'vue-router';
@@ -295,6 +295,38 @@ const onChangedPage = (page: number) => {
     page_size: paginationReactive.pageSize })
 }
 
+// Статусы для фильтрации (соответствуют StatusChoices на бэкенде)
+const statusOptions = [
+  { label: 'Необработан', value: 1, type: 'info' as const },
+  { label: 'В наличии', value: 2, type: 'success' as const },
+  { label: 'Зарезервирован', value: 3, type: 'warning' as const },
+  { label: 'Удален', value: 4, type: 'default' as const },
+  { label: 'Продан', value: 5, type: 'error' as const }
+]
+
+// Проверка, выбран ли статус
+const isStatusSelected = (status: number): boolean => {
+  return filterStore.filterValues.status === status
+}
+
+// Переключение статуса
+const toggleStatus = (status: number) => {
+  // Если статус уже выбран, снимаем выбор, иначе устанавливаем новый
+  if (filterStore.filterValues.status === status) {
+    filterStore.filterValues.status = null
+  } else {
+    filterStore.filterValues.status = status
+  }
+
+  // Перезагружаем данные
+  paginationReactive.page = 1
+  productStore.loadProducts({
+    ...filterStore.filterValues,
+    page: 1,
+    page_size: paginationReactive.pageSize
+  })
+}
+
 watch(()=> productStore.productsCount, (state, oldValue)=> {
   if (state != oldValue) {
     paginationReactive.itemCount = state;
@@ -341,6 +373,30 @@ onMounted(() => {
     </div>
     <main class="space-y-3">
       <parts-filter />
+
+      <!-- Фильтр по статусу -->
+      <div class="rounded-2xl bg-white px-5 py-3 border border-slate-200/80 shadow-sm">
+        <div class="flex items-center gap-3">
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-600 whitespace-nowrap">Статус:</p>
+          <div class="flex flex-wrap items-center gap-2">
+            <n-tag
+              v-for="status in statusOptions"
+              :key="status.value"
+              checkable
+              :checked="isStatusSelected(status.value)"
+              @click="toggleStatus(status.value)"
+              :type="status.type"
+              size="medium"
+              round
+              class="cursor-pointer font-medium transition-all duration-200"
+              :class="isStatusSelected(status.value) ? 'shadow-md' : ''"
+            >
+              {{ status.label }}
+            </n-tag>
+          </div>
+        </div>
+      </div>
+
       <section class="space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-white px-5 py-4 border border-slate-200/80 shadow-sm">
           <div class="space-y-1.5">
