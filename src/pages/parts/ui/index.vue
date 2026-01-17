@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PartsFilter } from '@widgets/parts-filter';
-import { onMounted, h, reactive, watch, ref, computed } from 'vue';
+import { onMounted, h, reactive, watch, ref } from 'vue';
 import { NDataTable, NTag, NPageHeader, NButton, NPopconfirm, useMessage, NIcon, NBreadcrumb, NBreadcrumbItem } from 'naive-ui';
 import { getFirstElementArray } from '@/shared/lib/getFirstElementFromArray';
 import { useRoute, RouterLink, useRouter } from 'vue-router';
