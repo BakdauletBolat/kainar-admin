@@ -23,6 +23,12 @@
         </template>
         <template #extra>
           <div class="flex items-center gap-2">
+            <n-select
+              v-model:value="staffFilter"
+              :options="staffFilterOptions"
+              class="w-44"
+              size="medium"
+            />
             <n-input
               v-model:value="searchPhone"
               placeholder="Поиск по номеру телефона"
@@ -70,6 +76,7 @@
             :row-class-name="rowClassName"
             :render-empty="renderTableEmpty"
             :bordered="false"
+            :scroll-x="1238"
           />
         </div>
       </section>
@@ -79,11 +86,12 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted, h, reactive } from 'vue';
-import { NDataTable, NPageHeader, NInput, NButton, NBreadcrumb, NBreadcrumbItem, NIcon } from 'naive-ui';
+import { NDataTable, NPageHeader, NInput, NButton, NSelect, NBreadcrumb, NBreadcrumbItem, NIcon } from 'naive-ui';
 import { useRoute, RouterLink } from 'vue-router';
 import type { DataTableColumns } from 'naive-ui'
 import { formatDate } from '@/shared/lib/formatDate';
 import { useClientStore, Client } from "@entities/client";
+import { ResetPasswordButton } from "@features/user/reset-password";
 import { ArchiveOutline } from '@vicons/ionicons5';
 
 const renderTableEmpty = () =>
@@ -201,6 +209,18 @@ function createColumns(): DataTableColumns<Client> {
           class: 'inline-flex items-center rounded-md bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700'
         }, role)
       }
+    },
+    {
+      title: "Действия",
+      key: "actions",
+      width: 170,
+      fixed: 'right',
+      render(row) {
+        if (!row.is_staff) {
+          return h('span', { class: 'text-sm text-slate-400' }, '—')
+        }
+        return h(ResetPasswordButton, { phone: row.phone || '' })
+      }
     }
   ]
 }
@@ -244,7 +264,8 @@ const onChangedPage = (page: number) => {
   clientStore.loadClients({
     page: page,
     page_size: paginationReactive.pageSize,
-    phone: searchPhone.value
+    phone: searchPhone.value,
+    ...staffParam()
   }).then(_ => {
     paginationReactive.itemCount = clientStore.clientsCount;
   })
@@ -256,13 +277,27 @@ const refreshData = () => {
 
 onMounted(() => {
   const page = route.query.page != null ? parseInt(route.query.page.toString()) : 1
-  clientStore.loadClients({ page: page, page_size: 10 }).then(_ => {
+  clientStore.loadClients({ page: page, page_size: 10, ...staffParam() }).then(_ => {
     paginationReactive.itemCount = clientStore.clientsCount;
   });
 });
 
 const searchPhone = ref('');
 let searchTimeout: ReturnType<typeof setTimeout> | null = null;
+
+const staffFilter = ref<'all' | 'clients' | 'staff'>('all');
+
+const staffFilterOptions = [
+  { label: 'Все', value: 'all' },
+  { label: 'Клиенты', value: 'clients' },
+  { label: 'Сотрудники', value: 'staff' },
+];
+
+function staffParam(): { is_staff?: boolean } {
+  if (staffFilter.value === 'staff') return { is_staff: true };
+  if (staffFilter.value === 'clients') return { is_staff: false };
+  return {};
+}
 
 watch(searchPhone, (val) => {
   if (searchTimeout) clearTimeout(searchTimeout);
@@ -271,10 +306,23 @@ watch(searchPhone, (val) => {
     clientStore.loadClients({
       page: 1,
       page_size: paginationReactive.pageSize,
-      phone: val
+      phone: val,
+      ...staffParam()
     }).then(_ => {
       paginationReactive.itemCount = clientStore.clientsCount;
     });
   }, 500);
+});
+
+watch(staffFilter, () => {
+  paginationReactive.page = 1;
+  clientStore.loadClients({
+    page: 1,
+    page_size: paginationReactive.pageSize,
+    phone: searchPhone.value,
+    ...staffParam()
+  }).then(_ => {
+    paginationReactive.itemCount = clientStore.clientsCount;
+  });
 });
 </script>

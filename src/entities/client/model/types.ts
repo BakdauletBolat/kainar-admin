@@ -10,6 +10,7 @@ export interface Client {
   middle_name: string | undefined;
   phone: string | undefined;
   profile_type: number;
+  is_staff?: boolean;
   roles?: {
     name: string;
   }[];

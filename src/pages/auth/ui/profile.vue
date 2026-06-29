@@ -87,6 +87,14 @@
       </div>
     </n-card>
 
+    <!-- Безопасность -->
+    <n-card size="large">
+      <div class="mb-4 flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-slate-900">Безопасность</h3>
+      </div>
+      <ChangePasswordForm />
+    </n-card>
+
     <!-- Роли и права (только для отображения) -->
     <n-card size="large">
       <div class="mb-4 flex items-center justify-between">
@@ -139,6 +147,7 @@ import { useUserStore as useAuthStore } from "@entities/user";
 import { NButton, NCard, NInput, NSelect, NBreadcrumb, NBreadcrumbItem, useMessage } from 'naive-ui';
 import { useRouter } from "vue-router";
 import axiosIns from '@/shared/api/axios';
+import { ChangePasswordForm } from "@features/auth/change-password";
 
 const authStore = useAuthStore();
 const router = useRouter();

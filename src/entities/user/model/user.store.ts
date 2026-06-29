@@ -1,13 +1,23 @@
 import { defineStore } from 'pinia';
 import { Router } from 'vue-router';
 import type { AuthUser, AuthPayload } from './types';
-import { authUserApi, getUserMeApi, updateUserProfileApi } from '../api/user.api';
+import {
+  authUserApi,
+  getUserMeApi,
+  updateUserProfileApi,
+  changePasswordApi,
+  resetPasswordApi,
+  forgotPasswordApi,
+} from '../api/user.api';
 
 export const useUserStore = defineStore('user', {
   state: () => {
     return {
       user: null as AuthUser | null,
       isLoading: false as boolean,
+      isLoadingChangePassword: false as boolean,
+      isLoadingResetPassword: false as boolean,
+      isLoadingForgotPassword: false as boolean,
       isAuthenticated: localStorage.getItem('auth-token') !== null,
     };
   },
@@ -65,6 +75,30 @@ export const useUserStore = defineStore('user', {
       } finally {
         this.isLoading = false;
       }
+    },
+    async changePassword(oldPassword: string, newPassword: string) {
+      this.isLoadingChangePassword = true;
+      return changePasswordApi({ old_password: oldPassword, new_password: newPassword })
+        .then((res) => res.data)
+        .finally(() => {
+          this.isLoadingChangePassword = false;
+        });
+    },
+    async resetPassword(phone: string) {
+      this.isLoadingResetPassword = true;
+      return resetPasswordApi(phone)
+        .then((res) => res.data)
+        .finally(() => {
+          this.isLoadingResetPassword = false;
+        });
+    },
+    async forgotPassword(phone: string) {
+      this.isLoadingForgotPassword = true;
+      return forgotPasswordApi(phone)
+        .then((res) => res.data)
+        .finally(() => {
+          this.isLoadingForgotPassword = false;
+        });
     },
   },
 });

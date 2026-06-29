@@ -25,3 +25,8 @@ export interface AuthUser {
   is_superuser: boolean;
   last_login: string;
 }
+
+export interface ChangePasswordPayload {
+  old_password: string;
+  new_password: string;
+}

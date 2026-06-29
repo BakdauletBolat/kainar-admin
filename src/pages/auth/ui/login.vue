@@ -1,9 +1,10 @@
 <template>
-  <div class="min-h-screen w-full flex justify-center items-center">
+  <div class="min-h-screen w-full flex justify-center items-center px-4">
+    <div class="w-full max-w-[420px] rounded-3xl border border-slate-200/80 bg-white px-8 py-8 shadow-sm">
     <n-form ref="formRef"
             :rules="rules"
-            :model="formValue" class="flex flex-col min-w-[360px]">
-      <div class="text-2xl  mb-4">Войти в аккаунт</div>
+            :model="formValue" class="flex flex-col">
+      <div class="text-2xl font-semibold text-slate-900 mb-4">Войти в аккаунт</div>
       <n-form-item label="Номер телефона" path="phone">
         <n-input v-model:value="formValue.phone"
                  class="masked-elem"
@@ -16,15 +17,38 @@
                  placeholder="Пароль"></n-input>
       </n-form-item>
         <n-button type="primary" :loading="authStore.isLoading" @click="onClickLogin">Авторизоваться</n-button>
+        <div class="mt-4 text-center">
+          <button
+            type="button"
+            class="text-sm font-medium text-slate-500 transition-colors hover:text-slate-900 hover:underline"
+            @click="showForgot = true"
+          >
+            Забыли пароль?
+          </button>
+        </div>
     </n-form>
+    </div>
+
+    <n-modal v-model:show="showForgot" transform-origin="center">
+      <n-card
+        style="width: 420px"
+        :bordered="false"
+        title="Сброс пароля"
+        role="dialog"
+        aria-modal="true"
+      >
+        <ForgotPasswordForm @success="showForgot = false" />
+      </n-card>
+    </n-modal>
   </div>
 </template>
 <script lang="ts" setup>
-import {NForm, NInput, NButton, NFormItem, useMessage} from 'naive-ui';
+import {NForm, NInput, NButton, NFormItem, NModal, NCard, useMessage} from 'naive-ui';
 import {onMounted, ref} from 'vue';
 import IMask from "imask";
 import {useUserStore as useAuthStore} from "@entities/user";
 import {useRoute, useRouter} from "vue-router";
+import { ForgotPasswordForm } from "@features/auth/forgot-password";
 
 const formRef = ref<HTMLFormElement>();
 const formValue = ref({
@@ -36,6 +60,8 @@ const authStore = useAuthStore();
 const message = useMessage();
 const route = useRoute();
 const router = useRouter();
+
+const showForgot = ref(false);
 
 const maskOptions = {
   mask: "+{7} (000) 000 00 00",
